@@ -4,14 +4,44 @@
 <head>
 
     <style>
-        header{
-            text-align: center;
-            margin-top: 35vh;
-            margin-bottom: 40vh;
+        * {
+            box-sizing: border-box;
         }
 
-        header>h2 {
+        :root {
+            --color-orange: #FC7067;
+            --color-green: #0DB04E;
+        }
+
+        body {
+            width: 100vw;
+            height: auto;
+            margin: 0;
+
+            font-family: "Poppins", sans-serif;
+        }
+
+        header{
+            height: 100vh;
+            padding: 35vh 40vh;
+            margin-bottom: 4rem;
+            position: relative;
+            text-align: center;
+        }
+
+        header > h2 {
             margin-bottom: 25vh;
+        }
+
+        header::after {
+            content: "";
+            width: 100%;
+            height: 1px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background: #747474;
+            display: inline-block;
         }
 
         h2, h3 {
@@ -19,19 +49,25 @@
         }
 
         .sous-titre{
-            padding: 5px;
-            margin-bottom: 50px;
-            border-left: #0DB04E solid 3px;
+            padding-left: .5rem;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            border-left: var(--color-green) solid 3px;
+        }
+
+        nav,
+        section {
+            padding: 2rem 0;
         }
 
         section > p, section > dl {
-            margin-left: 20vw;
+            margin-left: 2rem;
         }
 
         .element-specifique {
             font-size: 1.3em;
             padding: 5px;
-            border-left: #FC7067 solid 3px;
+            border-left: var(--color-green) solid 3px;
         }
 
         dd {
@@ -45,6 +81,15 @@
 
         .composant {
             color: #AE3D36;
+        }
+
+        .composant::before {
+            content: "> ";
+        }
+
+        .container {
+            width: 100vw;
+            padding: 0 20vw;
         }
 
     </style>
@@ -69,144 +114,172 @@
         </h3>
     </header>
 
-    <hr>
+    <main class="container">   
+        <nav>
+            <h2 class="sous-titre">Chapitres</h2>
 
-    <nav>
-        <h2 class="sous-titre">Chapitres</h2>
+            <ol type="I">
+                <li><a href="#en-tete">En-tête du code</a></li>
+                <li><a href="#defines">Defines</a></li>
+                <li><a href="#structures">Structures</a></li>
+                <li><a href="#globales">Globales</a></li>
+                <li><a href="#fonctions">Fonctions</a></li>
+            </ol>
+        </nav>
 
-        <ol type="I">
-            <li><h2>En-tête du code</h2></li>
-            <li><h2>Defines</h2></li>
-            <li><h2>Structures</h2></li>
-            <li><h2>Globales</h2></li>
-            <li><h2>Fonctions</h2></li>
-        </ol>
-    </nav>
+        <hr>
 
-    <hr>
+        <section id="en-tete">
+            <h2 class="sous-titre">I. En-tête</h2>
 
-    <section>
-        <h2 class="sous-titre">I. En-tête</h2>
+            <p>
+                <em>
+                Saraceni tamen nec amici nobis umquam nec hostes optandi, ultro citroque discursantes quicquid inveniri poterat momento temporis parvi vastabant milvorum rapacium similes, qui si praedam dispexerint celsius, volatu rapiunt celeri, aut nisi impetraverint, non inmorantur.
+                </em>
+            </p>
+        </section>
 
-        <p>
-            <em>
-            Saraceni tamen nec amici nobis umquam nec hostes optandi, ultro citroque discursantes quicquid inveniri poterat momento temporis parvi vastabant milvorum rapacium similes, qui si praedam dispexerint celsius, volatu rapiunt celeri, aut nisi impetraverint, non inmorantur.
-            </em>
-        </p>
-    </section>
+        <hr>
 
-    <hr>
+        <section id="defines">
+            <h2 class="sous-titre">II. Defines</h2>
 
-    <section>
-        <h2 class="sous-titre">II. Defines</h2>
+            <dl>
+                <dt class="element-specifique">NomConstante</dt>
+                <dd>Description de la constante avec un super texte</dd>
+                
+                <dt class="element-specifique">NomConstante</dt>
+                <dd>Description de la constante avec un super texte</dd>
+                
+                <dt class="element-specifique">NomConstante</dt>
+                <dd>Description de la constante avec un super texte</dd>
 
-        <dl>
-            <dt class="element-specifique">NomConstante</dt>
-            <dd>Description de la constante avec un super texte</dd>
-            
-            <dt class="element-specifique">NomConstante</dt>
-            <dd>Description de la constante avec un super texte</dd>
-            
-            <dt class="element-specifique">NomConstante</dt>
-            <dd>Description de la constante avec un super texte</dd>
+                <dt class="element-specifique">NomConstante</dt>
+                <dd>Description de la constante avec un super texte</dd>
+            </dl>
+        </section>
 
-            <dt class="element-specifique">NomConstante</dt>
-            <dd>Description de la constante avec un super texte</dd>
-        </dl>
-    </section>
+        <hr>
 
-    <hr>
+        <section id="structures">
+            <h2 class="sous-titre">III. Structures</h2>
 
-    <section>
-        <h2 class="sous-titre">III. Structures</h2>
+            <dl>
+                <dt class="element-specifique">NomStructure</dt>
+                <dd>
+                    <p>
+                        <em>
+                        Détails de la structure (commentaires)
+                        Saraceni tamen nec amici nobis umquam
+                        nec hostes optandi, ultro citroque
+                        discursantes quicquid inveniri poterat
+                        </em>
+                    </p>
+                    <dl>
+                        <dt class="composant">Composant 1</dt>
+                        <dd><em>Petite description</em></dd>
 
-        <dl>
-            <dt class="element-specifique">NomStructure</dt>
-            <dd>
-                <p>
-                    <em>
-                    Détails de la structure (commentaires)
-                    Saraceni tamen nec amici nobis umquam
-                    nec hostes optandi, ultro citroque
-                    discursantes quicquid inveniri poterat
-                    </em>
-                </p>
-                <dl>
-                    <dt class="composant">> Composant 1</dt>
-                    <dd><em>Petite description</em></dd>
+                        <dt class="composant">Composant 2</dt>
+                        <dd><em>Petite description</em></dd>
 
-                    <dt class="composant">> Composant 2</dt>
-                    <dd><em>Petite description</em></dd>
+                        <dt class="composant">Composant 3</dt>
+                        <dd><em>Petite description</em></dd>
+                    </dl>
+                </dd>
 
-                    <dt class="composant">> Composant 3</dt>
-                    <dd><em>Petite description</em></dd>
-                </dl>
-            </dd>
+                <dt class="element-specifique">NomStructure</dt>
+                <dd>
+                    <p>
+                        <em>
+        
+                            <section>
+                                <h2 class="sous-titre">IV. Globales</h2>
+                        
+                                <dl>
+                                    <dt class="element-specifique">NomGlobale</dt>
+                                    <dd><em>Description de la variable globale avec un super texte</em></dd>
+                        
+                                    <dt class="element-specifique">NomGlobale</dt>
+                                    <dd><em>Description de la variable globale avec un super texte</em></dd>
+                        
+                                    <dt class="element-specifique">NomGlobale</dt>
+                                    <dd><em>Description de la variable globale avec un super texte</em></dd>
+                                </dl>
+                            </section>
+                        
+                            <hr>
+                        
+                            <section>
+                                <h2 class="sous-titre">V. Fonctions</h2>
+                        
+                                <dl>
+                                    <dt class="element-specifique">NomFonction</dt>
+                                    <dd>
+                                        <p><em>Description brève de la fonction blabli blablou</em></p>
+                                        <p>NomParam1: <em>Description du paramètre</em></p>
+                                        <p>NomParam1: <em>Description du paramètre</em></p>
+                                        <p>Retour (s'il y en a): <em>Description du type et de la valeur retournés</em></p>
+                                    </dd>
+                        
+                                    <dt class="element-specifique">NomFonction</dt>
+                                    <dd>
+                                        <p><em>Description brève de la fonction blabli blablou</em></p>
+                                        <p>NomParam1: <em>Description du paramètre</em></p>
+                                        <p>NomParam1: <em>Description du paramètre</em></p>
+                                        <p>Retour (s'il y en a): <em>Description du type et de la valeur retournés</em></p>
+                                    </dd>
+                                </dl>
+                            </section>                <dt class="composant">Composant 2</dt>
+                        <dd><em>Petite description</em></dd>
 
-            <dt class="element-specifique">NomStructure</dt>
-            <dd>
-                <p>
-                    <em>
-                    Détails de la structure (commentaires)
-                    Saraceni tamen nec amici nobis umquam
-                    nec hostes optandi, ultro citroque
-                    discursantes quicquid inveniri poterat
-                    </em>
-                </p>
-                <dl>
-                    <dt class="composant">> Composant 1</dt>
-                    <dd><em>Petite description</em></dd>
+                        <dt class="composant">Composant 3</dt>
+                        <dd><em>Petite description</em></dd>
+                    </dl>
+                </dd>
+            </dl>
+        </section>
 
-                    <dt class="composant">> Composant 2</dt>
-                    <dd><em>Petite description</em></dd>
+        <hr>
 
-                    <dt class="composant">> Composant 3</dt>
-                    <dd><em>Petite description</em></dd>
-                </dl>
-            </dd>
-        </dl>
-    </section>
+        <section id="globales">
+            <h2 class="sous-titre">IV. Globales</h2>
 
-    <hr>
+            <dl>
+                <dt class="element-specifique">NomGlobale</dt>
+                <dd><em>Description de la variable globale avec un super texte</em></dd>
 
-    <section>
-        <h2 class="sous-titre">IV. Globales</h2>
+                <dt class="element-specifique">NomGlobale</dt>
+                <dd><em>Description de la variable globale avec un super texte</em></dd>
 
-        <dl>
-            <dt class="element-specifique">NomGlobale</dt>
-            <dd><em>Description de la variable globale avec un super texte</em></dd>
+                <dt class="element-specifique">NomGlobale</dt>
+                <dd><em>Description de la variable globale avec un super texte</em></dd>
+            </dl>
+        </section>
 
-            <dt class="element-specifique">NomGlobale</dt>
-            <dd><em>Description de la variable globale avec un super texte</em></dd>
+        <hr>
 
-            <dt class="element-specifique">NomGlobale</dt>
-            <dd><em>Description de la variable globale avec un super texte</em></dd>
-        </dl>
-    </section>
+        <section id="fonctions">
+            <h2 class="sous-titre">V. Fonctions</h2>
 
-    <hr>
+            <dl>
+                <dt class="element-specifique">NomFonction</dt>
+                <dd>
+                    <p><em>Description brève de la fonction blabli blablou</em></p>
+                    <p>NomParam1: <em>Description du paramètre</em></p>
+                    <p>NomParam1: <em>Description du paramètre</em></p>
+                    <p>Retour (s'il y en a): <em>Description du type et de la valeur retournés</em></p>
+                </dd>
 
-    <section>
-        <h2 class="sous-titre">V. Fonctions</h2>
-
-        <dl>
-            <dt class="element-specifique">NomFonction</dt>
-            <dd>
-                <p><em>Description brève de la fonction blabli blablou</em></p>
-                <p>NomParam1: <em>Description du paramètre</em></p>
-                <p>NomParam1: <em>Description du paramètre</em></p>
-                <p>Retour (s'il y en a): <em>Description du type et de la valeur retournés</em></p>
-            </dd>
-
-            <dt class="element-specifique">NomFonction</dt>
-            <dd>
-                <p><em>Description brève de la fonction blabli blablou</em></p>
-                <p>NomParam1: <em>Description du paramètre</em></p>
-                <p>NomParam1: <em>Description du paramètre</em></p>
-                <p>Retour (s'il y en a): <em>Description du type et de la valeur retournés</em></p>
-            </dd>
-        </dl>
-    </section>
+                <dt class="element-specifique">NomFonction</dt>
+                <dd>
+                    <p><em>Description brève de la fonction blabli blablou</em></p>
+                    <p>NomParam1: <em>Description du paramètre</em></p>
+                    <p>NomParam1: <em>Description du paramètre</em></p>
+                    <p>Retour (s'il y en a): <em>Description du type et de la valeur retournés</em></p>
+                </dd>
+            </dl>
+        </section>
+    </main>
     
 </body>
 
