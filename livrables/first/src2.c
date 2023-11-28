@@ -1,8 +1,12 @@
 /**
  * 
- * $auteur <nom de l'auteur>
- * $brief Code qui demande un nom, un prénom, un âge et les notes d'un étudiant.
- * $version v1.0
+ * $auteur Jean Passe
+ * 
+ * Code qui demande un nom, un prénom, un âge et les notes pour créer un étudiant.
+ * Ce super programme retourne également la qualité (jugement purement objectif)
+ * du nom de la promo pour un étudiant donné.
+ * 
+ * $version 1.0.0
  * $date 23/11/23
  * 
  */
@@ -16,7 +20,7 @@
 
 
 /**
- * 
+ *  
  * $nomstruc str_etudiant : Structure d'un étudiant. 
  * 
  * $argstruc nom : Nom de l'étudiant.
@@ -92,7 +96,7 @@ void afficherEtudiant(str_etudiant s_etudiant, str_promo s_promo)
 
 
 /**
-* $brevedesc Saisie les caractéristique de l'étudiant.
+* $brief Saisie les caractéristique de l'étudiant.
 * $detail Afficher un détail plus précis si nécssesaire.
 *
 * $return Ici ne retourne rien car cela est une procédure.

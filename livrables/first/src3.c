@@ -1,8 +1,12 @@
 /**
  * 
- * $auteur <nom de l'auteur>
- * $brief Code qui demande un nom, un prénom, un âge et les notes d'un étudiant.
- * $version v1.0
+ * $auteur Yanick OLA
+ * 
+ * Code qui demande un nom, un prénom, un âge et les notes d'un étudiant.
+ * La moyenne de ses notes sera calculée et ses informations affichées.
+ * 
+ * 
+ * $version 6.6.6
  * $date 23/11/23
  * 
  */
