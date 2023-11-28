@@ -50,13 +50,13 @@ typedef struct
     int nombreUtili; 
 }str_equipe; 
 
-void afficherUtilisateur(str_utili utilisateur1, str_equipe equipe1);/** $enteteFonc Entete de la fonction afficheUtilisatauer pour que le main sache qu'elle paramètre elle attend.*/
-void saisirUtilisateur(str_utili utilisateur1, str_equipe equipe1);/** $enteteFonc Entete de la fonction saisirUtilisateur pour que le main sache qu'elle paramètre elle attend.*/
+void afficherUtilisateur(str_utili utilisateur1, str_equipe equipe1);
+void saisirUtilisateur(str_utili utilisateur1, str_equipe equipe1);
 
 int main()
 {
-    str_utili s_utilisateur1; /** $var s_utilisateur1 : Variable de type str_utili définis précédement. */
-    str_equipe s_equipe1; /** $var s_equipe1 : Variable de type str_equipe définis précédement. */
+    str_utili s_utilisateur1; 
+    str_equipe s_equipe1;
 
     saisirUtilisateur(s_utilisateur1, s_equipe1);
     afficherUtilisateur(s_utilisateur1, s_equipe1);
@@ -67,7 +67,7 @@ int main()
 * $brief Affiche les caractéristique de l'utilisateur 1.
 *
 * $return Ici ne retourne rien car cela est une procédure.
-*
+*   
 * $param s_utilisateur1 : Structure représentant l'utilisateur 1.
 * $param s_equipe1 : Structure représentant l'équipe 1.
 *

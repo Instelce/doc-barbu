@@ -50,14 +50,14 @@ typedef struct
     char matiere[TAILLE]; 
 }str_promo; 
 
-void afficherEtudiant(str_etudiant s_etudiant, str_promo equipe1);/** $enteteFonc Entete de la fonction afficherEtudiant pour que le main sache qu'elle paramètre elle attend.*/
-void saisirEtudiant(str_etudiant s_etudiant, str_promo equipe1);/** $enteteFonc Entete de la fonction saisirEtudiant pour que le main sache qu'elle paramètre elle attend.*/
+void afficherEtudiant(str_etudiant s_etudiant, str_promo equipe1);
+void saisirEtudiant(str_etudiant s_etudiant, str_promo equipe1);
 
 
 int main()
 {
-    str_etudiant s_etudiant; /** $var Variable de type str_etudiant définis précédement. */
-    str_promo s_promo; /** $var Variable de type str_promo définis précédement. */
+    str_etudiant s_etudiant; 
+    str_promo s_promo; 
 
     saisirEtudiant(s_etudiant, s_promo);
     afficherEtudiant(s_etudiant, s_promo);
@@ -92,8 +92,7 @@ void afficherEtudiant(str_etudiant s_etudiant, str_promo s_promo)
 
 
 /**
-* $brevedesc Saisie les caractéristique de l'étudiant.
-* $detail Afficher un détail plus précis si nécssesaire.
+* $brief Saisie les caractéristique de l'étudiant.
 *
 * $return Ici ne retourne rien car cela est une procédure.
 *
