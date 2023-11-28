@@ -1,8 +1,12 @@
 /**
  * 
- * $auteur <nom de l'auteur>
- * $brief Code qui demande un nom, un prénom, un âge et les notes d'un étudiant.
- * $version v1.0
+ * $auteur Jean Passe
+ * 
+ * Code qui demande un nom, un prénom, un âge et les notes pour créer un étudiant.
+ * Ce super programme retourne également la qualité (jugement purement objectif)
+ * du nom de la promo pour un étudiant donné.
+ * 
+ * $version 1.0.0
  * $date 23/11/23
  * 
  */
@@ -16,7 +20,7 @@
 
 
 /**
- * 
+ *  
  * $nomstruc str_etudiant : Structure d'un étudiant. 
  * 
  * $argstruc nom : Nom de l'étudiant.

@@ -1,9 +1,13 @@
 /**
  * 
- * $auteur <nom de l'auteur>
- * $brief Code qui demande un nom, un prénom, un âge et une adresse à un utilisateur.
- * $version v1.0
+ * $auteur Jean Neymar
+ * 
+ * $version 1.0.0
  * $date 23/11/23
+ * 
+ * Code qui demande un nom, un prénom, un âge et une adresse à un utilisateur.
+ * Ensuite sont calculées et affichées les caractéristiques de ce dernier:
+ * (informations, majorité, qualité du nom d'équipe :))
  * 
  */
 
@@ -64,7 +68,7 @@ int main()
 
 /**
  * 
-* $brief Affiche les caractéristique de l'utilisateur 1.
+* $brief Affiche les caractéristiques de l'utilisateur 1.
 *
 * $return Ici ne retourne rien car cela est une procédure.
 *   
@@ -93,7 +97,7 @@ void afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1)
 
 
 /**
-* $brief Saisie les caractéristique de l'utilisateur 1.
+* $brief Saisie les caractéristiques de l'utilisateur 1.
 *
 * $return Ici ne retourne rien car cela est une procédure.
 *
