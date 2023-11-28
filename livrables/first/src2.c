@@ -1,7 +1,7 @@
 /**
  * 
  * $auteur <nom de l'auteur>
- * $brevedesc Code qui demande un nom, un prénom, un âge et les notes d'un étudiant.
+ * $brief Code qui demande un nom, un prénom, un âge et les notes d'un étudiant.
  * $version v1.0
  * $date 23/11/23
  * 
@@ -64,8 +64,7 @@ int main()
 }
 
 /**
-* $brevedesc Affiche les caractéristique de l'étudiant.
-* $detail Afficher un détail plus précis si nécssesaire.
+* $brief Affiche les caractéristique de l'étudiant.
 *
 * $return Ici ne retourne rien car cela est une procédure.
 *
