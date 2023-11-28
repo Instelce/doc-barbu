@@ -46,14 +46,14 @@ struct Cours
     char nom[20];
 };
 
-void afficherInformations(struct Etudiant etudiants[], struct Cours cours[], int nbEtudiants); /** $enteteFonc afficherInformations : Entete de fonction pour afficher les informations d'un étudiant.*/
-float calculerMoyenne(struct Etudiant etudiant);  /** $enteteFonc calculerMoyenne : Entete de fonction pour calculer la moyenne de toutes c'est notes dans différentes matières.*/
+void afficherInformations(struct Etudiant etudiants[], struct Cours cours[], int nbEtudiants); 
+float calculerMoyenne(struct Etudiant etudiant);
 
 int main() 
 {
-    struct Cours s_cours[NB_COURS] = {{"Math"}, {"Physique"}, {"Informatique"}}; /** $var s_cours : Déclaration et initialisation d'une variable de type Cours.*/
+    struct Cours s_cours[NB_COURS] = {{"Math"}, {"Physique"}, {"Informatique"}}; 
 
-    struct Etudiant s_etudiants[NB_ETUDIANT] =   /** $var s_etudiant : Déclaration et initialisation d'une variable de type Etudiant.*/
+    struct Etudiant s_etudiants[NB_ETUDIANT] =   
     {
         {"Alice", {80, 75, 90}},
         {"Bob", {65, 70, 85}},

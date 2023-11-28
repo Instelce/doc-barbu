@@ -43,7 +43,7 @@ Les conteneurs Docker offrent une <mark>portabilité exceptionnelle</mark>, perm
 
 #### Sécurité
 
-* Isolation des conteneurs
+* Isolation des conteneurs|-----------------------|--------------------------------------------------------------|
 * Gestion des images
 
 ## Résumé
