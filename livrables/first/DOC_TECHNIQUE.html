@@ -2,37 +2,86 @@
 <html lang="fr">
 
 <head>
-    
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
     <style>
         * {
             box-sizing: border-box;
+            transition: color 80ms, background 80ms;
         }
         
         :root {
-            --color-orange: #FC7067;
-            --color-green: #0DB04E;
+            --color-theme: dark;
+            --color-secondary: #414853;
+            --color-primary: #f66f81;
+            --color-background: #1f1f1f;
+            --color-text: #fff;
+            --color-link: #9499ff;
         }
         
         body {
             width: 100vw;
             height: auto;
             margin: 0;
-            
+            overflow-x: hidden;
+
+            background: var(--color-background);
             font-family: "Poppins", sans-serif;
+            color: var(--color-text);
+            font-size: 16px;
+        }
+
+        a {
+            color: var(--color-link);
+            text-decoration: transparent;
+            transition: opacity .2s ease;
+        }
+
+        a:hover {
+            opacity: .8;
+        }
+
+        p {margin: 0;}
+
+        button {
+            background: none;
+            border: 0;
+            color: inherit;
+            font-size: inherit;
+            cursor: pointer;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .main-title {
+            font-size: 2vw;
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .main-title span {
+            font-size: 5vw;
+            display: block;
+            font-weight: 700;
+            line-height: 100%;
         }
         
         header{
             height: 100vh;
-            padding: 35vh 40vh;
+            padding: 0 40vh;
             margin-bottom: 4rem;
             position: relative;
             text-align: center;
         }
-        
-        header > h2 {
-            margin-bottom: 25vh;
-        }
-        
+
         header::after {
             content: "";
             width: 100%;
@@ -40,58 +89,201 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            background: #747474;
+            background: #3d3d3d;
             display: inline-block;
         }
-        
-        h2, h3 {
-            font-weight: normal;
+
+        header span {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 500;
         }
-        
-        .sous-titre{
-            padding-left: .5rem;
+
+        header h1 {
+            letter-spacing: -1px;
+        }
+
+        header h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        header h3 {
+            margin-top: 4rem;
+        }
+
+        section h2 {
+            width: 100%;
+            padding: .5rem 1rem;
             margin-top: 0;
             margin-bottom: 2rem;
-            border-left: var(--color-green) solid 3px;
+            background: var(--color-secondary);
+            border-left: var(--color-primary) solid 3px;
+            font-weight: 700;
+            font-size: 2rem;
         }
-        
-        nav,
+
         section {
-            padding: 2rem 0;
+            padding: 4rem 0;
         }
-        
-        section > p, section > dl {
-            margin-left: 2rem;
-        }
-        
-        .element-specifique {
-            font-size: 1.3em;
-            padding: 5px;
-            border-left: var(--color-green) solid 3px;
-        }
-        
-        dd {
-            margin-bottom: 50px;
-        }
-        
-        dl dl > dd {
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        
-        .composant {
-            color: #AE3D36;
-        }
-        
-        .composant::before {
-            content: "> ";
-        }
-        
+
         .container {
             width: 100vw;
             padding: 0 20vw;
         }
-        
+
+        .dropdown {
+            margin-bottom: 1rem;
+        }
+
+        .dropdown-trigger {
+            width: 100%;
+            display: block;
+            padding: .6rem 1rem;
+            text-align: left;
+            font-size: 1.2rem;
+            border-left: 2px solid var(--color-secondary);
+            transition: background .2s;
+            font-weight: 500;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dropdown-trigger:hover {
+            background: var(--color-secondary);
+            color: var(--color-link);
+        }
+
+        .dropdown-trigger:hover::after {
+            opacity: 1;
+        }
+
+        .dropdown-trigger::after {
+            content: "-";
+            font-size: 1.4rem;
+            font-weight: 700;
+            opacity: 0;
+        }
+
+        .dropdown-content {
+            width: 100%;
+            padding: .6rem 1rem;
+            border: 2px solid var(--color-secondary);
+            border-top: 0;
+        }
+
+        .dropdown .dropdown-trigger {
+            border: 2px solid var(--color-secondary);
+        }
+
+        .dropdown.hidden .dropdown-trigger::after {
+            content: "+";
+            font-size: 1.4rem;
+            font-weight: 400;
+        }
+
+        .dropdown.hidden .dropdown-content {
+            display: none;
+        }
+
+        .toggle-theme {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: var(--color-secondary);
+            padding: 1rem 2rem;
+            border-radius: 5px;
+        }
+        .toggle-theme:hover {
+            opacity: .8;
+        }
+
+        .item {
+            margin-bottom: 1rem;
+        }
+
+        .item > p {
+            margin-bottom: 1rem;
+        }
+
+        .item-title {
+            width: 100%;
+            padding: .5rem 1rem;
+            margin: 0;
+            font-weight: 500;
+            font-size: 1.2rem;
+            /* border-left: var(--color-secondary) solid 2px; */
+            border: 2px solid var(--color-secondary);
+        }
+
+        .item p {
+            padding: .6rem 1rem;
+        }
+
+        .sub-item {
+            margin: .5rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .sub-item-title {
+            margin-right: 2rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .navigation {
+            position: fixed;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+
+            border-radius: 5px;
+            border: 2px solid var(--color-secondary);
+            overflow: hidden;
+
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .navigation ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navigation li {
+            border-bottom: 2px solid var(--color-secondary);
+        }
+
+        .navigation a {
+            text-align: right;
+            padding: .5rem 2rem;
+            display: block;
+            color: var(--color-text);
+        }
+
+        .navigation li:last-child {
+            border-bottom: 0;
+        }
+
+        .navigation a:hover {
+            opacity: .8;
+            background: var(--color-secondary);
+        }
+
+        .navigation a.active {
+            background: var(--color-secondary);
+            color: var(--color-link);
+        }
+
+        .navigation.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
     
     <meta charset="UTF-8">
@@ -103,156 +295,287 @@
 <body>
     
     <header>
-        <h1>Projet GLOUBIBOULGA</h1>
-        
-        <h2>Client: Jean Marc</h2>
-        
+        <h1 class="main-title">Projet <span>GLOUBIBOULGA</span></h1>
+
+        <h2>
+            Client
+            <span>Jean Marc</span>
+        </h2>
+
+        <h2>
+            Version
+            <span>1.06.04</span>
+        </h2>
+
         <h3>
-            <em>Version: 1.06.04</em>
-            <br>
-            <em>25/11/2023</em>
+            25/11/2023
         </h3>
     </header>
     
-    <main class="container">   
-        <nav>
-            <h2 class="sous-titre">Chapitres</h2>
-            
-            <ol type="I">
-                <li><a href="#en-tete">Description du code</a></li>
-                <li><a href="#defines">Defines</a></li>
-                <li><a href="#structures">Structures</a></li>
-                <li><a href="#globales">Globales</a></li>
-                <li><a href="#fonctions">Fonctions</a></li>
-            </ol>
-        </nav>
-        
-        <hr>
-        
+    <main class="container">
+        <section>
+            <h2>Chapitres</h2>
+
+            <nav>
+                <ol type="I">
+                    <li><a href="#en-tete">En-tête du code</a></li>
+                    <li><a href="#defines">Defines</a></li>
+                    <li><a href="#structures">Structures</a></li>
+                    <li><a href="#globales">Globales</a></li>
+                    <li><a href="#fonctions">Fonctions</a></li>
+                </ol>
+            </nav>
+        </section>
+
         <section id="en-tete">
-            <h2 class="sous-titre">I. Description du code</h2>
-            
+            <h2>I. En-tête</h2>
+
             <p>
                 <em>
                     Saraceni tamen nec amici nobis umquam nec hostes optandi, ultro citroque discursantes quicquid inveniri poterat momento temporis parvi vastabant milvorum rapacium similes, qui si praedam dispexerint celsius, volatu rapiunt celeri, aut nisi impetraverint, non inmorantur.
                 </em>
             </p>
         </section>
-        
-        <hr>
-        
+
         <section id="defines">
-            <h2 class="sous-titre">II. Defines</h2>
-            
-            <dl>
-                <dt class="element-specifique">NomConstante</dt>
-                <dd>Description de la constante avec un super texte</dd>
-                
-                <dt class="element-specifique">NomConstante</dt>
-                <dd>Description de la constante avec un super texte</dd>
-                
-                <dt class="element-specifique">NomConstante</dt>
-                <dd>Description de la constante avec un super texte</dd>
-                
-                <dt class="element-specifique">NomConstante</dt>
-                <dd>Description de la constante avec un super texte</dd>
-            </dl>
+            <h2>II. Defines</h2>
+
+            <div class="item">
+                <h3 class="item-title">MAJORITE</h3>
+                <p>Représente ...</p>
+            </div>
+
+            <div class="item">
+                <h3 class="item-title">TAILLE</h3>
+                <p>Taille d'un tableau de ...</p>
+            </div>
+
+            <div class="item">
+                <h3 class="item-title">NomConstante</h3>
+                <p>Description de la structure avec un super texte</p>
+            </div>
+
+            <div class="item">
+                <h3 class="item-title">NomConstante</h3>
+                <p>Description de la structure avec un super texte</p>
+            </div>
         </section>
-        
-        <hr>
-        
+
         <section id="structures">
-            <h2 class="sous-titre">III. Structures</h2>
-            
-            <dl>
-                <dt class="element-specifique">NomStructure</dt>
-                <dd>
+            <h2>III. Structures</h2>
+
+            <div class="dropdown">
+                <button class="item-title dropdown-trigger">NomStructure</button>
+                <div class="dropdown-content">
                     <p>
-                        <em>
-                            Détails de la structure (commentaires)
-                            Saraceni tamen nec amici nobis umquam
-                            nec hostes optandi, ultro citroque
-                            discursantes quicquid inveniri poterat
-                        </em>
+                        Détails de la structure (commentaires)
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis, eveniet ut delectus quod saepe autem atque suscipit hic perferendis dicta magnam deserunt. Sapiente excepturi rem earum ut. Reiciendis, laboriosam assumenda!
                     </p>
-                    <dl>
-                        <dt class="composant">Composant 1</dt>
-                        <dd><em>Petite description</em></dd>
-                        
-                        <dt class="composant">Composant 2</dt>
-                        <dd><em>Petite description</em></dd>
-                        
-                        <dt class="composant">Composant 3</dt>
-                        <dd><em>Petite description</em></dd>
-                    </dl>
-                </dd>
-                
-                <dt class="element-specifique">NomStructure</dt>
-                <dd>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 1</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 2</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 3</h4>
+                        <p>Petite description</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="item-title dropdown-trigger">NomStructure</button>
+                <div class="dropdown-content">
                     <p>
-                        <em>
-                            Détails de la structure (commentaires)
-                            Saraceni tamen nec amici nobis umquam
-                            nec hostes optandi, ultro citroque
-                            discursantes quicquid inveniri poterat
-                        </em>
+                        Détails de la structure (commentaires)
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab, quibusdam ullam nam mollitia ex iste vitae iusto nemo odit neque pariatur. Cupiditate facilis ipsum reprehenderit numquam quam, repellendus velit ab.
                     </p>
-                    <dl>
-                        <dt class="composant">Composant 1</dt>
-                        <dd><em>Petite description</em></dd>
-                        
-                        <dt class="composant">Composant 2</dt>
-                        <dd><em>Petite description</em></dd>
-                        
-                        <dt class="composant">Composant 3</dt>
-                        <dd><em>Petite description</em></dd>
-                    </dl>
-                </dd>
-            </dl>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 1</h4>
+                        <p>Petite description</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="item-title dropdown-trigger">NomStructure</button>
+                <div class="dropdown-content">
+                    <p>
+                        Détails de la structure (commentaires)
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Enim perspiciatis mollitia obcaecati, consequuntur vero numquam, iusto suscipit cumque porro molestiae aspernatur laborum tenetur ullam magnam voluptatem repellendus sunt perferendis laudantium.
+                    </p>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 1</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 1</h4>
+                        <p>Petite description</p>
+                    </div>
+                </div>
+            </div>
         </section>
-        
-        <hr>
-        
+
         <section id="globales">
-            <h2 class="sous-titre">IV. Globales</h2>
-            
-            <dl>
-                <dt class="element-specifique">NomGlobale</dt>
-                <dd><em>Description de la variable globale avec un super texte</em></dd>
-                
-                <dt class="element-specifique">NomGlobale</dt>
-                <dd><em>Description de la variable globale avec un super texte</em></dd>
-                
-                <dt class="element-specifique">NomGlobale</dt>
-                <dd><em>Description de la variable globale avec un super texte</em></dd>
-            </dl>
+            <h2>IV. Globales</h2>
+
+            <div class="item">
+                <h3 class="item-title">NomGlobale</h3>
+                <p>Description de la variable globale avec un super texte</p>
+            </div>
+            <div class="item">
+                <h3 class="item-title">NomGlobale</h3>
+                <p>Description de la variable globale avec un super texte</p>
+            </div>
+            <div class="item">
+                <h3 class="item-title">NomGlobale</h3>
+                <p>Description de la variable globale avec un super texte</p>
+            </div>
+            <div class="item">
+                <h3 class="item-title">NomGlobale</h3>
+                <p>Description de la variable globale avec un super texte</p>
+            </div>
         </section>
-        
-        <hr>
-        
+
         <section id="fonctions">
-            <h2 class="sous-titre">V. Fonctions</h2>
-            
-            <dl>
-                <dt class="element-specifique">NomFonction</dt>
-                <dd>
-                    <p><em>Description brève de la fonction blabli blablou</em></p>
-                    <p>NomParam1: <em>Description du paramètre</em></p>
-                    <p>NomParam1: <em>Description du paramètre</em></p>
-                    <p>Retour (s'il y en a): <em>Description du type et de la valeur retournés</em></p>
-                </dd>
-                
-                <dt class="element-specifique">NomFonction</dt>
-                <dd>
-                    <p><em>Description brève de la fonction blabli blablou</em></p>
-                    <p>NomParam1: <em>Description du paramètre</em></p>
-                    <p>NomParam1: <em>Description du paramètre</em></p>
-                    <p>Retour (s'il y en a): <em>Description du type et de la valeur retournés</em></p>
-                </dd>
-            </dl>
+            <h2>V. Fonctions</h2>
+
+            <div class="dropdown">
+                <button class="item-title dropdown-trigger">NomFonction</button>
+                <div class="dropdown-content">
+                    <p>
+                        Description brève de la fonction blabli blablou
+                    </p>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Nom param 1</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Nom param 2</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Retour</h4>
+                        <p>Type de retour</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="item-title dropdown-trigger">NomFonction</button>
+                <div class="dropdown-content">
+                    <p>
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. In eos, corrupti architecto blanditiis sint corporis eligendi consequatur porro explicabo debitis dolore rem iusto odio obcaecati maxime dolorum? Aspernatur, nemo consectetur.
+                    </p>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Nom param 1</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Nom param 2</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Retour</h4>
+                        <p>Petite description</p>
+                    </div>
+                </div>
+            </div>
         </section>
+
+        <button class="toggle-theme">
+            Light
+        </button>
+
+        <nav class="navigation">
+            <ul>
+                <li><a href="#en-tete">En tête</a></li>
+                <li><a href="#defines">Defines</a></li>
+                <li><a href="#structures">Structures</a></li>
+                <li><a href="#globales">Globales</a></li>
+                <li><a href="#fonctions">Fonctions</a></li>
+            </ul>
+        </nav>
     </main>
-    
+
+    <script>
+        const dropdowns = document.querySelectorAll(".dropdown");
+
+        dropdowns.forEach(dropdown => {
+            let dropdownContent = dropdown.querySelector(".dropdown-content");
+            let dropdownTrigger = dropdown.querySelector(".dropdown-trigger");
+            dropdownTrigger.addEventListener("click", (e) => {
+                e.preventDefault()
+                dropdown.classList.toggle("hidden")
+            })
+        })
+
+        const toggleTheme = document.querySelector(".toggle-theme");
+        const root = document.querySelector(":root")
+        const rootColors = getComputedStyle(root)
+        toggleTheme.addEventListener("click", (e) => {
+            e.preventDefault()
+            if (rootColors.getPropertyValue("--color-theme") == "dark") {
+                root.style.setProperty("--color-theme", "light")
+                root.style.setProperty("--color-background", "#ececec")
+                root.style.setProperty("--color-text", "#1f1f1f")
+                root.style.setProperty("--color-secondary", "#c4c4c4")
+                root.style.setProperty("--color-link", "#664BFF")
+                toggleTheme.innerText = "Dark"
+            } else {
+                root.style.setProperty("--color-theme", "dark")
+                root.style.setProperty("--color-background", "#1f1f1f")
+                root.style.setProperty("--color-text", "#ececec")
+                root.style.setProperty("--color-secondary", "#414853")
+                root.style.setProperty("--color-link", "#9499ff")
+                toggleTheme.innerText = "Light"
+            }
+        })
+
+        const navigation = document.querySelector(".navigation");
+        const navLinks = document.querySelectorAll(".navigation a");
+        const sections = document.querySelectorAll("section")
+
+        window.onscroll = () => {
+            if (window.scrollY > window.screen.height) {
+                navigation.classList.add("show")
+            } else {
+                navigation.classList.remove("show")
+            }
+
+            sections.forEach(section => {
+                let top = window.scrollY
+                let offset = section.offsetTop - 150
+                let height = section.offsetHeight
+                let id = section.getAttribute("id")
+
+                if (top >= offset && top < offset + height) {
+                    navLinks.forEach(link => {
+                        if (link.getAttribute("href") == "#" + id) {
+                            link.classList.add("active")
+                        } else {
+                            link.classList.remove("active")
+                        }
+                    })
+                }
+            })
+        }
+    </script>
 </body>
 
 </html>
