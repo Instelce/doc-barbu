@@ -1,1 +1,21 @@
-zboubiboulga
+
+RICHARD     25%
+    - Architecture de l'HTML
+    - Paufinage des fichiers C
+
+LORIS       25%
+    - HTML du markdown
+    - Ecriture de deux fichiers C
+
+YAN         25%
+    - Relecture de la DOC_UTILISATEUR
+    - Ecriture d'un fichier C
+
+CELESTIN    25%
+    - Ecriture de la DOC_UTILISATEUR
+    - Stylisation de la DOC_TECHNIQUE
+
+
+Chacun à vérifier le travail des autres.
+
+Pour plus d'info voir le github du projet : https://github.com/Instelce/doc-barbu.
