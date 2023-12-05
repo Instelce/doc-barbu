@@ -60,24 +60,24 @@ void saisirEtudiant(str_etudiant s_etudiant, str_promo equipe1);
 
 int main()
 {
-    str_etudiant s_etudiant; 
-    str_promo s_promo; 
+    str_etudiant s_etudiant; /*$var s_utilisateur1 utilisateur de test (n°1)*/
+    str_promo s_promo; /*$var s_equipe equipe dans laquelle va appartenir l'utilisateur*/
 
     saisirEtudiant(s_etudiant, s_promo);
     afficherEtudiant(s_etudiant, s_promo);
 }
 
 /**
+ * $fn afficherEtudiant(str_etudiant s_etudiant, str_promo s_promo) 
 * $brief Affiche les caractéristique de l'étudiant.
 *
-* $return Ici ne retourne rien car cela est une procédure.
 *
 * $param s_etudiant : Structure représentant l'étudiant.
 * $param s_promo : Structure représentant la promo.
 *
 */
 
-void afficherEtudiant(str_etudiant s_etudiant, str_promo s_promo) 
+void afficherEtudiant(str_etudiant s_etudiant, str_promo s_promo)
 {
     printf("\nInformations de l'utilisateur :\n");
     printf("Nom : %s\n", s_etudiant.nom);
@@ -97,8 +97,7 @@ void afficherEtudiant(str_etudiant s_etudiant, str_promo s_promo)
 
 /**
 * $brief Saisie les caractéristique de l'étudiant.
-*
-* $return Ici ne retourne rien car cela est une procédure.
+* $fn saisirEtudiant(str_etudiant s_etudiant, str_promo s_promo) 
 *
 * $param s_etudiant : Structure représentant l'étudiant.
 * $param s_promo ; Structure représentant la promo.

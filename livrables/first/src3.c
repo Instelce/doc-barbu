@@ -51,16 +51,16 @@ float calculerMoyenne(struct Etudiant etudiant);
 
 int main() 
 {
-    struct Cours s_cours[NB_COURS] = {{"Math"}, {"Physique"}, {"Informatique"}}; 
+    struct Cours s_cours[NB_COURS] = {{"Math"}, {"Physique"}, {"Informatique"}}; /*$var s_cours variable qui contient la table des matières*/
 
-    struct Etudiant s_etudiants[NB_ETUDIANT] =   
+    struct Etudiant s_etudiants[NB_ETUDIANT] = 
     {
         {"Alice", {80, 75, 90}},
         {"Bob", {65, 70, 85}},
         {"Charlie", {90, 95, 80}},
         {"David", {75, 80, 70}},
         {"Eva", {85, 90, 95}}
-    };
+    }; /*$var s_etudiants variable qui contient la liste des étudiants et leurs notes*/
 
     afficherInformations(s_etudiants, s_cours, NB_ETUDIANT);
 
@@ -76,8 +76,7 @@ int main()
 
 /**
 * $brief Affiche les caractéristique d'un étudiant.
-*
-* $return Ici ne retourne rien car cela est une procédure.
+* $fn afficherInformations(struct Etudiant s_etudiants[], struct Cours cours[], int nbEtudiants) 
 *
 * $param s_etudiants : Structure représentant l'étudiant.
 * $param cours : Structure représentant la promo.
@@ -103,7 +102,8 @@ void afficherInformations(struct Etudiant s_etudiants[], struct Cours cours[], i
 
 /**
 * $brief Calcul la moyenne d'un étudiant.
-
+* $fn calculerMoyenne(struct Etudiant s_etudiants) 
+*
 * $return Retourne un float (la moyenne).
 *
 * $param s_etudiants : Structure représentant un étudiant.
