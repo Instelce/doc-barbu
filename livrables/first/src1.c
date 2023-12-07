@@ -52,25 +52,23 @@ typedef struct
 {
     char nom[TAILLE];
     int nombreUtili; 
-}str_equipe; 
+}str_equipe;
 
 void afficherUtilisateur(str_utili utilisateur1, str_equipe equipe1);
 void saisirUtilisateur(str_utili utilisateur1, str_equipe equipe1);
 
 int main()
 {
-    str_utili s_utilisateur1; 
-    str_equipe s_equipe1;
+    str_utili s_utilisateur1; /*$var s_utilisateur1 utilisateur de test (n°1)*/
+    str_equipe s_equipe1; /*$var s_equipe equipe dans laquelle va appartenir l'utilisateur*/
 
     saisirUtilisateur(s_utilisateur1, s_equipe1);
     afficherUtilisateur(s_utilisateur1, s_equipe1);
 }
 
 /**
- * 
+ * $fn afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
 * $brief Affiche les caractéristiques de l'utilisateur 1.
-*
-* $return Ici ne retourne rien car cela est une procédure.
 *   
 * $param s_utilisateur1 : Structure représentant l'utilisateur 1.
 * $param s_equipe1 : Structure représentant l'équipe 1.
@@ -98,8 +96,7 @@ void afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1)
 
 /**
 * $brief Saisie les caractéristiques de l'utilisateur 1.
-*
-* $return Ici ne retourne rien car cela est une procédure.
+* $fn saisirUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
 *
 * $param s_utilisateur1 : Structure représentant l'utilisateur 1.
 * $param s_equipe1 : Structure représentant l'équipe 1.
