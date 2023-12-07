@@ -1,3 +1,5 @@
+⚠️ Migrer sur gitlab
+
 # doc-barbu
 Un générateur de documentation !
 
