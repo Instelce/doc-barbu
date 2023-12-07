@@ -1,9 +1,41 @@
-{
-    "auteur": "Jean Neymar",
-    "version": "1.0.0",
-    "date": "23\/11\/23",
-    "def": [
-        "Age de la majorit\u00e9.",
-        "Taille max pour le nom et le prenom."
-    ]
-}
+[
+    {
+        "name": "src1.c",
+        "path": "..\/first\/src1.c",
+        "contents": {
+            "auteur": "Jean Neymar",
+            "version": "1.0.0",
+            "date": "23\/11\/23",
+            "def": [
+                "Age de la majorit\u00e9.",
+                "Taille max pour le nom et le prenom."
+            ]
+        }
+    },
+    {
+        "name": "src2.c",
+        "path": "..\/first\/src2.c",
+        "contents": {
+            "auteur": "Jean Passe",
+            "version": "1.0.0",
+            "date": "23\/11\/23",
+            "def": [
+                "Age de la majorit\u00e9.",
+                "Taille max pour le nom et le prenom."
+            ]
+        }
+    },
+    {
+        "name": "src3.c",
+        "path": "..\/first\/src3.c",
+        "contents": {
+            "auteur": "Yanick OLA",
+            "version": "6.6.6",
+            "date": "23\/11\/23",
+            "def": [
+                "Nombre maximum d'\u00e9tudiant dans la structure",
+                "Nombre maximum de cours dans la structure"
+            ]
+        }
+    }
+]
