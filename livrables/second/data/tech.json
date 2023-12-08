@@ -1,166 +1,55 @@
 [
     {
-        "name": "src1.c",
-        "path": "C:\\Users\\celes\\Documents\\Lab\\doc-barbu\\livrables\\second\/project\/src1.c",
+        "name": ".\\project-with-headers\\src1.c",
+        "path": ".\\project-with-headers\\src1.c",
         "contents": {
             "auteur": "Jean Neymar",
             "version": "1.0.0",
             "date": "23\/11\/23",
-            "def": [
-                "Age de la majorit\u00e9.",
-                "Taille max pour le nom et le prenom."
-            ],
+            "def": [],
             "var": [
                 "s_utilisateur1 utilisateur de test (n\u00b01)",
                 "s_equipe equipe dans laquelle va appartenir l'utilisateur"
             ],
-            "structs": [
-                {
-                    "name": "str_utili",
-                    "components": [
-                        {
-                            "name": "nom",
-                            "description": "Nom de l'utilisateur.\r"
-                        },
-                        {
-                            "name": "prenom",
-                            "description": "Pr\u00e9nom de l'utilisateur.\r"
-                        },
-                        {
-                            "name": "adresse",
-                            "description": "Adresse de l'utilisateur.\r"
-                        },
-                        {
-                            "name": "age",
-                            "description": "Age de l'utilisateur.\r"
-                        }
-                    ]
-                },
-                {
-                    "name": "str_equipe",
-                    "components": [
-                        {
-                            "name": "nom",
-                            "description": "Nom de l'\u00e9quipe.\r"
-                        },
-                        {
-                            "name": "nombreUtili",
-                            "description": "Nombre d'utilisateur dans l'\u00e9quipe.\r"
-                        }
-                    ]
-                }
-            ]
+            "structs": []
         }
     },
     {
-        "name": "src2.c",
-        "path": "C:\\Users\\celes\\Documents\\Lab\\doc-barbu\\livrables\\second\/project\/src2.c",
+        "name": ".\\project-with-headers\\functions.h",
+        "path": ".\\project-with-headers\\functions.h",
         "contents": {
-            "auteur": "Jean Passe",
-            "version": "1.0.0",
-            "date": "23\/11\/23",
+            "auteur": "",
+            "version": "",
+            "date": "",
+            "def": [],
+            "var": [],
+            "structs": []
+        }
+    },
+    {
+        "name": ".\\project-with-headers\\functions.c",
+        "path": ".\\project-with-headers\\functions.c",
+        "contents": {
+            "auteur": "",
+            "version": "",
+            "date": "",
+            "def": [],
+            "var": [],
+            "structs": []
+        }
+    },
+    {
+        "name": ".\\project-with-headers\\types.h",
+        "path": ".\\project-with-headers\\types.h",
+        "contents": {
+            "auteur": "",
+            "version": "",
+            "date": "",
             "def": [
                 "Age de la majorit\u00e9.",
                 "Taille max pour le nom et le prenom."
             ],
-            "var": [
-                "s_utilisateur1 utilisateur de test (n\u00b01)",
-                "s_equipe equipe dans laquelle va appartenir l'utilisateur"
-            ],
-            "structs": [
-                {
-                    "name": "str_etudiant",
-                    "components": [
-                        {
-                            "name": "nom",
-                            "description": "Nom de l'\u00e9tudiant.\r"
-                        },
-                        {
-                            "name": "prenom",
-                            "description": "Pr\u00e9nom de l'\u00e9tudiant.\r"
-                        },
-                        {
-                            "name": "moy",
-                            "description": "Moyenne de l'\u00e9tudiant.\r"
-                        },
-                        {
-                            "name": "age",
-                            "description": "Age de l'\u00e9tudiant.\r"
-                        }
-                    ]
-                },
-                {
-                    "name": "str_classe",
-                    "components": [
-                        {
-                            "name": "nom",
-                            "description": "Nom de la promo.\r"
-                        },
-                        {
-                            "name": "matiere",
-                            "description": "Mati\u00e8re dans la promo.\r"
-                        }
-                    ]
-                }
-            ]
-        }
-    },
-    {
-        "name": "src3.c",
-        "path": "C:\\Users\\celes\\Documents\\Lab\\doc-barbu\\livrables\\second\/project\/src3.c",
-        "contents": {
-            "auteur": "Yanick OLA",
-            "version": "6.6.6",
-            "date": "23\/11\/23",
-            "def": [
-                "Nombre maximum d'\u00e9tudiant dans la structure",
-                "Nombre maximum de cours dans la structure"
-            ],
-            "var": [
-                "s_cours variable qui contient la table des mati\u00e8res",
-                "s_etudiants variable qui contient la liste des \u00e9tudiants et leurs notes"
-            ],
-            "structs": [
-                {
-                    "name": "Etudiant",
-                    "components": [
-                        {
-                            "name": "nom",
-                            "description": "Nom de l'\u00e9tudiant.\r"
-                        },
-                        {
-                            "name": "notes",
-                            "description": "Note de l'\u00e9tudiant dans chaque cours mis dans un tableau.\r"
-                        }
-                    ]
-                },
-                {
-                    "name": "Cours",
-                    "components": [
-                        {
-                            "name": "nom",
-                            "description": "Nom du cours.\r"
-                        }
-                    ]
-                }
-            ]
-        }
-    },
-    {
-        "name": "src4.c",
-        "path": "C:\\Users\\celes\\Documents\\Lab\\doc-barbu\\livrables\\second\/project\/src4.c",
-        "contents": {
-            "auteur": "Jean Neymar",
-            "version": "1.0.0",
-            "date": "23\/11\/23",
-            "def": [
-                "Age de la majorit\u00e9.",
-                "Taille max pour le nom et le prenom."
-            ],
-            "var": [
-                "s_utilisateur1 utilisateur de test (n\u00b01)",
-                "s_equipe equipe dans laquelle va appartenir l'utilisateur"
-            ],
+            "var": [],
             "structs": [
                 {
                     "name": "str_utili",
