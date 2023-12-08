@@ -51,32 +51,43 @@
         $pattern = '/(\/\/.*$|\/\*[\s\S]*?\*\/)/m';
         preg_match_all($pattern, $content, $matches);
 
+        $structCount = 0;
+
         foreach ($matches[0] as $comment) {
             // supprime '/*' et '*/' des commentaires
             $commentContent = preg_replace('/^\/\/\s?|^\/\*\s?|\*\/$/', '', $comment);
             //echo '--' . $commentContent . "\n";
 
             foreach ($patterns as $patternName => $p) {
-                // récupère le match du pattern
                 
                 // sauvegarde un match si il y en a un
                 if ($patternName == "structs") {
-                    $isStruct = preg_match($pattern["structs"]["nomstruc"], $commentContent, $nomstruc);
+                    $isStruct = preg_match($patterns["structs"]["nomstruc"], $commentContent, $nomstruc);
 
                     if ($isStruct != 0) {
+                        echo "struct " . $nomstruc[1] . "\n";
                         array_push($data[$i]["contents"]["structs"], [
-                            "name" => $nomstruc[1],
+                            "name" => explode(" : ", $nomstruc[1])[0],
                             "components" => [],
                         ]);
-                        
-                        preg_match_all($pattern["structs"]["argstruc"], $commentContent, $componantMatches);
+
+                        preg_match_all($patterns["structs"]["argstruc"], $commentContent, $componantMatches);
 
                         foreach ($componantMatches[0] as $componant) {
-                            array_push($data[$i]["contents"]["structs"]["components"], $componant[1]);
+                            echo "--". $componant . "\n";
+                            preg_match($patterns["structs"]["argstruc"], $componant, $componantMatch);
+
+                            array_push($data[$i]["contents"]["structs"][$structCount]["components"], [
+                                "name" => explode(" : ", $componantMatch[1])[0],
+                                "description" => explode(" : ", $componantMatch[1])[1]
+                            ]);
                         }
+                        $structCount++;
                     }
                 } else {
+                    // récupère le match du pattern
                     $isMatching = preg_match($p, $commentContent, $patternMatch);
+
                     if ($isMatching != 0) {
                         // [1] car on veut uniquement les données du groupe : (.*)
                         echo $patternMatch[1] . "\n";
