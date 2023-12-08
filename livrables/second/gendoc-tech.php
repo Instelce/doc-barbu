@@ -4,6 +4,10 @@
         "version" => '/\$version\s+(.*)/',
         "date" => '/\$date\s+(.*)/',
         "def" => '/\*\s*\$def\s*(.*)/',
+        "structs" => [
+            "nomstruc" => '/\*\s*\$nomstruc\s*(.*)/',
+            "argstruc" => '/\*\s*\$argstruc\s*(.*)/',
+        ]
     ];
 
     $files = ["../first/src1.c", "../first/src2.c", "../first/src3.c"];
@@ -19,6 +23,22 @@
                 "version" => "",
                 "date" => "",
                 "def" => [],
+                "structs" => [
+                    // [
+                    //     "name": "",
+                    //     "args": [
+                    //         [
+                    //             "nom": "",
+                    //             "description": ""
+                    //         ],
+                    //         [
+                    //             "nom": "",
+                    //             "description": ""
+                    //         ]
+                           
+                    //     ]
+                    // ]
+                ]
             ]
         ]);
     }
@@ -34,22 +54,40 @@
         foreach ($matches[0] as $comment) {
             // supprime '/*' et '*/' des commentaires
             $commentContent = preg_replace('/^\/\/\s?|^\/\*\s?|\*\/$/', '', $comment);
+            //echo '--' . $commentContent . "\n";
 
             foreach ($patterns as $patternName => $p) {
                 // récupère le match du pattern
-                $isMatching = preg_match($p, $commentContent, $patternMatch);
-
+                
                 // sauvegarde un match si il y en a un
-                if ($isMatching != 0) {
-                    // [1] car on veut uniquement les données du groupe : (.*)
-                    echo $patternMatch[1] . "\n";
-                    // echo gettype($data[$patternName]);
+                if ($patternName == "structs") {
+                    $isStruct = preg_match($pattern["structs"]["nomstruc"], $commentContent, $nomstruc);
 
-                    $type = gettype($data[$i]["contents"][$patternName]);
-                    if ($type == 'array') {
-                        array_push($data[$i]["contents"][$patternName], $patternMatch[1]);
-                    } else if ($type == 'string') {
-                        $data[$i]["contents"][$patternName] = rtrim($patternMatch[1]);
+                    if ($isStruct != 0) {
+                        array_push($data[$i]["contents"]["structs"], [
+                            "name" => $nomstruc[1],
+                            "components" => [],
+                        ]);
+                        
+                        preg_match_all($pattern["structs"]["argstruc"], $commentContent, $componantMatches);
+
+                        foreach ($componantMatches[0] as $componant) {
+                            array_push($data[$i]["contents"]["structs"]["components"], $componant[1]);
+                        }
+                    }
+                } else {
+                    $isMatching = preg_match($p, $commentContent, $patternMatch);
+                    if ($isMatching != 0) {
+                        // [1] car on veut uniquement les données du groupe : (.*)
+                        echo $patternMatch[1] . "\n";
+                        // echo gettype($data[$patternName]);
+
+                        $type = gettype($data[$i]["contents"][$patternName]);
+                        if ($type == 'array') {
+                            array_push($data[$i]["contents"][$patternName], $patternMatch[1]);
+                        } else if ($type == 'string') {
+                            $data[$i]["contents"][$patternName] = rtrim($patternMatch[1]);
+                        }
                     }
                 }
             }
