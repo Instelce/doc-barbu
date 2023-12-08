@@ -3,14 +3,46 @@
         "auteur" => '/\$auteur\s+(.*)/',
         "version" => '/\$version\s+(.*)/',
         "date" => '/\$date\s+(.*)/',
-        "def" => '/\*\s*\$def\s*(.*)/',
+        "def" => '/\s*\$def\s*(.*)/',
+        "var" => '/\s*\$var\s*(.*)/',
         "structs" => [
-            "nomstruc" => '/\*\s*\$nomstruc\s*(.*)/',
-            "argstruc" => '/\*\s*\$argstruc\s*(.*)/',
-        ]
+            "nomstruc" => '/\s*\$nomstruc\s*(.*)/',
+            "argstruc" => '/\s*\$argstruc\s*(.*)/',
+        ],
     ];
 
-    $files = ["../first/src1.c", "../first/src2.c", "../first/src3.c"];
+
+    // plusieurs commandes
+    // --dir <dirname>              Cherche tous les fichiers présents dans le dossier et génère leur documentation.
+    // --main <main_program_file>   Génère la documentation du fichier principal et des fichiers importé
+    // --onefile <file_name>        Génère la documentation d'un fichier
+
+    $commands = ["--dir", "--main", "--onefile"];
+    $files = [];
+
+    if (count($argv) > 1) {
+        $command = $argv[1];
+        $commandValue = $argv[2];
+
+        if (!in_array($command, $commands)) {
+            exit("Cette commande n'existe pas.");
+        } else if ($commandValue == '') {
+            exit("Veuillez saisir la valeur de la commande.");
+        } else {
+            echo "Génération de la documentation...\n";
+
+            if ($command == "--dir") {
+                $files = glob(getcwd() . "\\" . $commandValue . "\\*.c");
+
+                echo getcwd() . "\n";
+                print_r($files);
+            }
+        }
+    } else {
+        exit("Aucune commande trouvé.");
+    }
+
+    // $files = ["../first/src1.c", "../first/src2.c", "../first/src3.c"];
     $data = [];
 
     // initialisation des données
@@ -23,22 +55,8 @@
                 "version" => "",
                 "date" => "",
                 "def" => [],
-                "structs" => [
-                    // [
-                    //     "name": "",
-                    //     "args": [
-                    //         [
-                    //             "nom": "",
-                    //             "description": ""
-                    //         ],
-                    //         [
-                    //             "nom": "",
-                    //             "description": ""
-                    //         ]
-                           
-                    //     ]
-                    // ]
-                ]
+                "var" => [],
+                "structs" => []
             ]
         ]);
     }
@@ -48,20 +66,19 @@
         $content = file_get_contents($filePath);
 
         // récupère tous les commentaires
-        $pattern = '/(\/\/.*$|\/\*[\s\S]*?\*\/)/m';
-        preg_match_all($pattern, $content, $matches);
+        $commentPattern = '/(\/\/.*$|\/\*[\s\S]*?\*\/)/m';
+        preg_match_all($commentPattern, $content, $matches);
 
         $structCount = 0;
 
         foreach ($matches[0] as $comment) {
             // supprime '/*' et '*/' des commentaires
             $commentContent = preg_replace('/^\/\/\s?|^\/\*\s?|\*\/$/', '', $comment);
-            //echo '--' . $commentContent . "\n";
+            // echo '--' . $commentContent . "\n";
 
             foreach ($patterns as $patternName => $p) {
-                
-                // sauvegarde un match si il y en a un
                 if ($patternName == "structs") {
+                    // ajout d'une struture si le commentaire actuel contient la variable $nomstruc
                     $isStruct = preg_match($patterns["structs"]["nomstruc"], $commentContent, $nomstruc);
 
                     if ($isStruct != 0) {
@@ -74,7 +91,7 @@
                         preg_match_all($patterns["structs"]["argstruc"], $commentContent, $componantMatches);
 
                         foreach ($componantMatches[0] as $componant) {
-                            echo "--". $componant . "\n";
+                            // echo "--". $componant . "\n";
                             preg_match($patterns["structs"]["argstruc"], $componant, $componantMatch);
 
                             array_push($data[$i]["contents"]["structs"][$structCount]["components"], [
@@ -82,15 +99,17 @@
                                 "description" => explode(" : ", $componantMatch[1])[1]
                             ]);
                         }
+
                         $structCount++;
                     }
                 } else {
                     // récupère le match du pattern
                     $isMatching = preg_match($p, $commentContent, $patternMatch);
 
+                    // sauvegarde un match si il y en a un
                     if ($isMatching != 0) {
                         // [1] car on veut uniquement les données du groupe : (.*)
-                        echo $patternMatch[1] . "\n";
+                        echo $patternName . " : " . $patternMatch[1] . "\n";
                         // echo gettype($data[$patternName]);
 
                         $type = gettype($data[$i]["contents"][$patternName]);
