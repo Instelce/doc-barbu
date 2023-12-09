@@ -13,7 +13,7 @@
 
     // plusieurs commandes
     // --dir <dirname>              Cherche tous les fichiers présents dans le dossier et génère leur documentation.
-    // --main <main_program_file>   Génère la documentation du fichier principal et des fichiers importé
+    // --main <main_program_file>   Génère la documentation du fichier principal et des fichiers importés
     // --onefile <file_name>        Génère la documentation d'un fichier
     // --help                       Donne la documentation des commandes
 
@@ -30,7 +30,7 @@
             exit("Veuillez saisir la valeur de la commande.");
         } else {
             if ($command == "--dir") {
-                $files = glob(getcwd() . "\\" . $commandValue . "\\*.c");
+                $files = glob(getcwd() . DIRECTORY_SEPARATOR . $commandValue . DIRECTORY_SEPARATOR . "*.c");
 
                 echo getcwd() . "\n";
                 print_r($files);
@@ -42,9 +42,9 @@
                 }
 
                 if ($command == "--main") {
-                    $path = explode("\\", $commandValue);
+                    $path = explode(DIRECTORY_SEPARATOR, $commandValue);
                     array_pop($path);
-                    $path = join("\\", $path);
+                    $path = join(DIRECTORY_SEPARATOR, $path);
                     echo "\n" . $path . "\n";
 
                     array_push($files, $commandValue);
@@ -54,14 +54,14 @@
                     preg_match_all($includePattern, file_get_contents($commandValue), $includeMatches);
 
                     foreach ($includeMatches[0] as $include) {
-                        // echo str_replace("\"", "", explode(" ", $include)[1]) . "\n";
+                        echo str_replace("\"", "", explode(" ", $include)[1]) . "\n";
                         $headerFileName = str_replace("\"", "", explode(" ", $include)[1]);
                         $cFileName = str_replace("h", "c", $headerFileName);
 
-                        array_push($files, $path . "\\" . $headerFileName);
+                        array_push($files, $path . DIRECTORY_SEPARATOR . $headerFileName);
 
-                        if (file_exists($path . "\\" . $cFileName)) {
-                            array_push($files, $path . "\\" . $cFileName);
+                        if (file_exists($path . DIRECTORY_SEPARATOR . $cFileName)) {
+                            array_push($files, $path . DIRECTORY_SEPARATOR . $cFileName);
                         }
                     }
                     print_r($files);
@@ -70,11 +70,10 @@
                 exit("Le fichier n'existe pas !");
             }
 
-
             echo "Génération de la documentation...\n";
         }
     } else {
-        exit("Aucune commande trouvé.");
+        exit("Aucune commande trouvée.");
     }
 
     // $files = ["../first/src1.c", "../first/src2.c", "../first/src3.c"];

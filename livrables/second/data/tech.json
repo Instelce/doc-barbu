@@ -1,91 +1,67 @@
 [
     {
-        "name": ".\\project-with-headers\\src1.c",
-        "path": ".\\project-with-headers\\src1.c",
+        "name": "src2.c",
+        "path": "src2.c",
         "contents": {
-            "auteur": "Jean Neymar",
+            "auteur": "Jean Passe",
             "version": "1.0.0",
             "date": "23\/11\/23",
-            "def": [],
-            "var": [
-                "s_utilisateur1 utilisateur de test (n\u00b01)",
-                "s_equipe equipe dans laquelle va appartenir l'utilisateur"
-            ],
-            "structs": []
-        }
-    },
-    {
-        "name": ".\\project-with-headers\\functions.h",
-        "path": ".\\project-with-headers\\functions.h",
-        "contents": {
-            "auteur": "",
-            "version": "",
-            "date": "",
-            "def": [],
-            "var": [],
-            "structs": []
-        }
-    },
-    {
-        "name": ".\\project-with-headers\\functions.c",
-        "path": ".\\project-with-headers\\functions.c",
-        "contents": {
-            "auteur": "",
-            "version": "",
-            "date": "",
-            "def": [],
-            "var": [],
-            "structs": []
-        }
-    },
-    {
-        "name": ".\\project-with-headers\\types.h",
-        "path": ".\\project-with-headers\\types.h",
-        "contents": {
-            "auteur": "",
-            "version": "",
-            "date": "",
             "def": [
                 "Age de la majorit\u00e9.",
                 "Taille max pour le nom et le prenom."
             ],
-            "var": [],
+            "var": [
+                "s_utilisateur1 utilisateur de test (n\u00b01)",
+                "s_equipe equipe dans laquelle va appartenir l'utilisateur"
+            ],
             "structs": [
                 {
-                    "name": "str_utili",
+                    "name": "str_etudiant",
                     "components": [
                         {
                             "name": "nom",
-                            "description": "Nom de l'utilisateur.\r"
+                            "description": "Nom de l'\u00e9tudiant."
                         },
                         {
                             "name": "prenom",
-                            "description": "Pr\u00e9nom de l'utilisateur.\r"
+                            "description": "Pr\u00e9nom de l'\u00e9tudiant."
                         },
                         {
-                            "name": "adresse",
-                            "description": "Adresse de l'utilisateur.\r"
+                            "name": "moy",
+                            "description": "Moyenne de l'\u00e9tudiant."
                         },
                         {
                             "name": "age",
-                            "description": "Age de l'utilisateur.\r"
+                            "description": "Age de l'\u00e9tudiant."
                         }
                     ]
                 },
                 {
-                    "name": "str_equipe",
+                    "name": "str_classe",
                     "components": [
                         {
                             "name": "nom",
-                            "description": "Nom de l'\u00e9quipe.\r"
+                            "description": "Nom de la promo."
                         },
                         {
-                            "name": "nombreUtili",
-                            "description": "Nombre d'utilisateur dans l'\u00e9quipe.\r"
+                            "name": "matiere",
+                            "description": "Mati\u00e8re dans la promo."
                         }
                     ]
                 }
             ]
+        }
+    },
+    {
+        "name": "je_teste_enft.h",
+        "path": "\/je_teste_enft.h",
+        "contents": {
+            "auteur": "",
+            "version": "",
+            "date": "",
+            "def": [],
+            "var": [],
+            "structs": []
         }
     }
 ]
