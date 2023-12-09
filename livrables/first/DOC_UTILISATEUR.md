@@ -15,6 +15,7 @@
 5. [Pour en savoir plus](#pour-en-savoir-plus)
 6. [Conclusion](#conclusion)
 
+
 ## Introduction
 
 Docker, une **technologie de virtualisation** des applications, a révolutionné la manière dont les développeurs déploient, gèrent et exécutent des applications. Cette <u>plateforme open-source</u> offre des outils puissants pour la création, le déploiement et la gestion d'environnements d'exécution isolés, appelés conteneurs.
@@ -37,14 +38,14 @@ Les conteneurs Docker offrent une <mark>portabilité exceptionnelle</mark>, perm
 
 #### Écosystème Docker
 
-* [Docker Compose](https://github.com/docker/compose)
-* Docker Swarm
-* [Docker Hub]((https://hub.docker.com/))
+- [Docker Compose](https://github.com/docker/compose)
+- Docker Swarm
+- [Docker Hub]((https://hub.docker.com/))
 
 #### Sécurité
 
-* Isolation des conteneurs
-* Gestion des images
+- Isolation des conteneurs
+- Gestion des images
 
 ## Résumé
 
@@ -65,36 +66,36 @@ Les conteneurs Docker offrent une <mark>portabilité exceptionnelle</mark>, perm
 Récupérer une image.
 
 ```shell
-docker image pull <nom_image>
+    docker image pull <nom_image>
 ```
 
 Lancer un container d’une image.
 
 ```shell
-docker container run <nom_image>
+    docker container run <nom_image>
 ```
 
 Lister les conteneurs actif. Ajouter l'option `-a` pour voir tous les conteneurs.
 
 ```shell
-docker container ps
+    docker container ps
 ```
 
 Supprimer un container.
 
 ```shell
-docker container rm <ID_conteneur>
+    docker container rm <ID_conteneur>
 ```
 
 ## Pour en savoir plus
 
-* [site de Docker](https://www.docker.com/)
-* [documentation](https://docs.docker.com/)
-* [github de docker](https://github.com/docker)
+- [site de Docker](https://www.docker.com/)
+- [documentation](https://docs.docker.com/)
+- [github de docker](https://github.com/docker)
 
 ## Conclusion
 
 Docker c'est :
 
-* [x] coool
-* [ ] nuuul
+- [x] coool
+- [ ] nuuul
