@@ -18,9 +18,9 @@ if ($docsFinal)
 
         if(preg_match('/^[0-9]+\./', $ligne))
         {
-            tableau($docsFinal, $ligne);//Fonction à finir jsp comment faire.
+            listeNum($docsFinal, $ligne);//Fonction à finir jsp comment faire.
         }
-
+        liste($docsFinal, $ligne, $sansRetourLigne);
         texte($docsFinal, $ligne);
     }
 } 
@@ -30,6 +30,47 @@ else
 }
 
 fclose($docsFinal);
+
+
+function liste($docsFinal, $ligne, $sansRetourLigne)
+{   
+    if(preg_match('/^\-\s/', $ligne))
+    {
+        $pattern = '/\[(.*?)\]\((.*?)\)/';
+    
+        $titre = "";
+        $lien = "";
+    
+        if (preg_match($pattern, $ligne, $matches)) 
+        {
+            $titre = $matches[1];
+            $lien = $matches[2];
+            fwrite($docsFinal, "\t\t" . "<li><a href=\"$lien\">$titre</a></li>" . "\n" . PHP_EOL);
+        }
+        elseif(preg_match('/\[(.*?)\](.*?)/', $ligne, $matches))
+        {
+            if(preg_match('/\[x\](.*?)/', $ligne, $matches))
+            {
+                $contenuLigne = substr($sansRetourLigne, 6);
+                fwrite($docsFinal, "\t" . "<div>" . "\n\t\t" . "<input type=\"checkbox\" id=\"$contenuLigne\" name=\"$contenuLigne\" checked/>
+        <label for=\"scales\">$contenuLigne</label>" . "\n\t" . "</div>" . "\n" . PHP_EOL);
+            }
+            else
+            {
+                $contenuLigne = substr($sansRetourLigne, 6);
+                fwrite($docsFinal, "\t" . "<div>" . "\n\t\t" . "<input type=\"checkbox\" id=\"$contenuLigne\" name=\"$contenuLigne\"/>
+        <label for=\"scales\">$contenuLigne</label>" . "\n\t" . "</div>" . "\n" . PHP_EOL);
+            }
+
+        }
+        else
+        {
+            $contenuLigne = substr($sansRetourLigne, 2);
+            fwrite($docsFinal, "\t\t" . "<li>$contenuLigne</li>" . "\n" . PHP_EOL);
+        }
+    }
+}
+
 
 //Fonction qui remplce tous les titres pas des titres en HTML correspondant à leur "niveau"
 function titre($docsFinal, $ligne, $sansRetourLigne)
@@ -68,7 +109,7 @@ function titre($docsFinal, $ligne, $sansRetourLigne)
 }
 
 //Permet de tester si cela est un tableau et convertit en HTML si c'est le cas
-function tableau($docsFinal, $ligne)
+function listeNum($docsFinal, $ligne)
 {
     //Dur à faire on fera ensemble pour les tableaux
 
@@ -97,7 +138,7 @@ function texte($docsFinal, $ligne)
         des mots entre ** et **, sont situés a la cellule 1 de mot donc mot[1] car le pattern des ** est situé en premier dans le 
         preg_match_all et ainsi de suite pour chaque pattern séparer par un pipe. [\p{L}\p{N}\s\'"]+/u cette partie la indique que l'on veut 
         garder les espaces entre les mots sinon il enlève les espaces qui entoure le mot et le stock comme sa dans le tableau mots,
-        donc lors de l'écriture afiiche tout les mots collé, et ensuite le +/u dit a la fonction que l'on prend tout les caractère 
+        donc lors de l'écriture affiche tout les mots collé, et ensuite le +/u dit a la fonction que l'on prend tout les caractère 
         du UTF-8 sinon n'affiche pas les caractères accentués. \'" ceci dit juste de garder les ' et " sinon les prends pas en 
         compte et les écris donc pas à la fin.
         */
