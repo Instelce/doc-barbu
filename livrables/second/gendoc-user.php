@@ -10,19 +10,20 @@ if ($docsFinal)
 {
     fwrite($docsFinal, $baseHTMLContent . "\n");
 
-    foreach ($docsMD as $ligne) 
+    foreach ($docsMD as $ligneCourante) 
     {   
-        $sansRetourLigne = rtrim($ligne);
+        $ligneCourante = rtrim($ligneCourante);
 
-        titre($docsFinal, $ligne, $sansRetourLigne);
+        titre($docsFinal, $ligneCourante, $lignePrece);
+        listeNum($docsFinal, $ligneCourante, $lignePrece);
+        liste($docsFinal, $ligneCourante, $lignePrece);
+        texte($docsFinal, $ligneCourante, $lignePrece);
+        commande($docsFinal, $ligneCourante, $lignePrece);
 
-        if(preg_match('/^[0-9]+\./', $ligne))
-        {
-            listeNum($docsFinal, $ligne);//Fonction à finir jsp comment faire.
-        }
-        liste($docsFinal, $ligne, $sansRetourLigne);
-        texte($docsFinal, $ligne);
+        $lignePrece = $ligneCourante;
     }
+
+    fwrite($docsFinal, "\t" . "</body>" . "\n" . "</html>");
 } 
 else 
 {
@@ -31,33 +32,44 @@ else
 
 fclose($docsFinal);
 
+function commande($docsFinal, $ligneCourante, $lignePrece)
+{
+    if(preg_match('/^```/', $lignePrece))
+    {
+        if(!empty($ligneCourante))
+        {
+            fwrite($docsFinal, "\t" . "<p id=\"commande\"><em>$ligneCourante</em></p>" . "\n");
+        }
+    }
+}
 
-function liste($docsFinal, $ligne, $sansRetourLigne)
+
+function liste($docsFinal, $ligneCourante, $lignePrece)
 {   
-    if(preg_match('/^\-\s/', $ligne))
+    if(preg_match('/^\-\s/', $lignePrece))
     {
         $pattern = '/\[(.*?)\]\((.*?)\)/';
     
         $titre = "";
         $lien = "";
     
-        if (preg_match($pattern, $ligne, $matches)) 
+        if (preg_match($pattern, $lignePrece, $matches)) 
         {
             $titre = $matches[1];
             $lien = $matches[2];
             fwrite($docsFinal, "\t\t" . "<li><a href=\"$lien\">$titre</a></li>" . "\n" . PHP_EOL);
         }
-        elseif(preg_match('/\[(.*?)\](.*?)/', $ligne, $matches))
+        elseif(preg_match('/\[(.*?)\](.*?)/', $lignePrece, $matches))
         {
-            if(preg_match('/\[x\](.*?)/', $ligne, $matches))
+            if(preg_match('/\[x\](.*?)/', $lignePrece, $matches))
             {
-                $contenuLigne = substr($sansRetourLigne, 6);
+                $contenuLigne = substr($lignePrece, 6);
                 fwrite($docsFinal, "\t" . "<div>" . "\n\t\t" . "<input type=\"checkbox\" id=\"$contenuLigne\" name=\"$contenuLigne\" checked/>
         <label for=\"scales\">$contenuLigne</label>" . "\n\t" . "</div>" . "\n" . PHP_EOL);
             }
-            else
+            elseif(preg_match('/\[ \](.*?)/', $lignePrece, $matches))
             {
-                $contenuLigne = substr($sansRetourLigne, 6);
+                $contenuLigne = substr($lignePrece, 6);
                 fwrite($docsFinal, "\t" . "<div>" . "\n\t\t" . "<input type=\"checkbox\" id=\"$contenuLigne\" name=\"$contenuLigne\"/>
         <label for=\"scales\">$contenuLigne</label>" . "\n\t" . "</div>" . "\n" . PHP_EOL);
             }
@@ -65,7 +77,7 @@ function liste($docsFinal, $ligne, $sansRetourLigne)
         }
         else
         {
-            $contenuLigne = substr($sansRetourLigne, 2);
+            $contenuLigne = substr($lignePrece, 2);
             fwrite($docsFinal, "\t\t" . "<li>$contenuLigne</li>" . "\n" . PHP_EOL);
         }
     }
@@ -73,78 +85,71 @@ function liste($docsFinal, $ligne, $sansRetourLigne)
 
 
 //Fonction qui remplce tous les titres pas des titres en HTML correspondant à leur "niveau"
-function titre($docsFinal, $ligne, $sansRetourLigne)
+function titre($docsFinal, $ligneCourante, $lignePrece)
 {
     //Place les titres de niv 1 par un h1
-    if (substr($ligne, 0, 1) === "#" && substr($ligne, 1, 1) !== "#") 
+    if (substr($lignePrece, 0, 1) === "#" && substr($lignePrece, 1, 1) !== "#") 
     {  
-        $contenuLigne = substr($sansRetourLigne, 2);
+        $contenuLigne = substr($lignePrece, 2);
 
         fwrite($docsFinal, "\t" . "<h1>$contenuLigne</h1>"  . "\n"  . PHP_EOL);
     } 
 
     //Place les titres de niv 2 par un h2 
-    if(substr($ligne, 0, 2) === "##" && substr($ligne, 2, 1) !== "#")
+    if(substr($lignePrece, 0, 2) === "##" && substr($lignePrece, 2, 1) !== "#")
     {
-        $contenuLigne = substr($sansRetourLigne, 3);
+        $contenuLigne = substr($lignePrece, 3);
 
         fwrite($docsFinal, "\t" . "<h2>$contenuLigne</h2>" . "\n" . PHP_EOL);
     }
 
     //Place les titres de niv 3 par un h3
-    if(substr($ligne, 0, 3) === "###" && substr($ligne, 3, 1) !== "#")
+    if(substr($lignePrece, 0, 3) === "###" && substr($lignePrece, 3, 1) !== "#")
     {
-        $contenuLigne = substr($sansRetourLigne, 4);
+        $contenuLigne = substr($lignePrece, 4);
     
         fwrite($docsFinal, "\t" . "<h3>$contenuLigne</h3>" . "\n" . PHP_EOL);
     }
 
     //Place les titres de niv 4 par un h4
-    if(substr($ligne, 0, 4) === "####" && substr($ligne, 4, 1) !== "#")
+    if(substr($lignePrece, 0, 4) === "####" && substr($lignePrece, 4, 1) !== "#")
     {
-        $contenuLigne = substr($sansRetourLigne, 5);
+        $contenuLigne = substr($lignePrece, 5);
     
         fwrite($docsFinal, "\t" . "<h4>$contenuLigne</h4>" . "\n" . PHP_EOL);
     }
 }
 
 //Permet de tester si cela est un tableau et convertit en HTML si c'est le cas
-function listeNum($docsFinal, $ligne)
+function listeNum($docsFinal, $ligneCourante, $lignePrece)
 {
     //Dur à faire on fera ensemble pour les tableaux
-
-    $pattern = '/\[(.*?)\]\((.*?)\)/';
-    
-    $titre = "";
-    $lien = "";
-
-    if (preg_match($pattern, $ligne, $matches)) 
+    if(preg_match('/^[0-9]+\./', $lignePrece))
     {
-        $titre = $matches[1];
-        $lien = $matches[2];
-    }
+        $pattern = '/\[(.*?)\]\((.*?)\)/';
+        
+        $titre = "";
+        $lien = "";
 
-    fwrite($docsFinal, "\t\t" . "<li><a href=\"$lien\">$titre</a></li>" . "\n" . PHP_EOL);
+        if (preg_match($pattern, $lignePrece, $matches)) 
+        {
+            $titre = $matches[1];
+            $lien = $matches[2];
+        }
+
+        fwrite($docsFinal, "\t\t" . "<li><a href=\"$lien\">$titre</a></li>" . "\n" . PHP_EOL);
+    }
 }
 
-function texte($docsFinal, $ligne)
+function texte($docsFinal, $ligneCourante, $lignePrece)
 {
     //Test si la ligne commence par des caractères (mjuscule ou minuscule pour détecter si c'est un <p>)
-    if (preg_match('/^[A-Za-zàéèÀÉÈ]/', substr($ligne, 0, 4))) 
+    if (preg_match('/^[A-Za-zàéèÀÉÈ]/', substr($lignePrece, 0, 4))) 
     {
-        /* 
-        Stock séparément tous les mots qui ont des mises en pages différents soit en gras, en italique, police monospace ou barrer
-        chaque séparation par un pipe correspond a une cellule de mot dans le for each c'est a dire que le permier intervalle
-        des mots entre ** et **, sont situés a la cellule 1 de mot donc mot[1] car le pattern des ** est situé en premier dans le 
-        preg_match_all et ainsi de suite pour chaque pattern séparer par un pipe. [\p{L}\p{N}\s\'"]+/u cette partie la indique que l'on veut 
-        garder les espaces entre les mots sinon il enlève les espaces qui entoure le mot et le stock comme sa dans le tableau mots,
-        donc lors de l'écriture affiche tout les mots collé, et ensuite le +/u dit a la fonction que l'on prend tout les caractère 
-        du UTF-8 sinon n'affiche pas les caractères accentués. \'" ceci dit juste de garder les ' et " sinon les prends pas en 
-        compte et les écris donc pas à la fin.
-        */
-        preg_match_all('/\*\*(.*?)\*\*|\*(.*?)\*|\~\~(.*?)\~\~|\`(.*?)\`|[\p{L}\p{N}\s\'"]+/u', $ligne, $mots, PREG_SET_ORDER);
+        /* Toute les match différents sont stockés dans une cellule différent du tableau mots */
+        preg_match_all('/\*\*(.*?)\*\*|\*(.*?)\*|\~\~(.*?)\~\~|\`(.*?)\`|<mark>(.*?)<\/mark>|<u>(.*?)<\/u>|[\p{L}\p{N}\s\'".;,?:\/!]+/u', $lignePrece, $mots, PREG_SET_ORDER);
 
-        fwrite($docsFinal, "<p>" . "\n");
+        fwrite($docsFinal, "\t" . "<p>");
 
         foreach ($mots as $mot) 
         {
@@ -154,19 +159,27 @@ function texte($docsFinal, $ligne)
             */
             if (!empty($mot[1])) 
             {
-                fwrite($docsFinal, "<strong>{$mot[1]}</strong>");
+                fwrite($docsFinal, "\t" . "<strong>{$mot[1]}</strong>");
             } 
             elseif (!empty($mot[2]))
             {
-                fwrite($docsFinal, "<em>{$mot[2]}</em>");
+                fwrite($docsFinal, "\t" . "<em>{$mot[2]}</em>");
             }
             elseif (!empty($mot[3]))
             {
-                fwrite($docsFinal, "<del>{$mot[3]}</del>");
+                fwrite($docsFinal, "\t" . "<del>{$mot[3]}</del>");
             }
             elseif (!empty($mot[4]))
             {
-                fwrite($docsFinal, "<span style=\"font-family: monospace;\">{$mot[4]}</span>");
+                fwrite($docsFinal, "\t" . "<span style=\"font-family: monospace;\">{$mot[4]}</span>");
+            }
+            elseif (!empty($mot[5]))
+            {
+                fwrite($docsFinal, "\t" . "<mark>{$mot[5]}</mark>");
+            }
+            elseif (!empty($mot[6]))
+            {
+                fwrite($docsFinal, "\t" . "<u>{$mot[6]}</u>");
             }
             else 
             {
