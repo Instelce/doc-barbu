@@ -65,25 +65,25 @@ Les conteneurs Docker offrent une <mark>portabilité exceptionnelle</mark>, perm
 
 Récupérer une image.
 
-```shell
+```
     docker image pull <nom_image>
 ```
 
 Lancer un container d’une image.
 
-```shell
+```
     docker container run <nom_image>
 ```
 
 Lister les conteneurs actif. Ajouter l'option `-a` pour voir tous les conteneurs.
 
-```shell
+```
     docker container ps
 ```
 
 Supprimer un container.
 
-```shell
+```
     docker container rm <ID_conteneur>
 ```
 
@@ -99,3 +99,4 @@ Docker c'est :
 
 - [x] coool
 - [ ] nuuul
+
