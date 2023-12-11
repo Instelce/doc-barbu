@@ -3,7 +3,7 @@
         "auteur" => '/\$auteur\s+(.*)/',
         "version" => '/\$version\s+(.*)/',
         "date" => '/\$date\s+(.*)/',
-        "def" => '/\s*\$def\s*(.*)/',
+        "defines" => '/\s*\$def\s*(.*)/',
         "var" => '/\s*\$var\s*(.*)/',
         "structs" => [
             "nomstruc" => '/\s*\$nomstruc\s*(.*)/',
@@ -93,7 +93,7 @@
                 "auteur" => "",
                 "version" => "",
                 "date" => "",
-                "def" => [],
+                "defines" => [],
                 "var" => [],
                 "structs" => [],
                 "functions" => []
@@ -199,8 +199,46 @@
                 }
             }
         }
-
     }
 
+    $htmlContent = file_get_contents("./data/DOC_TECHNIQUE_TEMPLATE.html");
+
+    echo $data[0]["contents"]["auteur"] . "\n";
+
+    // si on a un fichier
+    if (count($data) == 1) {
+        $fileData = $data[0];
+        $htmlContent = str_replace("[CLIENT]", $fileData["contents"]["auteur"], $htmlContent);
+        $htmlContent = str_replace("[VERSION]", $fileData["contents"]["version"], $htmlContent);
+        $htmlContent = str_replace("[DATE]", $fileData["contents"]["date"], $htmlContent);
+
+        foreach ($patterns as $patternName => $_) {
+            // création du html
+            $innerHtml = "";
+            if (gettype($fileData["contents"][$patternName]) == 'array') {
+                echo $patternName . "\n";
+
+                if ($patternName == "structs") {
+
+                } else {
+                    foreach ($fileData["contents"][$patternName] as $value) {
+                        $innerHtml = $innerHtml . "<div class='item'>
+                            <h3 class='item-title'>". "METTER NOM DEFINE" ."</h3>
+                            <p>". $value ."</p>
+                        </div>";
+                    }
+                }
+            }
+
+        }
+    } else {
+        foreach ($files as $file) {
+
+        }
+    }
+
+
+
     file_put_contents("./data/tech.json", json_encode($data, JSON_PRETTY_PRINT));
+    file_put_contents("./data/DOC_TECHNIQUE.html", $htmlContent);
 ?>
