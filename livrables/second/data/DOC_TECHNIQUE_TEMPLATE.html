@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            transition: color 80ms, background 80ms;
+        }
+
+        :root {
+            --color-theme: dark;
+            --color-secondary: #414853;
+            --color-primary: #f66f81;
+            --color-background: #1f1f1f;
+            --color-text: #fff;
+            --color-link: #9499ff;
+        }
+        
+        body {
+            width: 100vw;
+            height: auto;
+            margin: 0;
+            overflow-x: hidden;
+
+            background: var(--color-background);
+            font-family: "Poppins", sans-serif;
+            color: var(--color-text);
+            font-size: 16px;
+        }
+
+        a {
+            color: var(--color-link);
+            text-decoration: transparent;
+            transition: opacity .2s ease;
+        }
+
+        a:hover {
+            opacity: .8;
+        }
+
+        p {margin: 0;}
+
+        button {
+            background: none;
+            border: 0;
+            color: inherit;
+            font-size: inherit;
+            cursor: pointer;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .main-title {
+            font-size: 2vw;
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .main-title span {
+            font-size: 5vw;
+            display: block;
+            font-weight: 700;
+            line-height: 100%;
+        }
+        
+        header {
+            height: 100vh;
+            padding: 0 40vh;
+            margin-bottom: 4rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        header::after {
+            content: "";
+            width: 100%;
+            height: 1px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background: #3d3d3d;
+            display: inline-block;
+        }
+
+        header span {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 500;
+        }
+
+        header h1 {
+            letter-spacing: -1px;
+        }
+
+        header h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        header h3 {
+            margin-top: 4rem;
+        }
+
+        section h2 {
+            width: 100%;
+            padding: .5rem 1rem;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            background: var(--color-secondary);
+            border-left: var(--color-primary) solid 3px;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        .container {
+            width: 100vw;
+            padding: 0 20vw;
+        }
+
+        .dropdown {
+            margin-bottom: 1rem;
+        }
+
+        .dropdown-trigger {
+            width: 100%;
+            display: block;
+            padding: .6rem 1rem;
+            text-align: left;
+            font-size: 1.2rem;
+            border-left: 2px solid var(--color-secondary);
+            transition: background .2s;
+            font-weight: 500;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dropdown-trigger:hover {
+            background: var(--color-secondary);
+            color: var(--color-link);
+        }
+
+        .dropdown-trigger:hover::after {
+            opacity: 1;
+        }
+
+        .dropdown-trigger::after {
+            content: "-";
+            font-size: 1.4rem;
+            font-weight: 700;
+            opacity: 0;
+        }
+
+        .dropdown-content {
+            width: 100%;
+            padding: .6rem 1rem;
+            border: 2px solid var(--color-secondary);
+            border-top: 0;
+        }
+
+        .dropdown .dropdown-trigger {
+            border: 2px solid var(--color-secondary);
+        }
+
+        .dropdown.hidden .dropdown-trigger::after {
+            content: "+";
+            font-size: 1.4rem;
+            font-weight: 400;
+        }
+
+        .dropdown.hidden .dropdown-content {
+            display: none;
+        }
+
+        .toggle-theme {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: var(--color-secondary);
+            padding: 1rem 2rem;
+            border-radius: 5px;
+        }
+        .toggle-theme:hover {
+            opacity: .8;
+        }
+
+        .item {
+            margin-bottom: 1rem;
+        }
+
+        .item > p {
+            margin-bottom: 1rem;
+        }
+
+        .item-title {
+            width: 100%;
+            padding: .5rem 1rem;
+            margin: 0;
+            font-weight: 500;
+            font-size: 1.2rem;
+            /* border-left: var(--color-secondary) solid 2px; */
+            border: 2px solid var(--color-secondary);
+        }
+
+        .item p {
+            padding: .6rem 1rem;
+        }
+
+        .sub-item {
+            margin: .5rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .sub-item-title {
+            margin-right: 2rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .navigation {
+            position: fixed;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+
+            border-radius: 5px;
+            border: 2px solid var(--color-secondary);
+            overflow: hidden;
+
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .navigation ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navigation li {
+            border-bottom: 2px solid var(--color-secondary);
+        }
+
+        .navigation a {
+            text-align: right;
+            padding: .5rem 2rem;
+            display: block;
+            color: var(--color-text);
+        }
+
+        .navigation li:last-child {
+            border-bottom: 0;
+        }
+
+        .navigation a:hover {
+            opacity: .8;
+            background: var(--color-secondary);
+        }
+
+        .navigation a.active {
+            background: var(--color-secondary);
+            color: var(--color-link);
+        }
+
+        .navigation.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Documentation Utilisateur</title>
+</head>
+
+<body>
+    
+    <header>
+        <h1 class="main-title">Projet <span>GLOUBIBOULGA</span></h1>
+
+        <h2>
+            Client
+            <span>[CLIENT]</span>
+        </h2>
+
+        <h2>
+            Version
+            <span>[VERSION]</span>
+        </h2>
+
+        <h3>
+            [DATE]
+        </h3>
+    </header>
+
+    <main class="container">
+        <section>
+            <h2>Chapitres</h2>
+
+            <nav>
+                <ol type="I">
+                    <li><a href="#en-tete">En-tête du code</a></li>
+                    <li><a href="#defines">Defines</a></li>
+                    <li><a href="#structures">Structures</a></li>
+                    <li><a href="#globales">Globales</a></li>
+                    <li><a href="#fonctions">Fonctions</a></li>
+                </ol>
+            </nav>
+        </section>
+
+        <section id="en-tete">
+            <h2>I. En-tête</h2>
+
+            <p>
+                <em>
+                    [PROJECT-DESCRIPTION]
+                </em>
+            </p>
+        </section>
+
+        <section id="defines">
+            <h2>II. Defines</h2>
+
+            [DEFINES]
+        </section>
+
+        <section id="structures">
+            <h2>III. Structures</h2>
+
+            <div class="dropdown">
+                <button class="item-title dropdown-trigger">NomStructure</button>
+                <div class="dropdown-content">
+                    <p>
+                        Détails de la structure (commentaires)
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis, eveniet ut delectus quod saepe autem atque suscipit hic perferendis dicta magnam deserunt. Sapiente excepturi rem earum ut. Reiciendis, laboriosam assumenda!
+                    </p>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 1</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 2</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 3</h4>
+                        <p>Petite description</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="item-title dropdown-trigger">NomStructure</button>
+                <div class="dropdown-content">
+                    <p>
+                        Détails de la structure (commentaires)
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab, quibusdam ullam nam mollitia ex iste vitae iusto nemo odit neque pariatur. Cupiditate facilis ipsum reprehenderit numquam quam, repellendus velit ab.
+                    </p>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 1</h4>
+                        <p>Petite description</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="item-title dropdown-trigger">NomStructure</button>
+                <div class="dropdown-content">
+                    <p>
+                        Détails de la structure (commentaires)
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Enim perspiciatis mollitia obcaecati, consequuntur vero numquam, iusto suscipit cumque porro molestiae aspernatur laborum tenetur ullam magnam voluptatem repellendus sunt perferendis laudantium.
+                    </p>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 1</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Composant 1</h4>
+                        <p>Petite description</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="globales">
+            <h2>IV. Globales</h2>
+
+            <div class="item">
+                <h3 class="item-title">NomGlobale</h3>
+                <p>Description de la variable globale avec un super texte</p>
+            </div>
+            <div class="item">
+                <h3 class="item-title">NomGlobale</h3>
+                <p>Description de la variable globale avec un super texte</p>
+            </div>
+            <div class="item">
+                <h3 class="item-title">NomGlobale</h3>
+                <p>Description de la variable globale avec un super texte</p>
+            </div>
+            <div class="item">
+                <h3 class="item-title">NomGlobale</h3>
+                <p>Description de la variable globale avec un super texte</p>
+            </div>
+        </section>
+
+        <section id="fonctions">
+            <h2>V. Fonctions</h2>
+
+            <div class="dropdown">
+                <button class="item-title dropdown-trigger">NomFonction</button>
+                <div class="dropdown-content">
+                    <p>
+                        Description brève de la fonction blabli blablou
+                    </p>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Nom param 1</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Nom param 2</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Retour</h4>
+                        <p>Type de retour</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="item-title dropdown-trigger">NomFonction</button>
+                <div class="dropdown-content">
+                    <p>
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. In eos, corrupti architecto blanditiis sint corporis eligendi consequatur porro explicabo debitis dolore rem iusto odio obcaecati maxime dolorum? Aspernatur, nemo consectetur.
+                    </p>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Nom param 1</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Nom param 2</h4>
+                        <p>Petite description</p>
+                    </div>
+
+                    <div class="sub-item">
+                        <h4 class="sub-item-title">Retour</h4>
+                        <p>Petite description</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <button class="toggle-theme">
+            Light
+        </button>
+
+        <nav class="navigation">
+            <ul>
+                <li><a href="#en-tete">En tête</a></li>
+                <li><a href="#defines">Defines</a></li>
+                <li><a href="#structures">Structures</a></li>
+                <li><a href="#globales">Globales</a></li>
+                <li><a href="#fonctions">Fonctions</a></li>
+            </ul>
+        </nav>
+    </main>
+
+    <script>
+        const dropdowns = document.querySelectorAll(".dropdown");
+
+        dropdowns.forEach(dropdown => {
+            let dropdownContent = dropdown.querySelector(".dropdown-content");
+            let dropdownTrigger = dropdown.querySelector(".dropdown-trigger");
+            dropdownTrigger.addEventListener("click", (e) => {
+                e.preventDefault()
+                dropdown.classList.toggle("hidden")
+            })
+        })
+
+        const toggleTheme = document.querySelector(".toggle-theme");
+        const root = document.querySelector(":root")
+        const rootColors = getComputedStyle(root)
+        toggleTheme.addEventListener("click", (e) => {
+            e.preventDefault()
+            if (rootColors.getPropertyValue("--color-theme") == "dark") {
+                root.style.setProperty("--color-theme", "light")
+                root.style.setProperty("--color-background", "#ececec")
+                root.style.setProperty("--color-text", "#1f1f1f")
+                root.style.setProperty("--color-secondary", "#c4c4c4")
+                root.style.setProperty("--color-link", "#664BFF")
+                toggleTheme.innerText = "Dark"
+            } else {
+                root.style.setProperty("--color-theme", "dark")
+                root.style.setProperty("--color-background", "#1f1f1f")
+                root.style.setProperty("--color-text", "#ececec")
+                root.style.setProperty("--color-secondary", "#414853")
+                root.style.setProperty("--color-link", "#9499ff")
+                toggleTheme.innerText = "Light"
+            }
+        })
+
+        const navigation = document.querySelector(".navigation");
+        const navLinks = document.querySelectorAll(".navigation a");
+        const sections = document.querySelectorAll("section")
+
+        window.onscroll = () => {
+            if (window.scrollY > window.screen.height) {
+                navigation.classList.add("show")
+            } else {
+                navigation.classList.remove("show")
+            }
+
+            sections.forEach(section => {
+                let top = window.scrollY
+                let offset = section.offsetTop - 150
+                let height = section.offsetHeight
+                let id = section.getAttribute("id")
+
+                if (top >= offset && top < offset + height) {
+                    navLinks.forEach(link => {
+                        if (link.getAttribute("href") == "#" + id) {
+                            link.classList.add("active")
+                        } else {
+                            link.classList.remove("active")
+                        }
+                    })
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>
