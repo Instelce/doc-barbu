@@ -9,6 +9,11 @@
             "nomstruc" => '/\s*\$nomstruc\s*(.*)/',
             "argstruc" => '/\s*\$argstruc\s*(.*)/',
         ],
+        "functions" => [
+            "nomfn" => '/\s*\$fn\s*(.*)/',
+            "paramfn" => '/\s*\$param\s*(.*)/',
+            "returnfn" => '/\s*\$return\s*(.*)/'
+        ],
     ];
 
     // plusieurs commandes
@@ -33,7 +38,7 @@
                 $files = glob(getcwd() . DIRECTORY_SEPARATOR . $commandValue . DIRECTORY_SEPARATOR . "*.c");
 
                 echo getcwd() . "\n";
-                print_r($files);
+                // print_r($files);
             }
 
             if (file_exists($commandValue)) {
@@ -64,7 +69,6 @@
                             array_push($files, $path . DIRECTORY_SEPARATOR . $cFileName);
                         }
                     }
-                    print_r($files);
                 }
             } else {
                 exit("Le fichier n'existe pas !");
@@ -91,7 +95,8 @@
                 "date" => "",
                 "def" => [],
                 "var" => [],
-                "structs" => []
+                "structs" => [],
+                "functions" => []
             ]
         ]);
     }
@@ -105,6 +110,7 @@
         preg_match_all($commentPattern, $content, $matches);
 
         $structCount = 0;
+        $fnCount = 0;
 
         foreach ($matches[0] as $comment) {
             // supprime '/*' et '*/' des commentaires
@@ -112,12 +118,49 @@
             // echo '--' . $commentContent . "\n";
 
             foreach ($patterns as $patternName => $p) {
-                if ($patternName == "structs") {
+
+                // Check pour les fonctions
+                if($patternName == "functions") {
+                    $isFunc = preg_match($patterns["functions"]["nomfn"], $commentContent, $nomfn) ;
+                    
+                    if ($isFunc != 0) {
+                        array_push($data[$i]["contents"]["functions"], [
+                            "name" => explode(" ", $nomfn[1])[0],
+                            "parameters" => [],
+                            "return" => []
+                        ]);
+
+                        // gestion des parmaètres de la fonction/procédure
+                        preg_match_all($patterns["functions"]["paramfn"], $commentContent, $paramMatches);
+
+                        foreach($paramMatches[0] as $paramInfo) {
+                            preg_match($patterns["functions"]["paramfn"], $paramInfo, $paramMatch);
+
+                            array_push($data[$i]["contents"]["functions"][$fnCount]["parameters"], [
+                                "name" => explode(' : ', $paramMatch[1])[0],
+                                "description" => explode(' : ', $paramMatch[1])[1],
+                            ]);
+                        }
+
+                        // gestion du return de la fonction
+                        preg_match($patterns["functions"]["paramfn"], $paramInfo, $returnInfo);
+
+                        array_push($data[$i]["contents"]["functions"][$fnCount]["return"], [
+                            "name" => explode(' : ', $returnInfo[1])[0],
+                            "description" => explode(' : ', $returnInfo[1])[1],
+                        ]);
+
+                        $fnCount++;
+
+                    }
+
+
+                } else if ($patternName == "structs") {
                     // ajout d'une struture si le commentaire actuel contient la variable $nomstruc
                     $isStruct = preg_match($patterns["structs"]["nomstruc"], $commentContent, $nomstruc);
 
+                    // ajout des données de la structure
                     if ($isStruct != 0) {
-                        echo "struct " . $nomstruc[1] . "\n";
                         array_push($data[$i]["contents"]["structs"], [
                             "name" => explode(" : ", $nomstruc[1])[0],
                             "components" => [],
@@ -126,7 +169,6 @@
                         preg_match_all($patterns["structs"]["argstruc"], $commentContent, $componantMatches);
 
                         foreach ($componantMatches[0] as $componant) {
-                            // echo "--". $componant . "\n";
                             preg_match($patterns["structs"]["argstruc"], $componant, $componantMatch);
 
                             array_push($data[$i]["contents"]["structs"][$structCount]["components"], [
@@ -144,7 +186,7 @@
                     // sauvegarde un match si il y en a un
                     if ($isMatching != 0) {
                         // [1] car on veut uniquement les données du groupe : (.*)
-                        echo $patternName . " : " . $patternMatch[1] . "\n";
+                        // echo $patternName . " : " . $patternMatch[1] . "\n";
                         // echo gettype($data[$patternName]);
 
                         $type = gettype($data[$i]["contents"][$patternName]);

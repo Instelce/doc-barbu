@@ -67,7 +67,7 @@ int main()
 }
 
 /**
- * $fn afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
+* $fn afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
 * $brief Affiche les caractéristiques de l'utilisateur 1.
 *   
 * $param s_utilisateur1 : Structure représentant l'utilisateur 1.
