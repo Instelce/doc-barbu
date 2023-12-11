@@ -44,50 +44,40 @@
                             "description": "Nom de l'\u00e9quipe."
                         },
                         {
-                            "name": "nombreUtili Nombre d'utilisateur dans l'\u00e9quipe.",
-                            "description": null
+                            "name": "nombreUtili",
+                            "description": "Nombre d'utilisateur dans l'\u00e9quipe."
                         }
                     ]
                 }
             ],
             "functions": [
                 {
-                    "name": "afficherUtilisateur(str_utili",
+                    "name": "afficherUtilisateur",
                     "parameters": [
                         {
                             "name": "s_utilisateur1",
-                            "description": "Structure repr\u00e9sentant l'utilisateur 1."
+                            "description": "param\u00e8tre repr\u00e9sentant l'utilisateur 1."
                         },
                         {
                             "name": "s_equipe1",
-                            "description": "Structure repr\u00e9sentant l'\u00e9quipe 1."
+                            "description": "param\u00e8tre repr\u00e9sentant l'\u00e9quipe 1."
                         }
                     ],
-                    "return": [
-                        {
-                            "name": "s_equipe1",
-                            "description": "Structure repr\u00e9sentant l'\u00e9quipe 1."
-                        }
-                    ]
+                    "return": []
                 },
                 {
-                    "name": "saisirUtilisateur(str_utili",
+                    "name": "saisirUtilisateur",
                     "parameters": [
                         {
                             "name": "s_utilisateur1",
-                            "description": "Structure repr\u00e9sentant l'utilisateur 1."
+                            "description": "Param\u00e8tre repr\u00e9sentant l'utilisateur 1."
                         },
                         {
                             "name": "s_equipe1",
-                            "description": "Structure repr\u00e9sentant l'\u00e9quipe 1."
+                            "description": "Param\u00e8tre repr\u00e9sentant l'\u00e9quipe 1."
                         }
                     ],
-                    "return": [
-                        {
-                            "name": "s_equipe1",
-                            "description": "Structure repr\u00e9sentant l'\u00e9quipe 1."
-                        }
-                    ]
+                    "return": []
                 }
             ]
         }
