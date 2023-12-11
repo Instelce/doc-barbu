@@ -40,7 +40,7 @@ Les conteneurs Docker offrent une <mark>portabilité exceptionnelle</mark>, perm
 
 - [Docker Compose](https://github.com/docker/compose)
 - Docker Swarm
-- [Docker Hub]((https://hub.docker.com/))
+- [Docker Hub](https://hub.docker.com/)
 
 #### Sécurité
 
