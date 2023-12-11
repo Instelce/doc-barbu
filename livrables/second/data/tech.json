@@ -1,1 +1,86 @@
-[]
+<<<<<<< HEAD
+[
+    {
+        "name": "src1.c",
+        "path": "..\/first\/src1.c",
+        "contents": {
+            "auteur": "Jean Neymar",
+            "version": "1.0.0",
+            "date": "23\/11\/23",
+            "def": [
+                "Age de la majorit\u00e9.",
+                "Taille max pour le nom et le prenom."
+            ],
+            "var": [
+                "s_utilisateur1 utilisateur de test (n\u00b01)",
+                "s_equipe equipe dans laquelle va appartenir l'utilisateur"
+            ],
+            "structs": [
+                {
+                    "name": "str_utili",
+                    "components": [
+                        {
+                            "name": "nom",
+                            "description": "Nom de l'utilisateur."
+                        },
+                        {
+                            "name": "prenom",
+                            "description": "Pr\u00e9nom de l'utilisateur."
+                        },
+                        {
+                            "name": "adresse",
+                            "description": "Adresse de l'utilisateur."
+                        },
+                        {
+                            "name": "age",
+                            "description": "Age de l'utilisateur."
+                        }
+                    ]
+                },
+                {
+                    "name": "str_equipe",
+                    "components": [
+                        {
+                            "name": "nom",
+                            "description": "Nom de l'\u00e9quipe."
+                        },
+                        {
+                            "name": "nombreUtili",
+                            "description": "Nombre d'utilisateur dans l'\u00e9quipe."
+                        }
+                    ]
+                }
+            ],
+            "functions": [
+                {
+                    "name": "afficherUtilisateur",
+                    "parameters": [
+                        {
+                            "name": "s_utilisateur1",
+                            "description": "param\u00e8tre repr\u00e9sentant l'utilisateur 1."
+                        },
+                        {
+                            "name": "s_equipe1",
+                            "description": "param\u00e8tre repr\u00e9sentant l'\u00e9quipe 1."
+                        }
+                    ],
+                    "return": []
+                },
+                {
+                    "name": "saisirUtilisateur",
+                    "parameters": [
+                        {
+                            "name": "s_utilisateur1",
+                            "description": "Param\u00e8tre repr\u00e9sentant l'utilisateur 1."
+                        },
+                        {
+                            "name": "s_equipe1",
+                            "description": "Param\u00e8tre repr\u00e9sentant l'\u00e9quipe 1."
+                        }
+                    ],
+                    "return": []
+                }
+            ]
+        }
+    }
+]
