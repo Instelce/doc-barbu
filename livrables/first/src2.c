@@ -68,12 +68,11 @@ int main()
 }
 
 /**
- * $fn afficherEtudiant(str_etudiant s_etudiant, str_promo s_promo) 
-* $brief Affiche les caractéristique de l'étudiant.
+* $fn afficherEtudiant 
+* $brief Affiche les caractéristiques de l'étudiant.
 *
-*
-* $param s_etudiant : Structure représentant l'étudiant.
-* $param s_promo : Structure représentant la promo.
+* $param s_etudiant : Paramètre représentant l'étudiant.
+* $param s_promo : Paramètre représentant la promo.
 *
 */
 
@@ -96,11 +95,11 @@ void afficherEtudiant(str_etudiant s_etudiant, str_promo s_promo)
 
 
 /**
-* $brief Saisie les caractéristique de l'étudiant.
-* $fn saisirEtudiant(str_etudiant s_etudiant, str_promo s_promo) 
+* $fn saisirEtudiant
+* $brief Pour saisir les caractéristiques de l'étudiant.
 *
-* $param s_etudiant : Structure représentant l'étudiant.
-* $param s_promo ; Structure représentant la promo.
+* $param s_etudiant : Paramètre représentant l'étudiant.
+* $param s_promo : Paramètre représentant la promo.
 *
 */
 

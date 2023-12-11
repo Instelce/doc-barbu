@@ -76,11 +76,11 @@ int main()
 
 /**
 * $brief Affiche les caractéristique d'un étudiant.
-* $fn afficherInformations(struct Etudiant s_etudiants[], struct Cours cours[], int nbEtudiants) 
+* $fn afficherInformations 
 *
-* $param s_etudiants : Structure représentant l'étudiant.
-* $param cours : Structure représentant la promo.
-* $param nbEtudiants : Nombre d'étudiant total. 
+* $param s_etudiants : Paramètre représentant l'étudiant.
+* $param cours : Paramètre représentant la promo.
+* $param nbEtudiants : Paramètre représentant le nombre d'étudiants au total. 
 *
 */
 
@@ -102,11 +102,11 @@ void afficherInformations(struct Etudiant s_etudiants[], struct Cours cours[], i
 
 /**
 * $brief Calcul la moyenne d'un étudiant.
-* $fn calculerMoyenne(struct Etudiant s_etudiants) 
+* $fn calculerMoyenne
 *
 * $return Retourne un float (la moyenne).
 *
-* $param s_etudiants : Structure représentant un étudiant.
+* $param s_etudiants : Paramètre représentant un étudiant.
 *
 */
 
