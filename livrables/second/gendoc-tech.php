@@ -122,7 +122,7 @@
                 // Check pour les fonctions
                 if($patternName == "functions") {
                     $isFunc = preg_match($patterns["functions"]["nomfn"], $commentContent, $nomfn) ;
-                    
+
                     if ($isFunc != 0) {
                         array_push($data[$i]["contents"]["functions"], [
                             "name" => explode(" ", $nomfn[1])[0],
@@ -151,10 +151,8 @@
                         ]);
 
                         $fnCount++;
-
                     }
-
-
+                // Check pour les structures
                 } else if ($patternName == "structs") {
                     // ajout d'une struture si le commentaire actuel contient la variable $nomstruc
                     $isStruct = preg_match($patterns["structs"]["nomstruc"], $commentContent, $nomstruc);
@@ -179,6 +177,7 @@
 
                         $structCount++;
                     }
+                // Check le reste
                 } else {
                     // récupère le match du pattern
                     $isMatching = preg_match($p, $commentContent, $patternMatch);
@@ -210,22 +209,33 @@
         $fileData = $data[0];
         $htmlContent = str_replace("[CLIENT]", $fileData["contents"]["auteur"], $htmlContent);
         $htmlContent = str_replace("[VERSION]", $fileData["contents"]["version"], $htmlContent);
-        $htmlContent = str_replace("[DATE]", $fileData["contents"]["date"], $htmlContent);
+        $htmlContent = str_replace("[DATE]", date("%d-%m-%y"), $htmlContent);
+        $htmlContent = str_replace("[PROJECT-DESCRIPTION]", $fileData["contents"]["date"], $htmlContent); // TODO: récupérer la description du fichier
 
         foreach ($patterns as $patternName => $_) {
             // création du html
             $innerHtml = "";
+
+            // véfification du type
             if (gettype($fileData["contents"][$patternName]) == 'array') {
                 echo $patternName . "\n";
 
                 if ($patternName == "structs") {
 
+                } elseif ($patternName == "functions") {
+
                 } else {
-                    foreach ($fileData["contents"][$patternName] as $value) {
+                    foreach ($fileData["contents"][$patternName] as $i => $value) {
+                        echo "ajout ". $value . "\n";
                         $innerHtml = $innerHtml . "<div class='item'>
                             <h3 class='item-title'>". "METTER NOM DEFINE" ."</h3>
                             <p>". $value ."</p>
-                        </div>";
+                        </div>\n";
+
+                        echo $innerHtml . "\n";
+                        if ($i == count($fileData["contents"][$patternName]) - 1) {
+                            $htmlContent = str_replace("[". strtoupper($patternName) ."]", $innerHtml, $htmlContent);
+                        }
                     }
                 }
             }
@@ -236,8 +246,6 @@
 
         }
     }
-
-
 
     file_put_contents("./data/tech.json", json_encode($data, JSON_PRETTY_PRINT));
     file_put_contents("./data/DOC_TECHNIQUE.html", $htmlContent);
