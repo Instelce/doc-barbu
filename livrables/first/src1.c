@@ -44,7 +44,7 @@ typedef struct
  * $nomstruc str_equipe : Nom du nouveau type structure.
  * 
  * $argstruc nom : Nom de l'équipe.
- * $argstruc nombreUtili Nombre d'utilisateur dans l'équipe.
+ * $argstruc nombreUtili : Nombre d'utilisateur dans l'équipe.
  * 
  */
 
@@ -67,11 +67,11 @@ int main()
 }
 
 /**
-* $fn afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
+* $fn afficherUtilisateur
 * $brief Affiche les caractéristiques de l'utilisateur 1.
 *   
-* $param s_utilisateur1 : Structure représentant l'utilisateur 1.
-* $param s_equipe1 : Structure représentant l'équipe 1.
+* $param s_utilisateur1 : paramètre représentant l'utilisateur 1.
+* $param s_equipe1 : paramètre représentant l'équipe 1.
 *
 */
 
@@ -95,11 +95,11 @@ void afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1)
 
 
 /**
-* $brief Saisie les caractéristiques de l'utilisateur 1.
-* $fn saisirUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
-*
-* $param s_utilisateur1 : Structure représentant l'utilisateur 1.
-* $param s_equipe1 : Structure représentant l'équipe 1.
+* $fn saisirUtilisateur
+* $brief Pour saisir les caractéristiques de l'utilisateur 1.
+* 
+* $param s_utilisateur1 : Paramètre représentant l'utilisateur 1.
+* $param s_equipe1 : Paramètre représentant l'équipe 1.
 *
 */
 

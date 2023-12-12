@@ -130,25 +130,26 @@
                             "return" => []
                         ]);
 
-                        // gestion des parmaètres de la fonction/procédure
-                        preg_match_all($patterns["functions"]["paramfn"], $commentContent, $paramMatches);
+                        // gestion des parmaètres de la fonction/procédure (s'il y en a)
 
-                        foreach($paramMatches[0] as $paramInfo) {
-                            preg_match($patterns["functions"]["paramfn"], $paramInfo, $paramMatch);
-
-                            array_push($data[$i]["contents"]["functions"][$fnCount]["parameters"], [
-                                "name" => explode(' : ', $paramMatch[1])[0],
-                                "description" => explode(' : ', $paramMatch[1])[1],
-                            ]);
+                        if (preg_match_all($patterns["functions"]["paramfn"], $commentContent, $paramMatches) != 0) {
+                            foreach($paramMatches[0] as $paramInfo) {
+                                preg_match($patterns["functions"]["paramfn"], $paramInfo, $paramMatch);
+    
+                                array_push($data[$i]["contents"]["functions"][$fnCount]["parameters"], [
+                                    "name" => explode(' : ', $paramMatch[1])[0],
+                                    "description" => explode(' : ', $paramMatch[1])[1],
+                                ]);
+                            }
                         }
 
-                        // gestion du return de la fonction
-                        preg_match($patterns["functions"]["paramfn"], $paramInfo, $returnInfo);
-
-                        array_push($data[$i]["contents"]["functions"][$fnCount]["return"], [
-                            "name" => explode(' : ', $returnInfo[1])[0],
-                            "description" => explode(' : ', $returnInfo[1])[1],
-                        ]);
+                        // gestion du return de la fonction (s'il y en a)
+                        if (preg_match($patterns["functions"]["returnfn"], $paramInfo, $returnInfo) != 0) {
+                            array_push($data[$i]["contents"]["functions"][$fnCount]["return"], [
+                                "name" => explode(' : ', $returnInfo[1])[0],
+                                "description" => explode(' : ', $returnInfo[1])[1],
+                            ]);
+                        }                     
 
                         $fnCount++;
                     }
@@ -164,16 +165,17 @@
                             "components" => [],
                         ]);
 
-                        preg_match_all($patterns["structs"]["argstruc"], $commentContent, $componantMatches);
-
-                        foreach ($componantMatches[0] as $componant) {
-                            preg_match($patterns["structs"]["argstruc"], $componant, $componantMatch);
-
-                            array_push($data[$i]["contents"]["structs"][$structCount]["components"], [
-                                "name" => explode(" : ", $componantMatch[1])[0],
-                                "description" => explode(" : ", $componantMatch[1])[1]
-                            ]);
-                        }
+                        // gestion des arguments (seulement s'il y en a)
+                        if (preg_match_all($patterns["structs"]["argstruc"], $commentContent, $componantMatches)) {
+                            foreach ($componantMatches[0] as $componant) {
+                                preg_match($patterns["structs"]["argstruc"], $componant, $componantMatch);
+    
+                                array_push($data[$i]["contents"]["structs"][$structCount]["components"], [
+                                    "name" => explode(" : ", $componantMatch[1])[0],
+                                    "description" => explode(" : ", $componantMatch[1])[1]
+                                ]);
+                            }
+                        }            
 
                         $structCount++;
                     }
@@ -184,10 +186,8 @@
 
                     // sauvegarde un match si il y en a un
                     if ($isMatching != 0) {
+                        
                         // [1] car on veut uniquement les données du groupe : (.*)
-                        // echo $patternName . " : " . $patternMatch[1] . "\n";
-                        // echo gettype($data[$patternName]);
-
                         $type = gettype($data[$i]["contents"][$patternName]);
                         if ($type == 'array') {
                             array_push($data[$i]["contents"][$patternName], $patternMatch[1]);
