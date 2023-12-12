@@ -2,17 +2,7 @@
     $HTMLBlocks = [
         "file" => [
             "depth" => 0,
-            "block" => "<section>
-                            <h3>Fichiers</h3>
-
-                            <nav>
-                                <ul class='files'>
-                                    [FILES]
-                                </ul>
-                            </nav>
-                        </section>
-
-                        <section id='main.c' class='file-section'>
+            "block" => "<section id='[FILENAME]' class='file-section'>
                             <h2>[FILENAME]</h2>
 
                             <h3>Chapitres</h3>
@@ -49,7 +39,7 @@
                         <section id='globales'>
                             <h3>IV. Globales</h3>
 
-                            [VARS]
+                            [VAR]
                         </section>
 
                         <section id='fonctions'>
@@ -69,11 +59,11 @@
         "item" =>   [
             "depth" => 1,
             "block" =>  "<div class='item'>
-                            <h3 class='item-title'>[NAME]</h3>
+                            <h4 class='item-title'>[NAME]</h4>
                             <p>[BRIEF]</p>
                         </div>",
         ],
-        "struct" => [
+        "structures" => [
             "depth" => 1,
             "block" => "<div class='dropdown'>
                             <button class='item-title dropdown-trigger'>[NAME]</button>
@@ -102,7 +92,7 @@
         "subitem" => [
             "depth" => 2,
             "block" =>  "<div class='sub-item'>
-                            <h3 class='sub-item-title'>[NAME]</h3>
+                            <h4 class='sub-item-title'>[NAME]</h4>
                             <p>[BRIEF]</p>
                         </div>",
         ],
@@ -115,7 +105,7 @@
         "defines" => '/\s*\$def\s*(.*)/',
         "var" => '/\s*\$var\s*(.*)/',
         "types" => '/\s*\$typedef\s*(.*)/',
-        "structs" => [
+        "structures" => [
             "nomstruc" => '/\s*\$nomstruc\s*(.*)/',
             "argstruc" => '/\s*\$argstruc\s*(.*)/',
         ],
@@ -195,17 +185,18 @@
 
     // initialisation des données
     foreach ($files as $path) {
-        $lastIndex = count(explode("/", $path)) - 1;
+        $lastIndex = count(explode(DIRECTORY_SEPARATOR, $path)) - 1;
         array_push($data, [
-            "name" => explode("/", $path)[$lastIndex],
+            "name" => explode(DIRECTORY_SEPARATOR, $path)[$lastIndex],
             "path" => $path,
             "contents" => [
                 "auteur" => "",
                 "version" => "",
                 "date" => "",
                 "defines" => [],
+                "types" => [],
                 "var" => [],
-                "structs" => [],
+                "structures" => [],
                 "functions" => []
             ]
         ]);
@@ -265,23 +256,23 @@
                         $fnCount++;
                     }
                 // Check pour les structures
-                } else if ($patternName == "structs") {
+                } else if ($patternName == "structures") {
                     // ajout d'une struture si le commentaire actuel contient la variable $nomstruc
-                    $isStruct = preg_match($patterns["structs"]["nomstruc"], $commentContent, $nomstruc);
+                    $isStruct = preg_match($patterns["structures"]["nomstruc"], $commentContent, $nomstruc);
 
                     // ajout des données de la structure
                     if ($isStruct != 0) {
-                        array_push($data[$i]["contents"]["structs"], [
+                        array_push($data[$i]["contents"]["structures"], [
                             "name" => explode(" : ", $nomstruc[1])[0],
                             "components" => [],
                         ]);
 
                         // gestion des arguments (seulement s'il y en a)
-                        if (preg_match_all($patterns["structs"]["argstruc"], $commentContent, $componantMatches)) {
+                        if (preg_match_all($patterns["structures"]["argstruc"], $commentContent, $componantMatches)) {
                             foreach ($componantMatches[0] as $componant) {
-                                preg_match($patterns["structs"]["argstruc"], $componant, $componantMatch);
+                                preg_match($patterns["structures"]["argstruc"], $componant, $componantMatch);
     
-                                array_push($data[$i]["contents"]["structs"][$structCount]["components"], [
+                                array_push($data[$i]["contents"]["structures"][$structCount]["components"], [
                                     "name" => explode(" : ", $componantMatch[1])[0],
                                     "description" => explode(" : ", $componantMatch[1])[1]
                                 ]);
@@ -310,52 +301,87 @@
         }
     }
 
+    echo "Génération des fichiers...\n";
+
     $htmlContent = file_get_contents("./data/DOC_TECHNIQUE_TEMPLATE.html");
 
-    // si on a un fichier
-    if (count($data) == 1) {
-        $fileData = $data[0];
-        $htmlContent = str_replace("[CLIENT]", $fileData["contents"]["auteur"], $htmlContent);
-        $htmlContent = str_replace("[VERSION]", $fileData["contents"]["version"], $htmlContent);
-        $htmlContent = str_replace("[DATE]", date("%d-%m-%y"), $htmlContent);
-        $htmlContent = str_replace("[PROJECT-DESCRIPTION]", $fileData["contents"]["date"], $htmlContent); // TODO: récupérer la description du fichier
+    addToTemplate($htmlContent, "PROJET DANS CONFIG", "PROJECT");
+    addToTemplate($htmlContent, "CLIENT DANS CONFIG", "CLIENT");
+    addToTemplate($htmlContent, "VERSION DANS CONFIG", "VERSION");
+    addToTemplate($htmlContent, date("d/m/Y"), "DATE");
+    $filesHTMLContent = "";
+    $projectLinksHTMLContent = "";
+
+    // TODO: Génération des liens de la section FICHIERS
+
+    // génération des bloc de documentation pour tous les fichiers
+    foreach ($files as $fileIndex => $file) {
+        echo $file . "\n";
+        $fileData = $data[$fileIndex];
+        $fileContentsData = $fileData["contents"];
+
+        $projectLink = $HTMLBlocks["fileLink"]["block"];
+        addToTemplate($projectLink, $fileData["name"], "NOMFICHIER");
+        $projectLinksHTMLContent .= $projectLink;
+
+        $fileHTMLContent = $HTMLBlocks["file"]["block"];
+
+        addToTemplate($htmlContent, $fileContentsData["date"], "PROJECT-DESCRIPTION"); // TODO: récupérer la description du fichier
+
+        addToTemplate($fileHTMLContent, $fileData["name"], "FILENAME");
 
         foreach ($patterns as $patternName => $_) {
-            // création du html
-            $innerHtml = "";
 
             // véfification du type
-            if (gettype($fileData["contents"][$patternName]) == 'array') {
-                // echo $patternName . "\n";
+            if (gettype($fileContentsData[$patternName]) == 'array') {
 
-                if ($patternName == "structs") {
-
-                } elseif ($patternName == "functions") {
-
-                } else {
-                    foreach ($fileData["contents"][$patternName] as $i => $value) {
-                        // echo "ajout ". $value . "\n";
-
-                        $innerHtml = $innerHtml . "<div class='item'>
-                            <h3 class='item-title'>". "METTER NOM DEFINE" ."</h3>
-                            <p>". $value ."</p>
-                        </div>\n";
-
-                        // echo $innerHtml . "\n";
-                        if ($i == count($fileData["contents"][$patternName]) - 1) {
-                            $htmlContent = str_replace("[". strtoupper($patternName) ."]", htmlentities($innerHtml), $htmlContent);
-                        }
+                // génération des defines et des variables
+                if ($patternName == "defines" || $patternName == "var") {
+                    $HTMLContent = "";
+                    foreach ($fileContentsData[$patternName] as $i => $value) {
+                        $content = $HTMLBlocks["item"]["block"];
+                        addToTemplate($content, $value, "NAME");
+                        addToTemplate($content, "Ajout de la description ici", "BRIEF");
+                        $HTMLContent .= $content;
                     }
+                    addToTemplate($fileHTMLContent, $HTMLContent, $patternName);
+                }
+                // génération des structures
+                if ($patternName == "structures") {
+                    $HTMLContent = "";
+                    echo $patternName;
+                    foreach ($fileContentsData[$patternName] as $i => $structData) {
+                        $content = $HTMLBlocks["structures"]["block"];
+                        addToTemplate($content, $structData['name'], "NAME");
+                        addToTemplate($content, "Ajout de la description ici", "BRIEF");
+                        
+                        $subitemHTMLContent = "";
+                        foreach ($structData["components"] as $componentData) {
+                            $subitemContent = $HTMLBlocks["subitem"]["block"];
+                            addToTemplate($subitemContent, $componentData["name"], "NAME");
+                            addToTemplate($subitemContent, $componentData["description"], "BRIEF");
+                            $subitemHTMLContent .= $subitemContent;
+                        }
+                        addToTemplate($content, $subitemHTMLContent, "SUBITEM");
+                        $HTMLContent .= $content;
+                    }
+                    addToTemplate($fileHTMLContent, $HTMLContent, $patternName);
                 }
             }
-
         }
-    } else {
-        foreach ($files as $file) {
-
-        }
+        $filesHTMLContent .= $fileHTMLContent;
     }
 
-    file_put_contents("./data/tech.json", json_encode($data, JSON_PRETTY_PRINT));
-    file_put_contents("./data/DOC_TECHNIQUE.html", $htmlContent);
+    addToTemplate($htmlContent, $filesHTMLContent, "FILES-DOCUMENTATION");
+    addToTemplate($htmlContent, $projectLinksHTMLContent, "FILES");
+
+    fopen("./test-output/DOC_TECHNIQUE.html", "w");
+    fopen("./test-output/tech.json", "w");
+    file_put_contents("./test-output/tech.json", json_encode($data, JSON_PRETTY_PRINT));
+    file_put_contents("./test-output/DOC_TECHNIQUE.html", $htmlContent);
+
+
+    function addToTemplate(&$content, $slotValue, $templateSlotName) {
+        $content = str_replace("[". strtoupper($templateSlotName) ."]", $slotValue, $content);
+    }
 ?>
