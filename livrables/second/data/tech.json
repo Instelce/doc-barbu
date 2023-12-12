@@ -1,1 +1,124 @@
-[]
+[
+    {
+        "name": ".\\test\\project-with-headers\\src1.c",
+        "path": ".\\test\\project-with-headers\\src1.c",
+        "contents": {
+            "auteur": "Jean Neymar",
+            "version": "1.0.0",
+            "date": "23\/11\/23",
+            "defines": [],
+            "var": [
+                "s_utilisateur1 utilisateur de test (n\u00b01)",
+                "s_equipe equipe dans laquelle va appartenir l'utilisateur"
+            ],
+            "structs": [],
+            "functions": []
+        }
+    },
+    {
+        "name": ".\\test\\project-with-headers\\functions.h",
+        "path": ".\\test\\project-with-headers\\functions.h",
+        "contents": {
+            "auteur": "",
+            "version": "",
+            "date": "",
+            "defines": [],
+            "var": [],
+            "structs": [],
+            "functions": []
+        }
+    },
+    {
+        "name": ".\\test\\project-with-headers\\functions.c",
+        "path": ".\\test\\project-with-headers\\functions.c",
+        "contents": {
+            "auteur": "",
+            "version": "",
+            "date": "",
+            "defines": [],
+            "var": [],
+            "structs": [],
+            "functions": [
+                {
+                    "name": "afficherUtilisateur(str_utili",
+                    "parameters": [
+                        {
+                            "name": "s_utilisateur1",
+                            "description": "Structure repr\u00e9sentant l'utilisateur 1.\r"
+                        },
+                        {
+                            "name": "s_equipe1",
+                            "description": "Structure repr\u00e9sentant l'\u00e9quipe 1.\r"
+                        }
+                    ],
+                    "return": []
+                },
+                {
+                    "name": "saisirUtilisateur(str_utili",
+                    "parameters": [
+                        {
+                            "name": "s_utilisateur1",
+                            "description": "Structure repr\u00e9sentant l'utilisateur 1.\r"
+                        },
+                        {
+                            "name": "s_equipe1",
+                            "description": "Structure repr\u00e9sentant l'\u00e9quipe 1.\r"
+                        }
+                    ],
+                    "return": []
+                }
+            ]
+        }
+    },
+    {
+        "name": ".\\test\\project-with-headers\\types.h",
+        "path": ".\\test\\project-with-headers\\types.h",
+        "contents": {
+            "auteur": "",
+            "version": "",
+            "date": "",
+            "defines": [
+                "Age de la majorit\u00e9.",
+                "Taille max pour le nom et le prenom."
+            ],
+            "var": [],
+            "structs": [
+                {
+                    "name": "str_utili",
+                    "components": [
+                        {
+                            "name": "nom",
+                            "description": "Nom de l'utilisateur.\r"
+                        },
+                        {
+                            "name": "prenom",
+                            "description": "Pr\u00e9nom de l'utilisateur.\r"
+                        },
+                        {
+                            "name": "adresse",
+                            "description": "Adresse de l'utilisateur.\r"
+                        },
+                        {
+                            "name": "age",
+                            "description": "Age de l'utilisateur.\r"
+                        }
+                    ]
+                },
+                {
+                    "name": "str_equipe",
+                    "components": [
+                        {
+                            "name": "nom",
+                            "description": "Nom de l'\u00e9quipe.\r"
+                        },
+                        {
+                            "name": "nombreUtili",
+                            "description": "Nombre d'utilisateur dans l'\u00e9quipe.\r"
+                        }
+                    ]
+                }
+            ],
+            "functions": []
+        }
+    }
+]

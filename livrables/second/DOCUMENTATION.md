@@ -1,5 +1,8 @@
 # Documentation
 
+1. Syntaxe
+2. Commandes
+
 ## Syntaxe
 
 - Fichier
@@ -61,7 +64,7 @@ int nbChocolat = 10; // $var Nombre de chocolat
 * $fn void mangerChocolat(int nb, int totalChocolat)
 * $brief Enlève n chocolat au total de chocolat
 *
-* $param (<type-param>) <nom-param> : <description-param>
+* > $param (<type-param>) <nom-param> : <description-param>
 * $param (int) nb : Nombre de chocolat que l'on va manger
 * $param int : Nombre de chocolat que l'on va manger
 * $param int : Total de chocolat
@@ -113,3 +116,17 @@ typedef struct
     int age; 
 }str_utili; 
 ```
+
+## Commandes
+
+**--dir** *dirname*
+
+Cherche tous les fichiers présents dans le dossier et génère leur documentation.
+
+**--main** *filename*
+
+Génère la documentation du fichier principal et des fichiers importés
+
+**--onefile** *filename*
+
+Génère la documentation d'un fichier

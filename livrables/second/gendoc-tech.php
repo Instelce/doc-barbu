@@ -1,10 +1,120 @@
 <?php
+    $HTMLBlocks = [
+        "file" => [
+            "depth" => 0,
+            "block" => "<section>
+                            <h3>Fichiers</h3>
+
+                            <nav>
+                                <ul class='files'>
+                                    [FILES]
+                                </ul>
+                            </nav>
+                        </section>
+
+                        <section id='main.c' class='file-section'>
+                            <h2>[FILENAME]</h2>
+
+                            <h3>Chapitres</h3>
+
+                            <nav>
+                                <ol type='I'>
+                                    [CHAPITRES]
+                                </ol>
+                            </nav>
+                        </section>
+
+                        <section id='en-tete'>
+                            <h3>I. En-tête</h3>
+
+                            <p>
+                                <em>
+                                    [PROJECT-DESCRIPTION]
+                                </em>
+                            </p>
+                        </section>
+
+                        <section id='defines'>
+                            <h3>II. Defines</h3>
+
+                            [DEFINES]
+                        </section>
+
+                        <section id='structures'>
+                            <h3>III. Structures</h3>
+
+                            [STRUCTURES]
+                        </section>
+
+                        <section id='globales'>
+                            <h3>IV. Globales</h3>
+
+                            [VARS]
+                        </section>
+
+                        <section id='fonctions'>
+                            <h3>V. Fonctions</h3>
+
+                            [FUNCTIONS]
+                        </section>"
+        ],
+        "fileLink" => [
+            "depth" => 1,
+            "block" => "<li><a href='#[NOMFICHIER]'>[NOMFICHIER]</a></li>"
+        ],
+        "chapterLink" => [
+            "depth" => 1,
+            "block" => "<li><a href='#[LINK]'>[CHAPTER]</a></li>"
+        ],
+        "item" =>   [
+            "depth" => 1,
+            "block" =>  "<div class='item'>
+                            <h3 class='item-title'>[NAME]</h3>
+                            <p>[BRIEF]</p>
+                        </div>",
+        ],
+        "struct" => [
+            "depth" => 1,
+            "block" => "<div class='dropdown'>
+                            <button class='item-title dropdown-trigger'>[NAME]</button>
+                            <div class='dropdown-content'>
+                                <p>
+                                    [BRIEF]
+                                </p>
+
+                                [SUBITEM]
+                            </div>
+                        </div>"
+        ],
+        "function" => [
+            "depth" => 1,
+            "block" => "<div class='dropdown'>
+                            <button class='item-title dropdown-trigger'>[NAME]</button>
+                            <div class='dropdown-content'>
+                                <p>
+                                    [BRIEF]
+                                </p>
+
+                                [SUBITEM]
+                            </div>
+                        </div>"
+        ],
+        "subitem" => [
+            "depth" => 2,
+            "block" =>  "<div class='sub-item'>
+                            <h3 class='sub-item-title'>[NAME]</h3>
+                            <p>[BRIEF]</p>
+                        </div>",
+        ],
+    ];
+
     $patterns = [
         "auteur" => '/\$auteur\s+(.*)/',
         "version" => '/\$version\s+(.*)/',
         "date" => '/\$date\s+(.*)/',
         "defines" => '/\s*\$def\s*(.*)/',
         "var" => '/\s*\$var\s*(.*)/',
+        "types" => '/\s*\$typedef\s*(.*)/',
         "structs" => [
             "nomstruc" => '/\s*\$nomstruc\s*(.*)/',
             "argstruc" => '/\s*\$argstruc\s*(.*)/',
@@ -50,7 +160,7 @@
                     $path = explode(DIRECTORY_SEPARATOR, $commandValue);
                     array_pop($path);
                     $path = join(DIRECTORY_SEPARATOR, $path);
-                    echo "\n" . $path . "\n";
+                    // echo "\n" . $path . "\n";
 
                     array_push($files, $commandValue);
 
@@ -59,7 +169,7 @@
                     preg_match_all($includePattern, file_get_contents($commandValue), $includeMatches);
 
                     foreach ($includeMatches[0] as $include) {
-                        echo str_replace("\"", "", explode(" ", $include)[1]) . "\n";
+                        // echo str_replace("\"", "", explode(" ", $include)[1]) . "\n";
                         $headerFileName = str_replace("\"", "", explode(" ", $include)[1]);
                         $cFileName = str_replace("h", "c", $headerFileName);
 
@@ -103,6 +213,7 @@
 
     // récupération des données des commentaires pour tous les fichiers
     foreach ($files as $i => $filePath) {
+        echo "* " . $data[$i]["name"] . "...\n";
         $content = file_get_contents($filePath);
 
         // récupère tous les commentaires
@@ -149,7 +260,7 @@
                                 "name" => explode(' : ', $returnInfo[1])[0],
                                 "description" => explode(' : ', $returnInfo[1])[1],
                             ]);
-                        }                     
+                        }
 
                         $fnCount++;
                     }
@@ -175,7 +286,7 @@
                                     "description" => explode(" : ", $componantMatch[1])[1]
                                 ]);
                             }
-                        }            
+                        }
 
                         $structCount++;
                     }
@@ -186,7 +297,6 @@
 
                     // sauvegarde un match si il y en a un
                     if ($isMatching != 0) {
-                        
                         // [1] car on veut uniquement les données du groupe : (.*)
                         $type = gettype($data[$i]["contents"][$patternName]);
                         if ($type == 'array') {
@@ -202,8 +312,6 @@
 
     $htmlContent = file_get_contents("./data/DOC_TECHNIQUE_TEMPLATE.html");
 
-    echo $data[0]["contents"]["auteur"] . "\n";
-
     // si on a un fichier
     if (count($data) == 1) {
         $fileData = $data[0];
@@ -218,7 +326,7 @@
 
             // véfification du type
             if (gettype($fileData["contents"][$patternName]) == 'array') {
-                echo $patternName . "\n";
+                // echo $patternName . "\n";
 
                 if ($patternName == "structs") {
 
@@ -226,15 +334,16 @@
 
                 } else {
                     foreach ($fileData["contents"][$patternName] as $i => $value) {
-                        echo "ajout ". $value . "\n";
+                        // echo "ajout ". $value . "\n";
+
                         $innerHtml = $innerHtml . "<div class='item'>
                             <h3 class='item-title'>". "METTER NOM DEFINE" ."</h3>
                             <p>". $value ."</p>
                         </div>\n";
 
-                        echo $innerHtml . "\n";
+                        // echo $innerHtml . "\n";
                         if ($i == count($fileData["contents"][$patternName]) - 1) {
-                            $htmlContent = str_replace("[". strtoupper($patternName) ."]", $innerHtml, $htmlContent);
+                            $htmlContent = str_replace("[". strtoupper($patternName) ."]", htmlentities($innerHtml), $htmlContent);
                         }
                     }
                 }
