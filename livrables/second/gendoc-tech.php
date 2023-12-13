@@ -63,20 +63,7 @@
                             <p>[BRIEF]</p>
                         </div>",
         ],
-        "structures" => [
-            "depth" => 1,
-            "block" => "<div class='dropdown'>
-                            <button class='item-title dropdown-trigger'>[NAME]</button>
-                            <div class='dropdown-content'>
-                                <p>
-                                    [BRIEF]
-                                </p>
-
-                                [SUBITEM]
-                            </div>
-                        </div>"
-        ],
-        "function" => [
+        "dropdown" => [
             "depth" => 1,
             "block" => "<div class='dropdown'>
                             <button class='item-title dropdown-trigger'>[NAME]</button>
@@ -98,18 +85,67 @@
         ],
     ];
 
+    $dataPatterns = [
+        "auteur" => '/\$auteur\s+(.*)/',
+        "version" => '/\$version\s+(.*)/',
+        "brief" => '/\$brief\s+(.*)/',
+        "define" => [
+            "foundLine" => '/\#define\s+(.*)/',
+            "name" => '/\#define\s+(\w+)/',
+            "value" => '/\#define\s+\w+\s+(\w+)/',
+            "brief" => '/\$def\s+(.*)/',
+        ],
+        "global" => [
+            "foundLine" => '/.*\$var.*/',  // only to search for the element
+            "type" => '/^\s*(\w+)\s+\w+\s*;/',
+            "name" => '/^\s*\w+\s+(\w+)\s*;/',
+            "brief" => '/\/\*\s*\$var\s+(.*)\s*\*\//',
+        ],
+        "type" => '/\$typedef\s+\((.*)\)/',
+        "struct" => '/\$typedef\s+\(struct\)/',
+        "prototype" => '/\$fn\s+(.*)/',
+        "param" => '/\$param\s+(.*)/m',   // need prototype or type
+        "return" => '/\$return\s*(.*)/', // need prototype
+        "param+" => [
+            "type" => '/\((.*?)\)/',
+            "name" => '/\)\s+(.*?)\s+\:/',
+            "brief" => '/\:\s+(.*?)$/'
+        ]
+    ];
+
+    $sections = [
+        "defines" => [
+            "define"
+        ],
+        "globals" => [
+            "global"
+        ],
+        "types" => [
+            "type",
+            "param"
+        ],
+        // "structures" => [
+        //     "type",
+        //     "param"
+        // ],
+        "fonctions" => [
+            "prototype",
+            "param",
+            "return"
+        ]
+    ];
+
     $patterns = [
         "auteur" => '/\$auteur\s+(.*)/',
         "version" => '/\$version\s+(.*)/',
-        "date" => '/\$date\s+(.*)/',
         "defines" => '/\s*\$def\s*(.*)/',
-        "var" => '/\s*\$var\s*(.*)/',
+        "globals" => '/\s*\$var\s*(.*)/',
         "types" => '/\s*\$typedef\s*(.*)/',
         "structures" => [
-            "nomstruc" => '/\s*\$nomstruc\s*(.*)/',
-            "argstruc" => '/\s*\$argstruc\s*(.*)/',
+            "struc" => '/\s*\$struc\s*(.*)/',
+            "param" => '/\s*\$param\s*(.*)/',
         ],
-        "functions" => [
+        "fonctions" => [
             "nomfn" => '/\s*\$fn\s*(.*)/',
             "paramfn" => '/\s*\$param\s*(.*)/',
             "returnfn" => '/\s*\$return\s*(.*)/'
@@ -189,118 +225,216 @@
         array_push($data, [
             "name" => explode(DIRECTORY_SEPARATOR, $path)[$lastIndex],
             "path" => $path,
+            "auteur" => "",
+            "version" => "",
             "contents" => [
-                "auteur" => "",
-                "version" => "",
-                "date" => "",
                 "defines" => [],
+                "globals" => [],
                 "types" => [],
-                "var" => [],
                 "structures" => [],
-                "functions" => []
+                "fonctions" => []
             ]
         ]);
     }
 
-    // récupération des données des commentaires pour tous les fichiers
+    // boucle les fichiers
     foreach ($files as $i => $filePath) {
         echo "* " . $data[$i]["name"] . "...\n";
-        $content = file_get_contents($filePath);
+        $fileContent = file_get_contents($filePath);
+        $fileLines = explode("\n", $fileContent);
 
         // récupère tous les commentaires
         $commentPattern = '/(\/\/.*$|\/\*[\s\S]*?\*\/)/m';
-        preg_match_all($commentPattern, $content, $matches);
+        preg_match_all($commentPattern, $fileContent, $commentMatches);
+
+        // donnees de l'entête
+        $enteteData = $commentMatches[0][0];
+        $data[$i]["auteur"] = getRegexGroup($dataPatterns["auteur"], $enteteData);
+        $data[$i]["version"] = getRegexGroup($dataPatterns["version"], $enteteData);
 
         $structCount = 0;
         $fnCount = 0;
 
-        foreach ($matches[0] as $comment) {
-            // supprime '/*' et '*/' des commentaires
-            $commentContent = preg_replace('/^\/\/\s?|^\/\*\s?|\*\/$/', '', $comment);
-            // echo '--' . $commentContent . "\n";
+        foreach ($sections as $sectionName => $section) {
+            // parcour par matches
+            if ($sectionName == "defines" || $sectionName == "globals") {
+                $singularSectionName = convertToSingular($sectionName);
 
-            foreach ($patterns as $patternName => $p) {
+                // vérifie si la section va contenir plusieurs objet
+                if (gettype($dataPatterns[$singularSectionName]) == "array") {
+                    preg_match_all($dataPatterns[$singularSectionName]["foundLine"], $fileContent, $sectionMatches);
 
-                // Check pour les fonctions
-                if($patternName == "functions") {
-                    $isFunc = preg_match($patterns["functions"]["nomfn"], $commentContent, $nomfn) ;
-
-                    if ($isFunc != 0) {
-                        array_push($data[$i]["contents"]["functions"], [
-                            "name" => explode(" ", $nomfn[1])[0],
-                            "parameters" => [],
-                            "return" => []
-                        ]);
-
-                        // gestion des parmaètres de la fonction/procédure (s'il y en a)
-
-                        if (preg_match_all($patterns["functions"]["paramfn"], $commentContent, $paramMatches) != 0) {
-                            foreach($paramMatches[0] as $paramInfo) {
-                                preg_match($patterns["functions"]["paramfn"], $paramInfo, $paramMatch);
-    
-                                array_push($data[$i]["contents"]["functions"][$fnCount]["parameters"], [
-                                    "name" => explode(' : ', $paramMatch[1])[0],
-                                    "description" => explode(' : ', $paramMatch[1])[1],
-                                ]);
+                    // loop toute les lignes matchant avec la section
+                    foreach ($sectionMatches[0] as $sectionMatch) {
+                        foreach ($section as $sectionFieldName) {
+                            $sectionLenght = count($data[$i]["contents"][$sectionName]);
+                            foreach ($dataPatterns[$singularSectionName] as $patternName => $pattern) {
+                                $data[$i]["contents"][$sectionName][$sectionLenght][$patternName] = getRegexGroup($pattern, $sectionMatch);
                             }
                         }
-
-                        // gestion du return de la fonction (s'il y en a)
-                        if (preg_match($patterns["functions"]["returnfn"], $paramInfo, $returnInfo) != 0) {
-                            array_push($data[$i]["contents"]["functions"][$fnCount]["return"], [
-                                "name" => explode(' : ', $returnInfo[1])[0],
-                                "description" => explode(' : ', $returnInfo[1])[1],
-                            ]);
-                        }
-
-                        $fnCount++;
                     }
-                // Check pour les structures
-                } else if ($patternName == "structures") {
-                    // ajout d'une struture si le commentaire actuel contient la variable $nomstruc
-                    $isStruct = preg_match($patterns["structures"]["nomstruc"], $commentContent, $nomstruc);
+                }
+            }
 
-                    // ajout des données de la structure
-                    if ($isStruct != 0) {
-                        array_push($data[$i]["contents"]["structures"], [
-                            "name" => explode(" : ", $nomstruc[1])[0],
-                            "components" => [],
-                        ]);
+            // parcour par block de commentaire
+            else {
+                foreach ($commentMatches[0] as $commentMatch) {
+                    foreach ($section as $sectionFieldName) {
+                        $isMatching = preg_match($dataPatterns[$sectionFieldName], $commentMatch, $sectionMatch);
+                        if ($section != "structures") {
+                            if ($sectionFieldName == "type") {
+                                // $isMatching = preg_match($dataPatterns[$sectionFieldName], $commentMatch, $paramLineMatch);
+                                if ($isMatching) {
+                                    echo $sectionMatch[0];
 
-                        // gestion des arguments (seulement s'il y en a)
-                        if (preg_match_all($patterns["structures"]["argstruc"], $commentContent, $componantMatches)) {
-                            foreach ($componantMatches[0] as $componant) {
-                                preg_match($patterns["structures"]["argstruc"], $componant, $componantMatch);
-    
-                                array_push($data[$i]["contents"]["structures"][$structCount]["components"], [
-                                    "name" => explode(" : ", $componantMatch[1])[0],
-                                    "description" => explode(" : ", $componantMatch[1])[1]
-                                ]);
+                                    if ($sectionMatch[1] == "struct") {
+                                        $sectionName = "structures";
+                                    } else {
+                                        $sectionName = "types";
+                                    }
+                                    $sectionLenght = count($data[$i]["contents"][$sectionName]);
+
+                                    $data[$i]["contents"][$sectionName][$sectionLenght][$sectionFieldName] = $sectionMatch[1];
+
+                                    if (in_array("param", $section) && $sectionName = "structures") {
+                                        if (!array_key_exists("params", $data[$i]["contents"][$sectionName][$sectionLenght])) {
+                                            $data[$i]["contents"][$sectionName][$sectionLenght]["params"] = [];
+                                        }
+                                        echo $commentMatch;
+                                        $asParams = preg_match_all($dataPatterns["param"], $commentMatch, $paramsMatches);
+                                        print_r($paramsMatches);
+                                        if ($asParams) {
+                                            foreach ($paramsMatches[0] as $paramMatch) {
+                                                $paramLenght = count($data[$i]["contents"][$sectionName][$sectionLenght]["params"]);
+                                                foreach ($dataPatterns["param+"] as $paramFieldName => $pattern) {
+                                                    $data[$i]["contents"][$sectionName][$sectionLenght]["params"][$paramLenght][$paramFieldName] = getRegexGroup($pattern, $paramMatch);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                            } elseif ($sectionFieldName == "param") {
+                            } else {
+
                             }
-                        }
-
-                        $structCount++;
-                    }
-                // Check le reste
-                } else {
-                    // récupère le match du pattern
-                    $isMatching = preg_match($p, $commentContent, $patternMatch);
-
-                    // sauvegarde un match si il y en a un
-                    if ($isMatching != 0) {
-                        // [1] car on veut uniquement les données du groupe : (.*)
-                        $type = gettype($data[$i]["contents"][$patternName]);
-                        if ($type == 'array') {
-                            array_push($data[$i]["contents"][$patternName], $patternMatch[1]);
-                        } else if ($type == 'string') {
-                            $data[$i]["contents"][$patternName] = rtrim($patternMatch[1]);
                         }
                     }
                 }
             }
         }
+
+        // foreach ($matches[0] as $comment) {
+        //     // supprime '/*' et '*/' des commentaires
+        //     $commentContent = preg_replace('/^\/\/\s?|^\/\*\s?|\*\/$/', '', $comment);
+        //     // echo '--' . $commentContent . "\n";
+
+        //     foreach ($patterns as $patternName => $p) {
+
+        //         // Check pour les fonctions
+        //         if($patternName == "fonctions") {
+        //             $isFunc = preg_match($patterns["fonctions"]["nomfn"], $commentContent, $nomfn) ;
+
+        //             if ($isFunc != 0) {
+        //                 array_push($data[$i]["contents"]["fonctions"], [
+        //                     "name" => explode(" ", $nomfn[1])[0],
+        //                     "brief" => "",
+        //                     "parameters" => [],
+        //                     "return" => []
+        //                 ]);
+
+        //                 // gestion des parmaètres de la fonction/procédure (s'il y en a)
+
+        //                 if (preg_match_all($patterns["fonctions"]["paramfn"], $commentContent, $paramMatches) != 0) {
+        //                     foreach($paramMatches[0] as $paramInfo) {
+        //                         preg_match($patterns["fonctions"]["paramfn"], $paramInfo, $paramMatch);
+    
+        //                         array_push($data[$i]["contents"]["fonctions"][$fnCount]["parameters"], [
+        //                             "name" => explode(' : ', $paramMatch[1])[0],
+        //                             "description" => explode(' : ', $paramMatch[1])[1],
+        //                         ]);
+        //                     }
+        //                 }
+
+        //                 // gestion du return de la fonction (s'il y en a)
+        //                 if (preg_match($patterns["fonctions"]["returnfn"], $paramInfo, $returnInfo) != 0) {
+        //                     array_push($data[$i]["contents"]["fonctions"][$fnCount]["return"], [
+        //                         "name" => explode(' : ', $returnInfo[1])[0],
+        //                         "description" => explode(' : ', $returnInfo[1])[1],
+        //                     ]);
+        //                 }
+
+        //                 $fnCount++;
+        //             }
+        //         // Check pour les structures
+        //         } else if ($patternName == "structures") {
+        //             // ajout d'une struture si le commentaire actuel contient la variable $nomstruc
+        //             $isStruct = preg_match($patterns["structures"]["nomstruc"], $commentContent, $nomstruc);
+
+        //             // ajout des données de la structure
+        //             if ($isStruct != 0) {
+        //                 array_push($data[$i]["contents"]["structures"], [
+        //                     "name" => explode(" : ", $nomstruc[1])[0],
+        //                     "brief" => "",
+        //                     "components" => [],
+        //                 ]);
+
+        //                 // gestion des arguments (seulement s'il y en a)
+        //                 if (preg_match_all($patterns["structures"]["argstruc"], $commentContent, $componantMatches)) {
+        //                     foreach ($componantMatches[0] as $componant) {
+        //                         preg_match($patterns["structures"]["argstruc"], $componant, $componantMatch);
+    
+        //                         array_push($data[$i]["contents"]["structures"][$structCount]["components"], [
+        //                             "name" => explode(" : ", $componantMatch[1])[0],
+        //                             "description" => explode(" : ", $componantMatch[1])[1]
+        //                         ]);
+        //                     }
+        //                 }
+
+        //                 $structCount++;
+        //             }
+        //         } else if ($patternName == "types") {
+        //             $isType = preg_match($patterns["types"], $commentContent, $typeMatch);
+
+        //             if ($isType) {
+        //                 $currentIndex = count($data[$i]["contents"]["types"]);
+        //                 echo $typeMatch[1];
+        //                 $typeData = explode(" ", $typeMatch[1]);
+        //                 $type = str_replace("(" || ")", "", $typeData[0]);
+        //                 array_push($data[$i]["contents"]["types"], [
+        //                     "type" => str_replace(")", "", str_replace("(", "", $typeData[0])),
+        //                     "name" => rtrim($typeData[1]),
+        //                     "brief" => "",
+        //                 ]);
+
+        //                 echo $type;
+        //                 if ($type == "struct") {
+        //                     echo $type;
+        //                 }
+        //             }
+        //         }
+        //         // Check le reste (i.e. n'apparait qu'une seule fois dans le fichier)
+        //         else {
+        //             // récupère le match du pattern
+        //             $isMatching = preg_match($p, $commentContent, $patternMatch);
+
+        //             // sauvegarde un match si il y en a un
+        //             if ($isMatching != 0) {
+        //                 // [1] car on veut uniquement les données du groupe : (.*)
+        //                 $type = gettype($data[$i]["contents"][$patternName]);
+        //                 if ($type == 'array') {
+        //                     array_push($data[$i]["contents"][$patternName], $patternMatch[1]);
+        //                 } else if ($type == 'string') {
+        //                     $data[$i]["contents"][$patternName] = rtrim($patternMatch[1]);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
     }
 
+    /*
     echo "Génération des fichiers...\n";
 
     $htmlContent = file_get_contents("./data/DOC_TECHNIQUE_TEMPLATE.html");
@@ -312,7 +446,6 @@
     $filesHTMLContent = "";
     $projectLinksHTMLContent = "";
 
-    // TODO: Génération des liens de la section FICHIERS
 
     // génération des bloc de documentation pour tous les fichiers
     foreach ($files as $fileIndex => $file) {
@@ -320,6 +453,7 @@
         $fileData = $data[$fileIndex];
         $fileContentsData = $fileData["contents"];
 
+        // Génération des liens de la section FICHIERS
         $projectLink = $HTMLBlocks["fileLink"]["block"];
         addToTemplate($projectLink, $fileData["name"], "NOMFICHIER");
         $projectLinksHTMLContent .= $projectLink;
@@ -351,10 +485,10 @@
                     $HTMLContent = "";
                     echo $patternName;
                     foreach ($fileContentsData[$patternName] as $i => $structData) {
-                        $content = $HTMLBlocks["structures"]["block"];
+                        $content = $HTMLBlocks["dropdown"]["block"];
                         addToTemplate($content, $structData['name'], "NAME");
                         addToTemplate($content, "Ajout de la description ici", "BRIEF");
-                        
+
                         $subitemHTMLContent = "";
                         foreach ($structData["components"] as $componentData) {
                             $subitemContent = $HTMLBlocks["subitem"]["block"];
@@ -376,12 +510,41 @@
     addToTemplate($htmlContent, $projectLinksHTMLContent, "FILES");
 
     fopen("./test-output/DOC_TECHNIQUE.html", "w");
+    file_put_contents("./test-output/DOC_TECHNIQUE.html", $htmlContent);
+*/
     fopen("./test-output/tech.json", "w");
     file_put_contents("./test-output/tech.json", json_encode($data, JSON_PRETTY_PRINT));
-    file_put_contents("./test-output/DOC_TECHNIQUE.html", $htmlContent);
 
+    function convertToSingular($subject) {
+        return str_replace("s", "", $subject);
+    }
+
+    function convertToPlural($subject) {
+        return $subject . "s";
+    }
+
+    function createHTMLBlock($block, $data) {
+
+    }
 
     function addToTemplate(&$content, $slotValue, $templateSlotName) {
         $content = str_replace("[". strtoupper($templateSlotName) ."]", $slotValue, $content);
+    }
+
+    function getTextBetweenParenthesis($text) {
+        return str_replace(")", "", str_replace("(", "", $text));
+    }
+
+    function matchExist($pattern, $subject) {
+        return preg_match($pattern, $subject);
+    }
+
+    function getRegexGroup($pattern, $subject) {
+        $isMatching = preg_match($pattern, $subject, $match);
+        if ($isMatching && count($match) > 1) {
+            return rtrim($match[1]);
+        } else {
+            return $match[0];
+        }
     }
 ?>
