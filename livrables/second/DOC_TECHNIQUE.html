@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./theme-1.css">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Documentation Utilisateur</title>
+</head>
+
+<body>
+    <header>
+        <h1 class="main-title">Projet <span>[PROJECT]</span></h1>
+
+        <h3>
+            Client
+            <span>[CLIENT]</span>
+        </h3>
+
+        <h3>
+            Version
+            <span>[VERSION]</span>
+        </h3>
+
+        <h3>
+            12/14/2023        </h3>
+    </header>
+
+    <main class="container">
+        <section id="description">
+            <h3>Description</h3>
+
+            <p class="block">
+                Super decription du fichier config            </p>
+        </section>
+
+        
+                    <section id="sudoku.c" class="file-section">
+                <h2>sudoku.c</h2>
+
+                <h3>Chapitres</h3>
+
+                <nav>
+                    <ol type="1">
+                        <li><a href="#sudoku.c/en-tete">En-tête</a></li>
+
+                        
+                                <li><a href='#sudoku.c/defines'>Defines</a></li>
+
+                        
+                                <li><a href='#sudoku.c/fonctions'>Fonctions</a></li>
+
+                        
+                    </ol>
+                </nav>
+
+                <section id="sudoku.c/en-tete">
+                    <h3>1. En-tête</h3>
+
+                    <table>
+                        <tr>
+                            <th>Auteur</th>
+                            <td>Célestin Besson</td>
+                        </tr>
+                        <tr>
+                            <th>Version</th>
+                            <td>1</td>
+                        </tr>
+                    </table>
+
+                    <p class="block">
+                        Fichier du jeu sodoku                    </p>
+                </section>
+
+                
+                        <section id="sudoku.c/defines">
+                            <h3>2. Defines</h3>
+
+                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        TAILLE                                                                                            <span class="value">9</span>
+                                                                                    </h4>
+                                        <p>Pas de brief</p>
+                                    </div>
+                                                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        N                                                                                            <span class="value">3</span>
+                                                                                    </h4>
+                                        <p>Pas de brief</p>
+                                    </div>
+                                                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        CASE_VIDE                                                                                            <span class="value">0</span>
+                                                                                    </h4>
+                                        <p>Pas de brief</p>
+                                    </div>
+                                                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        MAX_MSG_SIZE                                                                                            <span class="value">500</span>
+                                                                                    </h4>
+                                        <p>Pas de brief</p>
+                                    </div>
+                                                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        MAX_SAISIE_SIZE                                                                                            <span class="value">500</span>
+                                                                                    </h4>
+                                        <p>Pas de brief</p>
+                                    </div>
+                                                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        GRILLE_COIN_CHAR                                                                                            <span class="value">Donnée non fournit</span>
+                                                                                    </h4>
+                                        <p>Pas de brief</p>
+                                    </div>
+                                                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        GRILLE_HORIZONTAL_SEP_CHAR                                                                                            <span class="value">Donnée non fournit</span>
+                                                                                    </h4>
+                                        <p>Pas de brief</p>
+                                    </div>
+                                                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        GRILLE_VERTICAL_SEP_CHAR                                                                                            <span class="value">Donnée non fournit</span>
+                                                                                    </h4>
+                                        <p>Pas de brief</p>
+                                    </div>
+                                                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        GRILLE_CASE_VIDE_CHAR                                                                                            <span class="value">Donnée non fournit</span>
+                                                                                    </h4>
+                                        <p>Pas de brief</p>
+                                    </div>
+                                                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        GREEN_FG                                                                                            <span class="value">32</span>
+                                                                                    </h4>
+                                        <p>Pas de brief</p>
+                                    </div>
+                                                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        RED_FG                                                                                            <span class="value">31</span>
+                                                                                    </h4>
+                                        <p>Pas de brief</p>
+                                    </div>
+                                                                                    </section>
+
+                
+                        <section id="sudoku.c/fonctions">
+                            <h3>3. Fonctions</h3>
+
+                                                                <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">void chargerGrille(t_grille grille)</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Charge les valeurs d'un grille a partir d'un nom de fichier                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#t_grille">t_grille</a></td>
+                                                        <th>grille</th>
+                                                        <td>grille a charger</td>
+                                                    </tr>
+                                                                                            </table>
+                                        </div>
+                                    </div>
+                                                                                                <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">void afficherGrille(t_grille grille)</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Affichage personalisé de la grille                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#t_grille">t_grille</a></td>
+                                                        <th>grille</th>
+                                                        <td>grille a afficher</td>
+                                                    </tr>
+                                                                                            </table>
+                                        </div>
+                                    </div>
+                                                                                                <div class="item">
+                                        <h4 class="item-title">
+                                                                                        void afficheLigneTiret()                                                                                    </h4>
+                                        <p>Affiche une ligne de tiret, est utilisé dans la fonction afficheGrille.</p>
+                                    </div>
+                                                                                                <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">bool grilleRempli(t_grille grille)</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Retourne un booleen selon si la grille est rempli ou non                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#t_grile">t_grile</a></td>
+                                                        <th>grille</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                            </table>
+                                        </div>
+                                    </div>
+                                                                                                <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">bool possibleLigne(t_grille grille, int ligneIndice, int valeur)</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Retourne un booleen selon si la valeur est présente dans la ligne de la grille                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#t_grille">t_grille</a></td>
+                                                        <th>grille</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#int">int</a></td>
+                                                        <th>ligneIndice</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#int">int</a></td>
+                                                        <th>valeur</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                            </table>
+                                        </div>
+                                    </div>
+                                                                                                <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">bool possibleColonne(t_grille grille, int colonneIndice, int valeur)</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Retourne un booleen selon si la valeur est présente dans la colonne de la grille                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#t_grille">t_grille</a></td>
+                                                        <th>grille</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#int">int</a></td>
+                                                        <th>colonneIndice</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#int">int</a></td>
+                                                        <th>valeur</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                            </table>
+                                        </div>
+                                    </div>
+                                                                                                <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">bool possibleBloc(t_grille grille, int debutBlocLigne, int debutBlocColonne, int valeur)</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Retourne un booleen selon si la valeur est présente dans la colonne de la grille                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                            </table>
+                                        </div>
+                                    </div>
+                                                                                                <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">bool possible(t_grille grille, int numLigne, int numColonne, int valeur)</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Retourne vrai si la valeur au coordonné passé en paramètre n'existe pas dans la ligne, la colonne ou le block, et faux si c'est l'inverse.                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                            </table>
+                                        </div>
+                                    </div>
+                                                                                                <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">void saisir(int *var)</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Permet de saisir et de vérifier une valeur                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                            </table>
+                                        </div>
+                                    </div>
+                                                                                                <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">void printfCouleur(int couleurCaractere, int couleurFond, const char *format, ...)</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Impression personnalisée de texte avec des couleurs                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                            </table>
+                                        </div>
+                                    </div>
+                                                                                                <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">void printErreur(char message[])</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Affiche une erreur                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                            </table>
+                                        </div>
+                                    </div>
+                                                                                                <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">void printSucces(char message[])</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Affiche un succes                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#Donnée non fournit">Donnée non fournit</a></td>
+                                                        <th>Donnée non fournit</th>
+                                                        <td>Donnée non fournit</td>
+                                                    </tr>
+                                                                                            </table>
+                                        </div>
+                                    </div>
+                                                                                    </section>
+
+                                        </section>
+    </main>
+
+    <button class="toggle-theme">
+        Light
+    </button>
+
+    <nav class="navigation">
+        <ul>
+        </ul>
+    </nav>
+
+    <script>
+        const dropdowns = document.querySelectorAll(".dropdown");
+
+        dropdowns.forEach(dropdown => {
+            let dropdownContent = dropdown.querySelector(".dropdown-content");
+            let dropdownTrigger = dropdown.querySelector(".dropdown-trigger");
+            dropdownTrigger.addEventListener("click", (e) => {
+                e.preventDefault()
+                dropdown.classList.toggle("hidden")
+            })
+        })
+
+        const toggleTheme = document.querySelector(".toggle-theme");
+        const root = document.querySelector(":root")
+        const rootColors = getComputedStyle(root)
+        toggleTheme.addEventListener("click", (e) => {
+            e.preventDefault()
+            if (rootColors.getPropertyValue("--color-theme") == "dark") {
+                root.style.setProperty("--color-theme", "light")
+                root.style.setProperty("--color-background", "#ececec")
+                root.style.setProperty("--color-text", "#1f1f1f")
+                root.style.setProperty("--color-secondary", "#c4c4c4")
+                root.style.setProperty("--color-link", "#664BFF")
+                toggleTheme.innerText = "Dark"
+            } else {
+                root.style.setProperty("--color-theme", "dark")
+                root.style.setProperty("--color-background", "#1f1f1f")
+                root.style.setProperty("--color-text", "#ececec")
+                root.style.setProperty("--color-secondary", "#414853")
+                root.style.setProperty("--color-link", "#9499ff")
+                toggleTheme.innerText = "Light"
+            }
+        })
+
+        // generate links of navigation bar
+        const filesLink = document.querySelector(".files");
+        const navigationLinksList = document.querySelector(".navigation ul");
+
+        navigationLinksList.innerHTML = filesLink.innerHTML;
+
+
+        // files navigation
+        const navigation = document.querySelector(".navigation");
+        const navLinks = document.querySelectorAll(".navigation a");
+        const sections = document.querySelectorAll("section.file-section")
+
+        window.onscroll = () => {
+            if (window.scrollY > window.screen.height) {
+                navigation.classList.add("show")
+            } else {
+                navigation.classList.remove("show")
+            }
+
+            sections.forEach(section => {
+                let top = window.scrollY
+                let offset = section.offsetTop - 150
+                let height = section.offsetHeight
+                let id = section.getAttribute("id")
+
+                if (top >= offset && top < offset + height) {
+                    navLinks.forEach(link => {
+                        if (link.getAttribute("href") == "#" + id) {
+                            link.classList.add("active")
+                        } else {
+                            link.classList.remove("active")
+                        }
+                    })
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

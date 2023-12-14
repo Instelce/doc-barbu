@@ -1,6 +1,6 @@
 <?php
 $dataPatterns = [
-    "auteur" => '/\$auteur\s+(.*)/',
+    "auteur" => '/\$author\s+(.*)/',
     "version" => '/\$version\s+(.*)/',
     "brief" => '/\$brief\s+(.*)/',
     "define" => [
@@ -28,7 +28,7 @@ $dataPatterns = [
         "param" => [
             "found" => '/\$param\s+(.*)/',
             "type" => '/\((.*?)\)/',
-            "name" => '/\)\s+(.*?)\s+\:/',
+            "name" => '/\)\s+(.*?)\s+/',
             "brief" => '/\:\s+(.*?)$/'
         ]
     ],
@@ -40,7 +40,7 @@ $dataPatterns = [
         "param" => [
             "found" => '/\$param\s+(.*)/',
             "type" => '/\((.*?)\)/',
-            "name" => '/\)\s+(.*?)\s+\:/',
+            "name" => '/\)\s+(.*?)\s+/',
             "brief" => '/\:\s+(.*?)$/'
         ]
     ]
@@ -282,6 +282,19 @@ function getRegexGroup($pattern, $subject)
     }
 }
 
+function checkValue($data)
+{
+    if (is_array($data)) {
+        if (count($data) > 0) {
+            echo $data;
+        } else {
+            echo "Donnée non fournit";
+        }
+    } else {
+        echo $data;
+    }
+}
+
 foreach ($data as $file) {
     foreach ($file["sections"] as $sectionName => $sectionData) {
         foreach ($sectionData as $itemData) {
@@ -300,345 +313,7 @@ foreach ($data as $file) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
-    <style>
-        * {
-            box-sizing: border-box;
-            transition: color 80ms, background 80ms;
-        }
-
-        :root {
-            --color-theme: dark;
-            --color-secondary: #414853;
-            --color-primary: #f66f81;
-            --color-background: #1f1f1f;
-            --color-text: #fff;
-            --color-link: #9499ff;
-        }
-
-        body {
-            width: 100vw;
-            height: auto;
-            margin: 0;
-            overflow-x: hidden;
-
-            background: var(--color-background);
-            font-family: "Poppins", sans-serif;
-            color: var(--color-text);
-            font-size: 16px;
-        }
-
-        a {
-            color: var(--color-link);
-            text-decoration: transparent;
-            transition: opacity .2s ease;
-        }
-
-        a:hover {
-            opacity: .8;
-        }
-
-        p {
-            margin: 0;
-        }
-
-        button {
-            background: none;
-            border: 0;
-            color: inherit;
-            font-size: inherit;
-            cursor: pointer;
-            padding: 0;
-            font-family: "Poppins", sans-serif;
-        }
-
-        h1,
-        h3,
-        h3,
-        h4,
-        h5,
-        h6 {
-            margin: 0;
-            font-weight: 400;
-        }
-
-        .main-title {
-            font-size: 2vw;
-            margin-bottom: 2rem;
-            font-weight: 400;
-        }
-
-        .main-title span {
-            font-size: 5vw;
-            display: block;
-            font-weight: 700;
-            line-height: 100%;
-        }
-
-        header {
-            height: 100vh;
-            padding: 0 40vh;
-            margin-bottom: 4rem;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            text-align: center;
-        }
-
-        header::after {
-            content: "";
-            width: 100%;
-            height: 1px;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            background: #3d3d3d;
-            display: inline-block;
-        }
-
-        header span {
-            display: block;
-            font-size: 1.8rem;
-            font-weight: 500;
-        }
-
-        header h1 {
-            letter-spacing: -1px;
-        }
-
-        header h3 {
-            font-size: 1.2rem;
-            font-weight: 400;
-            margin-bottom: 1rem;
-        }
-
-        header h3 {
-            margin-top: 4rem;
-        }
-
-        section h2,
-        section h3 {
-            width: 100%;
-            padding: .5rem 1rem;
-            margin-top: 0;
-            margin-bottom: 2rem;
-            background: var(--color-secondary);
-            border-left: var(--color-primary) solid 3px;
-            font-weight: 500;
-            font-size: 2rem;
-        }
-
-        section h2 {
-            font-size: 3rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-            color: var(--color-background);
-        }
-
-        section {
-            padding: 3rem 0;
-        }
-
-        .file-section {
-            padding: 6rem 0;
-        }
-
-        section>table {
-            padding: 0 1rem;
-            margin: 1rem 0;
-        }
-
-        section>table tr {
-            text-align: left;
-        }
-
-
-        .container {
-            width: 100vw;
-            padding: 0 20vw;
-        }
-
-        .block {
-            padding: 0 1rem;
-        }
-
-        .dropdown {
-            margin-bottom: 1rem;
-        }
-
-        .dropdown-trigger {
-            width: 100%;
-            display: block;
-            padding: .6rem 1rem;
-            text-align: left;
-            font-size: 1.2rem;
-            border-left: 2px solid var(--color-secondary);
-            transition: background .2s;
-            font-weight: 500;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .dropdown-trigger:hover {
-            background: var(--color-secondary);
-            color: var(--color-link);
-        }
-
-        .dropdown-trigger:hover::after {
-            opacity: 1;
-        }
-
-        .dropdown-trigger::after {
-            content: "-";
-            font-size: 1.4rem;
-            font-weight: 700;
-            opacity: 0;
-        }
-
-        .dropdown-content {
-            width: 100%;
-            padding: .6rem 1rem;
-            border: 2px solid var(--color-secondary);
-            border-top: 0;
-        }
-
-        .dropdown .dropdown-trigger {
-            border: 2px solid var(--color-secondary);
-        }
-
-        .dropdown.hidden .dropdown-trigger::after {
-            content: "+";
-            font-size: 1.4rem;
-            font-weight: 400;
-        }
-
-        .dropdown.hidden .dropdown-content {
-            display: none;
-        }
-
-        .toggle-theme {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            background: var(--color-secondary);
-            padding: 1rem 2rem;
-            border-radius: 5px;
-        }
-
-        .toggle-theme:hover {
-            opacity: .8;
-        }
-
-        .item {
-            margin-bottom: 1rem;
-        }
-
-        .item>p {
-            margin-bottom: 1rem;
-        }
-
-        .item-title {
-            width: 100%;
-            padding: .5rem 1rem;
-            margin: 0;
-            font-weight: 500;
-            font-size: 1.2rem;
-            /* border-left: var(--color-secondary) solid 2px; */
-            border: 2px solid var(--color-secondary);
-            position: relative;
-
-            display: flex;
-            gap: 1rem;
-        }
-
-        .item-title span.type {}
-
-        .item-title span.value {
-            height: 140%;
-            position: absolute;
-            right: -2px;
-            top: 50%;
-            transform: translateY(-50%);
-            padding: .5rem 1.5rem;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background: var(--color-background);
-            border: 2px solid var(--color-secondary);
-        }
-
-        .item p {
-            padding: .6rem 1rem;
-        }
-
-        .sub-item {
-            margin: .5rem 0;
-            display: flex;
-            align-items: center;
-        }
-
-        .sub-item th,
-        .sub-item td {
-            gap: 1rem;
-            text-align: left;
-            padding-right: 1rem;
-        }
-
-        .navigation {
-            position: fixed;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-
-            border-radius: 5px;
-            border: 2px solid var(--color-secondary);
-            overflow: hidden;
-
-            pointer-events: none;
-            opacity: 0;
-        }
-
-        .navigation ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .navigation li {
-            border-bottom: 2px solid var(--color-secondary);
-        }
-
-        .navigation a {
-            text-align: right;
-            padding: .5rem 2rem;
-            display: block;
-            color: var(--color-text);
-        }
-
-        .navigation li:last-child {
-            border-bottom: 0;
-        }
-
-        .navigation a:hover {
-            opacity: .8;
-            background: var(--color-secondary);
-        }
-
-        .navigation a.active {
-            background: var(--color-secondary);
-            color: var(--color-link);
-        }
-
-        .navigation.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="./theme-1.css">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -674,17 +349,19 @@ foreach ($data as $file) {
             </p>
         </section>
 
-        <section>
-            <h3>Fichiers</h3>
+        <?php if (count($data) > 1) { ?>
+            <section>
+                <h3>Fichiers</h3>
 
-            <nav>
-                <ul class='files'>
-                    <?php foreach ($data as $file) { ?>
-                        <li><a href='#<?php echo $file["name"] ?>'><?php echo $file["name"] ?></a></li>
-                    <?php } ?>
-                </ul>
-            </nav>
-        </section>
+                <nav>
+                    <ul class='files'>
+                        <?php foreach ($data as $file) { ?>
+                            <li><a href='#<?php echo $file["name"] ?>'><?php echo $file["name"] ?></a></li>
+                        <?php } ?>
+                    </ul>
+                </nav>
+            </section>
+        <?php } ?>
 
         <?php
         $sectionCounter = 1;
@@ -709,22 +386,22 @@ foreach ($data as $file) {
                     </ol>
                 </nav>
 
-                <section id="<?php echo $file["name"] ?>/en-tete">
+                <section id="<?php checkValue($file["name"]) ?>/en-tete">
                     <h3>1. En-tête</h3>
 
                     <table>
                         <tr>
                             <th>Auteur</th>
-                            <td><?php echo $file["auteur"] ?></td>
+                            <td><?php checkValue($file["auteur"]) ?></td>
                         </tr>
                         <tr>
                             <th>Version</th>
-                            <td><?php echo $file["version"] ?></td>
+                            <td><?php checkValue($file["version"]) ?></td>
                         </tr>
                     </table>
 
                     <p class="block">
-                        <?php echo $file["brief"] ?>
+                        <?php checkValue($file["brief"]) ?>
                     </p>
                 </section>
 
@@ -739,24 +416,22 @@ foreach ($data as $file) {
                             foreach ($sectionData as $itemData) {
                                 if (array_key_exists("param", $itemData)) { ?>
                                     <div class="dropdown" id='<?php if (array_key_exists("type", $itemData)) {
-                                                                    echo $itemData["name"];
+                                                                    checkValue($itemData["name"]);
                                                                 } ?>'>
-                                        <button class="item-title dropdown-trigger"><?php echo $itemData["name"] ?></button>
+                                        <button class="item-title dropdown-trigger"><?php checkValue($itemData["name"]) ?></button>
                                         <div class="dropdown-content">
                                             <p>
-                                                <?php echo $itemData["brief"] ?>
+                                                <?php checkValue($itemData["brief"]) ?>
                                             </p>
 
                                             <table class="sub-item">
                                                 <?php
                                                 foreach ($itemData["param"] as $paramData) { ?>
                                                     <tr>
-                                                        <td><a href="#<?php echo $paramData["type"] ?>"><?php echo $paramData["type"] ?></a></td>
-                                                        <th><?php echo $paramData["name"] ?></th>
-                                                        <td><?php echo $paramData["brief"] ?></td>
+                                                        <td><a href="#<?php checkValue($paramData["type"]) ?>"><?php checkValue($paramData["type"]) ?></a></td>
+                                                        <th><?php checkValue($paramData["name"]) ?></th>
+                                                        <td><?php checkValue($paramData["brief"]) ?></td>
                                                     </tr>
-                                                    <!-- <h4 class="sub-item-title"><?php echo $paramData["name"] ?></h4>
-                                                <p><?php echo $paramData["brief"] ?></p> -->
                                                 <?php } ?>
                                             </table>
                                         </div>
@@ -765,11 +440,11 @@ foreach ($data as $file) {
                                     <div class="item">
                                         <h4 class="item-title">
                                             <?php if (array_key_exists("type", $itemData)) { ?>
-                                                <a href="#<?php echo $itemData["type"]; ?>" class="type"><?php echo $itemData["type"]; ?></a>
+                                                <a href="#<?php echo checkValue($itemData["type"]); ?>" class="type"><?php checkValue($itemData["type"]); ?></a>
                                             <?php } ?>
                                             <?php echo $itemData["name"] ?>
                                             <?php if (array_key_exists("value", $itemData)) { ?>
-                                                <span class="value"><?php echo $itemData["value"]; ?></span>
+                                                <span class="value"><?php checkValue($itemData["value"]); ?></span>
                                             <?php } ?>
                                         </h4>
                                         <p><?php if (gettype($itemData["brief"]) != "array") {
