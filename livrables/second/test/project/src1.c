@@ -59,7 +59,7 @@ typedef struct
 typedef char t_nom[TAILLE];
 
 /**
- * $fn <function-prototype>
+ * $fn < function-prototype >
  * $brief Enlève n chocolat au total de chocolat
  *
  * $param (int) nb : Nombre de chocolat que l'on va manger

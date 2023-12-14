@@ -437,12 +437,30 @@ foreach ($data as $file) {
         }
 
         section {
-            padding: 4rem 0;
+            padding: 3rem 0;
         }
+
+        .file-section {
+            padding: 6rem 0;
+        }
+
+        section>table {
+            padding: 0 1rem;
+            margin: 1rem 0;
+        }
+
+        section>table tr {
+            text-align: left;
+        }
+
 
         .container {
             width: 100vw;
             padding: 0 20vw;
+        }
+
+        .block {
+            padding: 0 1rem;
         }
 
         .dropdown {
@@ -530,6 +548,28 @@ foreach ($data as $file) {
             font-size: 1.2rem;
             /* border-left: var(--color-secondary) solid 2px; */
             border: 2px solid var(--color-secondary);
+            position: relative;
+
+            display: flex;
+            gap: 1rem;
+        }
+
+        .item-title span.type {}
+
+        .item-title span.value {
+            height: 140%;
+            position: absolute;
+            right: -2px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: .5rem 1.5rem;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: var(--color-background);
+            border: 2px solid var(--color-secondary);
         }
 
         .item p {
@@ -542,10 +582,11 @@ foreach ($data as $file) {
             align-items: center;
         }
 
-        .sub-item-title {
-            margin-right: 2rem;
-            font-size: 1.1rem;
-            font-weight: 500;
+        .sub-item th,
+        .sub-item td {
+            gap: 1rem;
+            text-align: left;
+            padding-right: 1rem;
         }
 
         .navigation {
@@ -628,7 +669,7 @@ foreach ($data as $file) {
         <section id="description">
             <h3>Description</h3>
 
-            <p>
+            <p class="block">
                 <?php echo "Super decription du fichier config" ?>
             </p>
         </section>
@@ -667,61 +708,84 @@ foreach ($data as $file) {
 
                     </ol>
                 </nav>
-            </section>
 
-            <section id="<?php echo $file["name"] ?>/en-tete">
-                <h3>1. En-tête</h3>
+                <section id="<?php echo $file["name"] ?>/en-tete">
+                    <h3>1. En-tête</h3>
 
-                <?php echo $file["auteur"] ?>
-                <?php echo $file["version"] ?>
+                    <table>
+                        <tr>
+                            <th>Auteur</th>
+                            <td><?php echo $file["auteur"] ?></td>
+                        </tr>
+                        <tr>
+                            <th>Version</th>
+                            <td><?php echo $file["version"] ?></td>
+                        </tr>
+                    </table>
 
-                <p>
-                    <?php echo $file["brief"] ?>
-                </p>
-            </section>
+                    <p class="block">
+                        <?php echo $file["brief"] ?>
+                    </p>
+                </section>
 
-            <?php foreach ($file["sections"] as $sectionName => $sectionData) {
-                if (count($sectionData) > 0) {
-                    $sectionCounter++; ?>
+                <?php foreach ($file["sections"] as $sectionName => $sectionData) {
+                    if (count($sectionData) > 0) {
+                        $sectionCounter++; ?>
 
-                    <section id="<?php echo $file["name"] . "/" . $sectionName ?>">
-                        <h3><?php echo $sectionCounter ?>. <?php echo ucfirst($sectionName) ?></h3>
+                        <section id="<?php echo $file["name"] . "/" . $sectionName ?>">
+                            <h3><?php echo $sectionCounter ?>. <?php echo ucfirst($sectionName) ?></h3>
 
-                        <?php
-                        foreach ($sectionData as $itemData) {
-                            if (array_key_exists("param", $itemData)) { ?>
-                                <div class="dropdown">
-                                    <button class="item-title dropdown-trigger"><?php echo $itemData["name"] ?></button>
-                                    <div class="dropdown-content">
-                                        <p>
-                                            <?php echo $itemData["brief"] ?>
-                                        </p>
+                            <?php
+                            foreach ($sectionData as $itemData) {
+                                if (array_key_exists("param", $itemData)) { ?>
+                                    <div class="dropdown" id='<?php if (array_key_exists("type", $itemData)) {
+                                                                    echo $itemData["name"];
+                                                                } ?>'>
+                                        <button class="item-title dropdown-trigger"><?php echo $itemData["name"] ?></button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                <?php echo $itemData["brief"] ?>
+                                            </p>
 
-                                        <?php
-                                        foreach ($itemData["param"] as $paramData) { ?>
-                                            <div class="sub-item">
-                                                <h4 class="sub-item-title"><?php echo $paramData["name"] ?></h4>
-                                                <p><?php echo $paramData["brief"] ?></p>
-                                            </div>
-                                        <?php } ?>
+                                            <table class="sub-item">
+                                                <?php
+                                                foreach ($itemData["param"] as $paramData) { ?>
+                                                    <tr>
+                                                        <td><a href="#<?php echo $paramData["type"] ?>"><?php echo $paramData["type"] ?></a></td>
+                                                        <th><?php echo $paramData["name"] ?></th>
+                                                        <td><?php echo $paramData["brief"] ?></td>
+                                                    </tr>
+                                                    <!-- <h4 class="sub-item-title"><?php echo $paramData["name"] ?></h4>
+                                                <p><?php echo $paramData["brief"] ?></p> -->
+                                                <?php } ?>
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
-                            <?php } else { ?>
-                                <div class="item">
-                                    <h4 class="item-title"><?php echo $itemData["name"] ?></h4>
-                                    <p><?php if (gettype($itemData["brief"]) != "array") {
-                                            echo $itemData["brief"];
-                                        } else {
-                                            echo "pas de brief";
-                                        } ?></p>
-                                </div>
+                                <?php } else { ?>
+                                    <div class="item">
+                                        <h4 class="item-title">
+                                            <?php if (array_key_exists("type", $itemData)) { ?>
+                                                <a href="#<?php echo $itemData["type"]; ?>" class="type"><?php echo $itemData["type"]; ?></a>
+                                            <?php } ?>
+                                            <?php echo $itemData["name"] ?>
+                                            <?php if (array_key_exists("value", $itemData)) { ?>
+                                                <span class="value"><?php echo $itemData["value"]; ?></span>
+                                            <?php } ?>
+                                        </h4>
+                                        <p><?php if (gettype($itemData["brief"]) != "array") {
+                                                echo $itemData["brief"];
+                                            } else {
+                                                echo "Pas de brief";
+                                            } ?></p>
+                                    </div>
+                                <?php } ?>
                             <?php } ?>
-                        <?php } ?>
-                    </section>
+                        </section>
 
-            <?php }
-            } ?>
-        <?php } ?>
+                <?php }
+                } ?>
+            <?php } ?>
+            </section>
     </main>
 
     <button class="toggle-theme">
