@@ -15,6 +15,7 @@
 
 #define MAJORITE 18 /** $def Age de la majorité.*/
 #define TAILLE 20/** $def Taille max pour le nom et le prenom.*/
+#define CONSTANTE 20
 
 
 /**
@@ -116,7 +117,7 @@ void afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1)
 *
 * $param (str_utili) s_utilisateur1 : Structure représentant l'utilisateur 1.
 * $param (str_equipe) s_equipe1 : Structure représentant l'équipe 1.
-*
+* $return (int)
 */
 
 void saisirUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 

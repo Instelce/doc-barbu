@@ -1,13 +1,11 @@
 /**
- * 
- * $auteur Jean Passe
- * 
- * Code qui demande un nom, un prénom, un âge et les notes pour créer un étudiant.
- * Ce super programme retourne également la qualité (jugement purement objectif)
- * du nom de la promo pour un étudiant donné.
- * 
+ * $file src1.c
+ * $auteur Jean Neymar
  * $version 1.0.0
  * $date 23/11/23
+ * $brief Code qui demande un nom, un prénom, un âge et une adresse à un utilisateur.
+ * Ensuite sont calculées et affichées les caractéristiques de ce dernier:
+ * (informations, majorité, qualité du nom d'équipe :))
  * 
  */
 
@@ -16,117 +14,123 @@
 #include <string.h>
 
 #define MAJORITE 18 /** $def Age de la majorité.*/
-#define TAILLE 30/** $def Taille max pour le nom et le prenom.*/
+#define TAILLE 20 /** $def Taille max pour le nom et le prenom.*/
 
 
 /**
- *  
- * $nomstruc str_etudiant : Structure d'un étudiant. 
  * 
- * $argstruc nom : Nom de l'étudiant.
- * $argstruc prenom : Prénom de l'étudiant.
- * $argstruc moy : Moyenne de l'étudiant.
- * $argstruc age : Age de l'étudiant.
+ * $typedef (struct) str_utili
+ * $brief Structure d'un utilisateur.
+ * 
+ * $param (char[]) nom : Nom de l'utilisateur.
+ * $param (char[]) prenom : Prénom de l'utilisateur.
+ * $param (char[]) adresse : Adresse de l'utilisateur.
+ * $param (int) age : Age de l'utilisateur.
  * 
  */
 
 typedef struct 
 {
-    char nom[TAILLE]; 
+    char nom[TAILLE];
     char prenom[TAILLE]; 
-    float moy; 
+    char adresse[50]; 
     int age; 
-}str_etudiant; 
+}str_utili; 
 
 
 /**
+ * $typedef (struct) str_equipe
+ * $brief Nom du nouveau type structure.
  * 
- * $nomstruc str_classe : Nom du nouveau type structure.
- * 
- * $argstruc nom : Nom de la promo.
- * $argstruc matiere : Matière dans la promo.
- * 
+ * $param (char[]) nom : Nom de l'équipe.
+ * $param (int) nombreUtili : Nombre d'utilisateur dans l'équipe.
  */
-
-typedef struct 
+typedef struct
 {
-    char nom[TAILLE]; 
-    char matiere[TAILLE]; 
-}str_promo; 
+    char nom[TAILLE];
+    int nombreUtili; 
+}str_equipe;
 
-void afficherEtudiant(str_etudiant s_etudiant, str_promo equipe1);
-void saisirEtudiant(str_etudiant s_etudiant, str_promo equipe1);
+/**
+ * $typedef (char[]) t_nom
+ * $brief lorem ipsum
+ */
+typedef char t_nom[TAILLE];
 
+
+void afficherUtilisateur(str_utili utilisateur1, str_equipe equipe1);
+void saisirUtilisateur(str_utili utilisateur1, str_equipe equipe1);
 
 int main()
 {
-    str_etudiant s_etudiant; /*$var s_utilisateur1 utilisateur de test (n°1)*/
-    str_promo s_promo; /*$var s_equipe equipe dans laquelle va appartenir l'utilisateur*/
+    str_utili s_utilisateur1; /* $var utilisateur de test (n°1)*/
+    str_equipe s_equipe1; /* $var equipe dans laquelle va appartenir l'utilisateur*/
 
-    saisirEtudiant(s_etudiant, s_promo);
-    afficherEtudiant(s_etudiant, s_promo);
+    saisirUtilisateur(s_utilisateur1, s_equipe1);
+    afficherUtilisateur(s_utilisateur1, s_equipe1);
 }
 
 /**
- * $fn afficherEtudiant(str_etudiant s_etudiant, str_promo s_promo) 
-* $brief Affiche les caractéristique de l'étudiant.
-*
-*
-* $param s_etudiant : Structure représentant l'étudiant.
-* $param s_promo : Structure représentant la promo.
+* $fn afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
+* $brief Affiche les caractéristiques de l'utilisateur 1.
+* 
+* $param (str_utili) s_utilisateur1 : Structure représentant l'utilisateur 1.
+* $param (str_equipe) s_equipe1 : Structure représentant l'équipe 1.
 *
 */
 
-void afficherEtudiant(str_etudiant s_etudiant, str_promo s_promo)
+void afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
 {
     printf("\nInformations de l'utilisateur :\n");
-    printf("Nom : %s\n", s_etudiant.nom);
-    printf("Prénom : %s\n", s_etudiant.prenom);
-    if(s_etudiant.age == MAJORITE)
+    printf("Nom : %s\n", s_utilisateur1.nom);
+    printf("Prénom : %s\n", s_utilisateur1.prenom);
+    printf("Adresse : %s\n", s_utilisateur1.adresse);
+    if(s_utilisateur1.age == MAJORITE)
     {
-        printf("L'étudiant est majeur !\n");
+        printf("L'utilisateur 1 est majeur !\n");
     }
     else
     {
-        printf("Âge : %d", s_etudiant.age);
+        printf("Âge : %d", s_utilisateur1.age);
     }
-    printf("Moyenne : %.2f\n", s_etudiant.moy);
-    printf("Fait partis de la promo %s\n", s_promo.nom);
+
+    printf("Fait partis de l'équipe %s", s_equipe1.nom);
 }
 
 
 /**
-* $brief Saisie les caractéristique de l'étudiant.
-* $fn saisirEtudiant(str_etudiant s_etudiant, str_promo s_promo) 
+* $brief Saisie les caractéristiques de l'utilisateur 1.
+* $fn saisirUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
 *
-* $param s_etudiant : Structure représentant l'étudiant.
-* $param s_promo ; Structure représentant la promo.
-*
+* $param (str_utili) s_utilisateur1 : Structure représentant l'utilisateur 1.
+* $param (str_equipe) s_equipe1 : Structure représentant l'équipe 1.
+* $return (int)
 */
 
-void saisirEtudiant(str_etudiant s_etudiant, str_promo s_promo) 
+void saisirUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
 {
-    printf("Entrez le nom de l'étudiant :\n");
-    scanf("%s", s_etudiant.nom);
+    printf("Entrez le nom de l'utilisateur :\n");
+    scanf("%s", s_utilisateur1.nom);
 
-    printf("Entrez le prénom de l'étudiant :\n");
-    scanf("%s", s_etudiant.prenom);
+    printf("Entrez le prénom de l'utilisateur :\n");
+    scanf("%s", s_utilisateur1.prenom);
 
-    printf("Entrez la moyenne de l'étudiant :\n");
-    scanf("%f", &s_etudiant.moy);
+    printf("Entrez l'adresse de l'utilisateur :\n");
+    scanf("%s", s_utilisateur1.adresse);
 
-    printf("Entrez l'âge de l'étudiant :\n");
-    scanf("%d", &s_etudiant.age);
+    printf("Entrez l'âge de l'utilisateur :\n");
+    scanf("%d", &s_utilisateur1.age);
 
-    printf("Dans quelle promo êtes-vous ?\n");
-    scanf("%s", s_promo.nom);
+    printf("Dans quelle équipe êtes-vous ?\n");
+    scanf("%s", s_equipe1.nom);
 
-    if(strcmp(s_promo.nom, "Les barbus\0") == 0)
+
+    if(strcmp(s_equipe1.nom, "Les barbus\0") == 0)
     {
-        printf("La meilleur promo de l'IUT bon choix !\n");
+        printf("Meileur nom d'équipe !\n");
     }
     else
     {
-        printf("Pas mal mais y'a mieux comme promo...\n");
+        printf("Pas mal mais y'a mieux comme nom...\n");
     }
 }
