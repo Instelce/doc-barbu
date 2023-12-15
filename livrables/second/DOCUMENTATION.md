@@ -6,7 +6,7 @@
 ## Syntaxe
 
 - Tous les mots clé
-- Fichier
+- Fichiers
 - Defines
 - Variables
 - Fonctions
