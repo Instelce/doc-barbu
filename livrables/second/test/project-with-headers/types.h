@@ -1,18 +1,19 @@
+#define MAJORITE 18 /** $def Age de la majorité.*/
+#define TAILLE 20/** $def Taille max pour le nom et le prenom.*/
+#define CONSTANTE 20
+
 
 /**
  * 
- * $nomstruc str_utili : Structure d'un utilisateur.
+ * $typedef (struct) str_utili
+ * $brief Structure d'un utilisateur.
  * 
- * $argstruc nom : Nom de l'utilisateur.
- * $argstruc prenom : Prénom de l'utilisateur.
- * $argstruc adresse : Adresse de l'utilisateur.
- * $argstruc age : Age de l'utilisateur.
+ * $param (char[]) nom : Nom de l'utilisateur.
+ * $param (char[]) prenom : Prénom de l'utilisateur.
+ * $param (char[]) adresse : Adresse de l'utilisateur.
+ * $param (int) age : Age de l'utilisateur.
  * 
  */
-
-
-#define MAJORITE 18 /** $def Age de la majorité.*/
-#define TAILLE 20/** $def Taille max pour le nom et le prenom.*/
 
 typedef struct 
 {
@@ -24,15 +25,13 @@ typedef struct
 
 
 /**
+ * $typedef (struct) str_equipe
+ * $brief Nom du nouveau type structure.
  * 
- * $nomstruc str_equipe : Nom du nouveau type structure.
- * 
- * $argstruc nom : Nom de l'équipe.
- * $argstruc nombreUtili : Nombre d'utilisateur dans l'équipe.
- * 
+ * $param (char[]) nom : Nom de l'équipe.
+ * $param (int) nombreUtili : Nombre d'utilisateur dans l'équipe.
  */
-
-typedef struct 
+typedef struct
 {
     char nom[TAILLE];
     int nombreUtili; 

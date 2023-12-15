@@ -12,6 +12,22 @@
     --color-link: #9499ff;
 }
 
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: var(--color-secondary);
+}
+::-webkit-scrollbar-thumb:hover {
+    opacity: .8;
+}
+
 body {
     width: 100vw;
     height: auto;
@@ -341,11 +357,13 @@ section>table tr {
         margin: 0;
     }
     body > header {
-        width: 100vw;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         padding: 0;
+    }
+    body > header h1 {
+        font-size: 5rem;
+    }
+    .container {
+        padding: 0 10vw;
     }
     .file-section {
         page-break-before: always;
