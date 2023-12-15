@@ -8,7 +8,7 @@ LORIS       25%
     - Ecriture de deux fichiers C
 
 YAN         25%
-    - Relecture de la DOC_UTILISATEUR
+    - Relectre de la DOC_UTILISATEUR
     - Ecriture d'un fichier C
 
 CELESTIN    25%
