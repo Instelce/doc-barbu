@@ -7,7 +7,7 @@ $dataPatterns = [
         "foundLine" => '/\#define\s+(.*)/',
         "name" => '/\#define\s+(\w+)/',
         "value" => '/\#define\s+\w+\s+(\w+)/',
-        "brief" => '/\$def\s+(.*)/',
+        "brief" => '/\$def\s+(.*)\*/',
     ],
     "global" => [
         "foundLine" => '/.*\$var.*/',  // only to search for the element
@@ -16,8 +16,9 @@ $dataPatterns = [
         "brief" => '/\/\*\s*\$var\s+(.*)\s*\*\//',
     ],
     "type" => [
+        "foundComment" => '/(?!.*\(struct).*\$typedef\s+\((.*)\)/',
         "type" => '/\$typedef\s+\((.*)\)/',
-        "name" => '/\$typedef\s+\(\w+\)\s+(\w+)/',
+        "name" => '/\$typedef\s+\(.*\)\s+(\w+)/',
         "brief" => '/\$brief\s+(.*)/',
     ],
     "struct" => [
@@ -253,12 +254,6 @@ foreach ($files as $i => $filePath) {
                 }
             }
         }
-
-        // parcour par block de commentaire
-        else {
-            foreach ($commentMatches[0] as $commentMatch) {
-            }
-        }
     }
 }
 
@@ -308,13 +303,13 @@ function checkValue($data)
     }
 }
 
-foreach ($data as $file) {
-    foreach ($file["sections"] as $sectionName => $sectionData) {
-        foreach ($sectionData as $itemData) {
-            // print_r($itemData);
-        }
-    }
-}
+// foreach ($data as $file) {
+//     foreach ($file["sections"] as $sectionName => $sectionData) {
+//         foreach ($sectionData as $itemData) {
+//             // print_r($itemData);
+//         }
+//     }
+// }
 
 ?>
 <!DOCTYPE html>
@@ -326,7 +321,9 @@ foreach ($data as $file) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="./theme-1.css">
+    <style>
+        <?php echo file_get_contents("./theme-1.css") ?>
+    </style>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -428,6 +425,7 @@ foreach ($data as $file) {
                             <?php
                             foreach ($sectionData as $itemData) {
                                 if (array_key_exists("param", $itemData)) { ?>
+
                                     <div class="dropdown" id='<?php if (array_key_exists("type", $itemData)) {
                                                                     checkValue($itemData["name"]);
                                                                 } ?>'>
@@ -447,9 +445,15 @@ foreach ($data as $file) {
                                                     </tr>
                                                 <?php } ?>
                                             </table>
+
+                                            <?php if (array_key_exists("return", $itemData) && !is_array($itemData["return"])) { ?>
+                                                <p>Return <a href="#<?php echo $itemData["return"] ?>"><?php echo $itemData["return"] ?></a></p>
+                                            <?php } ?>
                                         </div>
                                     </div>
-                                <?php } else { ?>
+
+                                    <?php } else { ?>
+
                                     <div class="item">
                                         <h4 class="item-title">
                                             <?php if (array_key_exists("type", $itemData)) { ?>
@@ -466,13 +470,14 @@ foreach ($data as $file) {
                                                 echo "Pas de brief";
                                             } ?></p>
                                     </div>
+
                                 <?php } ?>
                             <?php } ?>
                         </section>
                 <?php }
                 } ?>
-            <?php } ?>
             </section>
+            <?php } ?>
     </main>
 
     <button class="toggle-theme">
