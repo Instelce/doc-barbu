@@ -1,11 +1,9 @@
 /**
- * 
+ * $file src1.c
  * $auteur Jean Neymar
- * 
  * $version 1.0.0
  * $date 23/11/23
- * 
- * Code qui demande un nom, un prénom, un âge et une adresse à un utilisateur.
+ * $brief Code qui demande un nom, un prénom, un âge et une adresse à un utilisateur.
  * Ensuite sont calculées et affichées les caractéristiques de ce dernier:
  * (informations, majorité, qualité du nom d'équipe :))
  * 
@@ -16,17 +14,19 @@
 #include <string.h>
 
 #define MAJORITE 18 /** $def Age de la majorité.*/
-#define TAILLE 20/** $def Taille max pour le nom et le prenom.*/
+#define TAILLE 20 /** $def Taille max pour le nom et le prenom.*/
+#define CONSTANTE 20
 
 
 /**
  * 
- * $nomstruc str_utili : Structure d'un utilisateur.
+ * $typedef (struct) str_utili
+ * $brief Structure d'un utilisateur.
  * 
- * $argstruc nom : Nom de l'utilisateur.
- * $argstruc prenom : Prénom de l'utilisateur.
- * $argstruc adresse : Adresse de l'utilisateur.
- * $argstruc age : Age de l'utilisateur.
+ * $param (char[]) nom : Nom de l'utilisateur.
+ * $param (char[]) prenom : Prénom de l'utilisateur.
+ * $param (char[]) adresse : Adresse de l'utilisateur.
+ * $param (int) age : Age de l'utilisateur.
  * 
  */
 
@@ -40,38 +40,55 @@ typedef struct
 
 
 /**
+ * $typedef (struct) str_equipe
+ * $brief Nom du nouveau type structure.
  * 
- * $nomstruc str_equipe : Nom du nouveau type structure.
- * 
- * $argstruc nom : Nom de l'équipe.
- * $argstruc nombreUtili : Nombre d'utilisateur dans l'équipe.
- * 
+ * $param (char[]) nom : Nom de l'équipe.
+ * $param (int) nombreUtili : Nombre d'utilisateur dans l'équipe.
  */
-
-typedef struct 
+typedef struct
 {
     char nom[TAILLE];
     int nombreUtili; 
 }str_equipe;
+
+/**
+ * $typedef (char[]) t_nom
+ * $brief lorem ipsum
+ */
+typedef char t_nom[TAILLE];
+
+/**
+ * $fn < function-prototype >
+ * $brief Enlève n chocolat au total de chocolat
+ *
+ * $param (int) nb : Nombre de chocolat que l'on va manger
+ * $param (int) totalChocolat : Total de chocolat
+ *
+ */
+void mangerChocolat(int nb, int totalChocolat) {
+    // ...
+}
 
 void afficherUtilisateur(str_utili utilisateur1, str_equipe equipe1);
 void saisirUtilisateur(str_utili utilisateur1, str_equipe equipe1);
 
 int main()
 {
-    str_utili s_utilisateur1; /*$var s_utilisateur1 utilisateur de test (n°1)*/
-    str_equipe s_equipe1; /*$var s_equipe equipe dans laquelle va appartenir l'utilisateur*/
+    str_utili s_utilisateur1; /* $var utilisateur de test (n°1)*/
+    str_equipe s_equipe1; /* $var equipe dans laquelle va appartenir l'utilisateur*/
+    int num; /* $var nombre */
 
     saisirUtilisateur(s_utilisateur1, s_equipe1);
     afficherUtilisateur(s_utilisateur1, s_equipe1);
 }
 
 /**
- * $fn afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
+* $fn afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
 * $brief Affiche les caractéristiques de l'utilisateur 1.
-*   
-* $param s_utilisateur1 : Structure représentant l'utilisateur 1.
-* $param s_equipe1 : Structure représentant l'équipe 1.
+* 
+* $param (str_utili) s_utilisateur1 : Structure représentant l'utilisateur 1.
+* $param (str_equipe) s_equipe1 : Structure représentant l'équipe 1.
 *
 */
 
@@ -98,9 +115,9 @@ void afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1)
 * $brief Saisie les caractéristiques de l'utilisateur 1.
 * $fn saisirUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 
 *
-* $param s_utilisateur1 : Structure représentant l'utilisateur 1.
-* $param s_equipe1 : Structure représentant l'équipe 1.
-*
+* $param (str_utili) s_utilisateur1 : Structure représentant l'utilisateur 1.
+* $param (str_equipe) s_equipe1 : Structure représentant l'équipe 1.
+* $return (int)
 */
 
 void saisirUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1) 

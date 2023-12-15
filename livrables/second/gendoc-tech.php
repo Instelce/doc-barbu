@@ -1,244 +1,565 @@
 <?php
-    $patterns = [
-        "auteur" => '/\$auteur\s+(.*)/',
-        "version" => '/\$version\s+(.*)/',
-        "date" => '/\$date\s+(.*)/',
-        "defines" => '/\s*\$def\s*(.*)/',
-        "var" => '/\s*\$var\s*(.*)/',
-        "structs" => [
-            "nomstruc" => '/\s*\$nomstruc\s*(.*)/',
-            "argstruc" => '/\s*\$argstruc\s*(.*)/',
-        ],
-        "functions" => [
-            "nomfn" => '/\s*\$fn\s*(.*)/',
-            "paramfn" => '/\s*\$param\s*(.*)/',
-            "returnfn" => '/\s*\$return\s*(.*)/'
-        ],
-    ];
+$dataPatterns = [
+    "auteur" => '/\$author\s+(.*)/',
+    "version" => '/\$version\s+(.*)/',
+    "brief" => '/\$brief\s+(.*)/',
+    "define" => [
+        "foundLine" => '/\#define\s+(.*)/',
+        "name" => '/\#define\s+(\w+)/',
+        "value" => '/\#define\s+\w+\s+(\w+)/',
+        "brief" => '/\$def\s+(.*)\*/',
+    ],
+    "global" => [
+        "foundLine" => '/.*\$var.*/',  // only to search for the element
+        "type" => '/^\s*(\w+)\s+\w+\s*;/',
+        "name" => '/^\s*\w+\s+(\w+)\s*;/',
+        "brief" => '/\/\*\s*\$var\s+(.*)\s*\*\//',
+    ],
+    "type" => [
+        "foundComment" => '/(?!.*\(struct).*\$typedef\s+\((.*)\)/',
+        "type" => '/\$typedef\s+\((.*)\)/',
+        "name" => '/\$typedef\s+\(.*\)\s+(\w+)/',
+        "brief" => '/\$brief\s+(.*)/',
+    ],
+    "struct" => [
+        "foundComment" => '/\$typedef\s+\(struct\)\s+/',
+        "type" => '/\$typedef\s+\((.*)\)/',
+        "name" => '/\$typedef\s+\(\w+\)\s+(\w+)/',
+        "brief" => '/\$brief\s+(.*)/',
+        "param" => [
+            "found" => '/\$param\s+(.*)/',
+            "type" => '/\((.*?)\)/',
+            "name" => '/\)\s+(.*?)\s+/',
+            "brief" => '/\:\s+(.*?)$/'
+        ]
+    ],
+    "fn" => [
+        "foundComment" => '/\$fn/',
+        "name" => '/\$fn\s+(.*)/',
+        "brief" => '/\$brief\s+(.*)/',
+        "return" => '/\$return\s*\((.*)\)/',
+        "param" => [
+            "found" => '/\$param\s+(.*)/',
+            "type" => '/\((.*?)\)/',
+            "name" => '/\)\s+(.*?)\s+/',
+            "brief" => '/\:\s+(.*?)$/'
+        ]
+    ]
+];
 
-    // plusieurs commandes
-    // --dir <dirname>              Cherche tous les fichiers présents dans le dossier et génère leur documentation.
-    // --main <main_program_file>   Génère la documentation du fichier principal et des fichiers importés
-    // --onefile <file_name>        Génère la documentation d'un fichier
-    // --help                       Donne la documentation des commandes
+$sections = [
+    "defines" => [
+        "define"
+    ],
+    "globals" => [
+        "global"
+    ],
+    "types" => [
+        "type",
+    ],
+    "structures" => [
+        "struct",
+    ],
+    "fonctions" => [
+        "fn"
+    ]
+];
 
-    $commands = ["--dir", "--main", "--onefile"];
-    $files = [];
+// plusieurs commandes
+// --config                     Génère le fichier de configuration à renseigner
+// --dir <dirname>              Cherche tous les fichiers présents dans le dossier et génère leur documentation.
+// --main <main_program_file>   Génère la documentation du fichier principal et des fichiers importés
+// --onefile <file_name>        Génère la documentation d'un fichier
+// --help                       Donne la documentation des commandes
 
-    if (count($argv) > 1) {
-        $command = $argv[1];
-        $commandValue = $argv[2];
 
-        if (!in_array($command, $commands)) {
-            exit("Cette commande n'existe pas.");
-        } else if ($commandValue == '') {
-            exit("Veuillez saisir la valeur de la commande.");
+$commands = ["--dir", "--main", "--onefile", "--config"];
+$files = [];
+
+if (count($argv) > 1) {
+    $command = $argv[1];
+    $commandValue = $argv[2];
+
+    if ($command == "--config") {
+        file_put_contents("config", "CLIENT=XXX\nPRODUIT=XXX\nVERSION=X.X.X");
+    } else if (!in_array($command, $commands)) {
+        exit("Cette commande n'existe pas.");
+    } else if ($commandValue == '') {
+        exit("Veuillez saisir la valeur de la commande.");
+    } else {
+        if ($command == "--dir") {
+            $files = glob(getcwd() . DIRECTORY_SEPARATOR . $commandValue . DIRECTORY_SEPARATOR . "*.c");
+        }
+
+        if (file_exists($commandValue)) {
+            if ($command == "--onefile") {
+                array_push($files, $commandValue);
+            }
+
+            if ($command == "--main") {
+                $path = explode(DIRECTORY_SEPARATOR, $commandValue);
+                array_pop($path);
+                $path = join(DIRECTORY_SEPARATOR, $path);
+                // echo "\n" . $path . "\n";
+
+                array_push($files, $commandValue);
+
+                // récupère les includes
+                $includePattern = '/#include\s+"([^"]*)"/m';
+                preg_match_all($includePattern, file_get_contents($commandValue), $includeMatches);
+
+                foreach ($includeMatches[0] as $include) {
+                    // echo str_replace("\"", "", explode(" ", $include)[1]) . "\n";
+                    $headerFileName = str_replace("\"", "", explode(" ", $include)[1]);
+                    $cFileName = str_replace("h", "c", $headerFileName);
+
+                    array_push($files, $path . DIRECTORY_SEPARATOR . $headerFileName);
+
+                    if (file_exists($path . DIRECTORY_SEPARATOR . $cFileName)) {
+                        array_push($files, $path . DIRECTORY_SEPARATOR . $cFileName);
+                    }
+                }
+            }
         } else {
-            if ($command == "--dir") {
-                $files = glob(getcwd() . DIRECTORY_SEPARATOR . $commandValue . DIRECTORY_SEPARATOR . "*.c");
+            exit("Le fichier n'existe pas !");
+        }
 
-                echo getcwd() . "\n";
-                // print_r($files);
-            }
+        // echo "Génération de la documentation...\n";
+    }
+} else {
+    exit("Aucune commande trouvée.");
+}
 
-            if (file_exists($commandValue)) {
-                if ($command == "--onefile") {
-                    array_push($files, $commandValue);
-                }
+// récupération du texte de config
+$config_content = file_get_contents("config");
 
-                if ($command == "--main") {
-                    $path = explode(DIRECTORY_SEPARATOR, $commandValue);
-                    array_pop($path);
-                    $path = join(DIRECTORY_SEPARATOR, $path);
-                    echo "\n" . $path . "\n";
 
-                    array_push($files, $commandValue);
+// $files = ["../first/src1.c", "../first/src2.c", "../first/src3.c"];
+$data = [];
+$config_data = [];
 
-                    // récupère les includes
-                    $includePattern = '/#include\s+"([^"]*)"/m';
-                    preg_match_all($includePattern, file_get_contents($commandValue), $includeMatches);
+// données de config
+foreach($config_pattern as $patternName => $p) {
+    $config_data[$patternName] = getRegexGroup($p, $config_content);
+}
 
-                    foreach ($includeMatches[0] as $include) {
-                        echo str_replace("\"", "", explode(" ", $include)[1]) . "\n";
-                        $headerFileName = str_replace("\"", "", explode(" ", $include)[1]);
-                        $cFileName = str_replace("h", "c", $headerFileName);
+print_r($config_data);
 
-                        array_push($files, $path . DIRECTORY_SEPARATOR . $headerFileName);
+// initialisation des données des fichiers
+foreach ($files as $path) {
+    $lastIndex = count(explode(DIRECTORY_SEPARATOR, $path)) - 1;
+    array_push($data, [
+        "name" => explode(DIRECTORY_SEPARATOR, $path)[$lastIndex],
+        "path" => $path,
+        "auteur" => "",
+        "version" => "",
+        "brief" => "",
+        "sections" => [
+            "defines" => [],
+            "globals" => [],
+            "types" => [],
+            "structures" => [],
+            "fonctions" => []
+        ]
+    ]);
+}
 
-                        if (file_exists($path . DIRECTORY_SEPARATOR . $cFileName)) {
-                            array_push($files, $path . DIRECTORY_SEPARATOR . $cFileName);
-                        }
-                    }
-                }
+// boucle tous les fichiers
+foreach ($files as $i => $filePath) {
+    // echo "* " . $data[$i]["name"] . "...\n";
+    $fileContent = file_get_contents($filePath);
+    $fileLines = explode("\n", $fileContent);
+
+    // récupère tous les commentaires
+    $commentPattern = '/(\/\/.*$|\/\*[\s\S]*?\*\/)/m';
+    preg_match_all($commentPattern, $fileContent, $commentMatches);
+
+    // donnees de l'entête
+    $enteteData = $commentMatches[0][0];
+    $data[$i]["auteur"] = getRegexGroup($dataPatterns["auteur"], $enteteData);
+    $data[$i]["version"] = getRegexGroup($dataPatterns["version"], $enteteData);
+    $data[$i]["brief"] = getRegexGroup($dataPatterns["brief"], $enteteData);
+
+    $structCount = 0;
+    $fnCount = 0;
+
+    // récupération des données du fichier
+    foreach ($sections as $sectionName => $section) {
+
+        foreach ($section as $sectionFieldName) {
+            if (gettype($dataPatterns[$sectionFieldName]) == "array") {
+                $inLine = [array_key_exists("foundLine", $dataPatterns[$sectionFieldName]), $sectionFieldName];
+                $inComment = [array_key_exists("foundComment", $dataPatterns[$sectionFieldName]), $sectionFieldName];
             } else {
-                exit("Le fichier n'existe pas !");
+                $inLine = [false, ""];
+                $inComment = [false, ""];
             }
-
-            echo "Génération de la documentation...\n";
         }
-    } else {
-        exit("Aucune commande trouvée.");
-    }
 
-    // $files = ["../first/src1.c", "../first/src2.c", "../first/src3.c"];
-    $data = [];
+        // parcours par matches
+        if ($inLine[0]) {
+            // echo "\nIN LINE --------------------------------\n";
+            // print_r($inLine);
+            // print_r($dataPatterns[$inLine[1]]);
 
-    // initialisation des données
-    foreach ($files as $path) {
-        $lastIndex = count(explode("/", $path)) - 1;
-        array_push($data, [
-            "name" => explode("/", $path)[$lastIndex],
-            "path" => $path,
-            "contents" => [
-                "auteur" => "",
-                "version" => "",
-                "date" => "",
-                "defines" => [],
-                "var" => [],
-                "structs" => [],
-                "functions" => []
-            ]
-        ]);
-    }
+            preg_match_all($dataPatterns[$inLine[1]]["foundLine"], $fileContent, $sectionMatches);
 
-    // récupération des données des commentaires pour tous les fichiers
-    foreach ($files as $i => $filePath) {
-        $content = file_get_contents($filePath);
+            // loop toute les lignes matchant avec la section
+            foreach ($sectionMatches[0] as $sectionMatch) {
+                foreach ($section as $sectionFieldName) {
+                    $sectionLenght = count($data[$i]["sections"][$sectionName]);
 
-        // récupère tous les commentaires
-        $commentPattern = '/(\/\/.*$|\/\*[\s\S]*?\*\/)/m';
-        preg_match_all($commentPattern, $content, $matches);
+                    foreach ($dataPatterns[$inLine[1]] as $patternName => $pattern) {
+                        $data[$i]["sections"][$sectionName][$sectionLenght][$patternName] = getRegexGroup($pattern, $sectionMatch);
+                    }
 
-        $structCount = 0;
-        $fnCount = 0;
+                    unset($data[$i]["sections"][$sectionName][$sectionLenght]["foundLine"]);
+                }
+            }
+        } else if ($inComment[0]) {
+            // echo "\nIN COMMENT --------------------------------\n";
+            // print_r($inComment);
+            // print_r($dataPatterns[$inComment[1]]);
 
-        foreach ($matches[0] as $comment) {
-            // supprime '/*' et '*/' des commentaires
-            $commentContent = preg_replace('/^\/\/\s?|^\/\*\s?|\*\/$/', '', $comment);
-            // echo '--' . $commentContent . "\n";
+            foreach ($commentMatches[0] as $commentMatch) {
+                $isInComment = preg_match($dataPatterns[$inComment[1]]["foundComment"], $commentMatch);
 
-            foreach ($patterns as $patternName => $p) {
+                if ($isInComment) {
+                    $sectionLenght = count($data[$i]["sections"][$sectionName]);
+                    foreach ($dataPatterns[$inComment[1]] as $patternName => $pattern) {
+                        if (gettype($pattern) != 'array') {
+                            $data[$i]["sections"][$sectionName][$sectionLenght][$patternName] = getRegexGroup($pattern, $commentMatch);
+                        } else {
+                            $isSub = preg_match_all($pattern["found"], $commentMatch, $subMatches);
 
-                // Check pour les fonctions
-                if($patternName == "functions") {
-                    $isFunc = preg_match($patterns["functions"]["nomfn"], $commentContent, $nomfn) ;
-                    
-                    if ($isFunc != 0) {
-                        array_push($data[$i]["contents"]["functions"], [
-                            "name" => explode(" ", $nomfn[1])[0],
-                            "parameters" => [],
-                            "return" => []
-                        ]);
+                            if ($isSub) {
+                                // create the array if it doesn't exist
+                                if (!in_array($patternName, $data[$i]["sections"][$sectionName][$sectionLenght])) {
+                                    $data[$i]["sections"][$sectionName][$sectionLenght][$patternName] = [];
+                                }
 
-                        // gestion des parmaètres de la fonction/procédure (s'il y en a)
+                                foreach ($subMatches[1] as $subMatch) {
+                                    $sectionSubLenght = count($data[$i]["sections"][$sectionName][$sectionLenght][$patternName]);
 
-                        if (preg_match_all($patterns["functions"]["paramfn"], $commentContent, $paramMatches) != 0) {
-                            foreach($paramMatches[0] as $paramInfo) {
-                                preg_match($patterns["functions"]["paramfn"], $paramInfo, $paramMatch);
-    
-                                array_push($data[$i]["contents"]["functions"][$fnCount]["parameters"], [
-                                    "name" => explode(' : ', $paramMatch[1])[0],
-                                    "description" => explode(' : ', $paramMatch[1])[1],
-                                ]);
+                                    foreach ($dataPatterns[$inComment[1]][$patternName] as $subPatternName => $subPattern) {
+                                        $data[$i]["sections"][$sectionName][$sectionLenght][$patternName][$sectionSubLenght][$subPatternName] = getRegexGroup($subPattern, $subMatch);
+                                    }
+
+                                    unset($data[$i]["sections"][$sectionName][$sectionLenght][$patternName][$sectionSubLenght]["found"]);
+                                }
                             }
                         }
-
-                        // gestion du return de la fonction (s'il y en a)
-                        if (preg_match($patterns["functions"]["returnfn"], $paramInfo, $returnInfo) != 0) {
-                            array_push($data[$i]["contents"]["functions"][$fnCount]["return"], [
-                                "name" => explode(' : ', $returnInfo[1])[0],
-                                "description" => explode(' : ', $returnInfo[1])[1],
-                            ]);
-                        }                     
-
-                        $fnCount++;
-
                     }
-
-
-                } else if ($patternName == "structs") {
-                    // ajout d'une struture si le commentaire actuel contient la variable $nomstruc
-                    $isStruct = preg_match($patterns["structs"]["nomstruc"], $commentContent, $nomstruc);
-
-                    // ajout des données de la structure
-                    if ($isStruct != 0) {
-                        array_push($data[$i]["contents"]["structs"], [
-                            "name" => explode(" : ", $nomstruc[1])[0],
-                            "components" => [],
-                        ]);
-
-                        // gestion des arguments (seulement s'il y en a)
-                        if (preg_match_all($patterns["structs"]["argstruc"], $commentContent, $componantMatches)) {
-                            foreach ($componantMatches[0] as $componant) {
-                                preg_match($patterns["structs"]["argstruc"], $componant, $componantMatch);
-    
-                                array_push($data[$i]["contents"]["structs"][$structCount]["components"], [
-                                    "name" => explode(" : ", $componantMatch[1])[0],
-                                    "description" => explode(" : ", $componantMatch[1])[1]
-                                ]);
-                            }
-                        }            
-
-                        $structCount++;
-                    }
-                } else {
-                    // récupère le match du pattern
-                    $isMatching = preg_match($p, $commentContent, $patternMatch);
-
-                    // sauvegarde un match si il y en a un
-                    if ($isMatching != 0) {
-                        
-                        // [1] car on veut uniquement les données du groupe : (.*)
-                        $type = gettype($data[$i]["contents"][$patternName]);
-                        if ($type == 'array') {
-                            array_push($data[$i]["contents"][$patternName], $patternMatch[1]);
-                        } else if ($type == 'string') {
-                            $data[$i]["contents"][$patternName] = rtrim($patternMatch[1]);
-                        }
-                    }
+                    unset($data[$i]["sections"][$sectionName][$sectionLenght]["foundComment"]);
                 }
             }
         }
     }
+}
 
-    $htmlContent = file_get_contents("./data/DOC_TECHNIQUE_TEMPLATE.html");
+// fopen("./test-output/tech.json", "w");
+// file_put_contents("./test-output/tech.json", json_encode($data, JSON_PRETTY_PRINT));
 
-    echo $data[0]["contents"]["auteur"] . "\n";
+function convertToSingular($subject)
+{
+    return str_replace("s", "", $subject);
+}
 
-    // si on a un fichier
-    if (count($data) == 1) {
-        $fileData = $data[0];
-        $htmlContent = str_replace("[CLIENT]", $fileData["contents"]["auteur"], $htmlContent);
-        $htmlContent = str_replace("[VERSION]", $fileData["contents"]["version"], $htmlContent);
-        $htmlContent = str_replace("[DATE]", $fileData["contents"]["date"], $htmlContent);
+function convertToPlural($subject)
+{
+    return $subject . "s";
+}
 
-        foreach ($patterns as $patternName => $_) {
-            // création du html
-            $innerHtml = "";
-            if (gettype($fileData["contents"][$patternName]) == 'array') {
-                echo $patternName . "\n";
+function getTextBetweenParenthesis($text)
+{
+    return str_replace(")", "", str_replace("(", "", $text));
+}
 
-                if ($patternName == "structs") {
+function matchExist($pattern, $subject)
+{
+    return preg_match($pattern, $subject);
+}
 
-                } else {
-                    foreach ($fileData["contents"][$patternName] as $value) {
-                        $innerHtml = $innerHtml . "<div class='item'>
-                            <h3 class='item-title'>". "METTER NOM DEFINE" ."</h3>
-                            <p>". $value ."</p>
-                        </div>";
-                    }
-                }
-            }
+function getRegexGroup($pattern, $subject)
+{
+    $isMatching = preg_match($pattern, $subject, $match);
+    if ($isMatching && count($match) > 1) {
+        return rtrim($match[1]);
+    } else {
+        return $match;
+    }
+}
 
+function checkValue($data)
+{
+    if (is_array($data)) {
+        if (count($data) > 0) {
+            echo $data;
+        } else {
+            echo "Donnée non fournit";
         }
     } else {
-        foreach ($files as $file) {
-
-        }
+        echo $data;
     }
+}
 
+// foreach ($data as $file) {
+//     foreach ($file["sections"] as $sectionName => $sectionData) {
+//         foreach ($sectionData as $itemData) {
+//             // print_r($itemData);
+//         }
+//     }
+// }
 
-
-    file_put_contents("./data/tech.json", json_encode($data, JSON_PRETTY_PRINT));
-    file_put_contents("./data/DOC_TECHNIQUE.html", $htmlContent);
 ?>
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <style>
+        <?php echo file_get_contents("./theme-1.css") ?>
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><?php echo $config_data["produit"]?> - Documentation</title>
+</head>
+
+<body>
+    <header>
+        <h1 class="main-title">Projet <span><?php echo $config_data["produit"]?></span></h1>
+
+        <h3>
+            Client
+            <span><?php echo $config_data["client"]?></span>
+        </h3>
+
+        <h3>
+            Version
+            <span><?php echo $config_data["version"]?></span>
+        </h3>
+
+        <h3>
+            <?php echo date("m/d/Y") ?>
+        </h3>
+    </header>
+
+    <main class="container">
+        <section id="description">
+            <h3>Description</h3>
+
+            <p class="block">
+                <?php echo "Super decription du fichier config" ?>
+            </p>
+        </section>
+
+        <?php if (count($data) > 1) { ?>
+            <section>
+                <h3>Fichiers</h3>
+
+                <nav>
+                    <ul class='files'>
+                        <?php foreach ($data as $file) { ?>
+                            <li><a href='#<?php echo $file["name"] ?>'><?php echo $file["name"] ?></a></li>
+                        <?php } ?>
+                    </ul>
+                </nav>
+            </section>
+        <?php } ?>
+
+        <?php
+        $sectionCounter = 1;
+        foreach ($data as $file) { ?>
+            <section id="<?php echo $file["name"] ?>" class="file-section">
+                <h2><?php echo $file["name"] ?></h2>
+
+                <h3>Chapitres</h3>
+
+                <nav>
+                    <ol type="1">
+                        <li><a href="#<?php echo $file["name"] ?>/en-tete">En-tête</a></li>
+
+                        <?php foreach ($file["sections"] as $sectionName => $sectionData) {
+                            if (count($sectionData) > 0) { ?>
+
+                                <li><a href='#<?php echo $file["name"] . "/" . $sectionName ?>'><?php echo ucfirst($sectionName) ?></a></li>
+
+                        <?php }
+                        } ?>
+
+                    </ol>
+                </nav>
+
+                <section id="<?php checkValue($file["name"]) ?>/en-tete">
+                    <h3>1. En-tête</h3>
+
+                    <table>
+                        <tr>
+                            <th>Auteur</th>
+                            <td><?php checkValue($file["auteur"]) ?></td>
+                        </tr>
+                        <tr>
+                            <th>Version</th>
+                            <td><?php checkValue($file["version"]) ?></td>
+                        </tr>
+                    </table>
+
+                    <p class="block">
+                        <?php checkValue($file["brief"]) ?>
+                    </p>
+                </section>
+
+                <?php foreach ($file["sections"] as $sectionName => $sectionData) {
+                    if (count($sectionData) > 0) {
+                        $sectionCounter++; ?>
+
+                        <section id="<?php echo $file["name"] . "/" . $sectionName ?>">
+                            <h3><?php echo $sectionCounter ?>. <?php echo ucfirst($sectionName) ?></h3>
+
+                            <?php
+                            foreach ($sectionData as $itemData) {
+                                if (array_key_exists("param", $itemData)) { ?>
+
+                                    <div class="dropdown" id='<?php if (array_key_exists("type", $itemData)) {
+                                                                    checkValue($itemData["name"]);
+                                                                } ?>'>
+                                        <button class="item-title dropdown-trigger"><?php checkValue($itemData["name"]) ?></button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                <?php checkValue($itemData["brief"]) ?>
+                                            </p>
+
+                                            <table class="sub-item">
+                                                <?php
+                                                foreach ($itemData["param"] as $paramData) { ?>
+                                                    <tr>
+                                                        <td><a href="#<?php checkValue($paramData["type"]) ?>"><?php checkValue($paramData["type"]) ?></a></td>
+                                                        <th><?php checkValue($paramData["name"]) ?></th>
+                                                        <td><?php checkValue($paramData["brief"]) ?></td>
+                                                    </tr>
+                                                <?php } ?>
+                                            </table>
+
+                                            <?php if (array_key_exists("return", $itemData) && !is_array($itemData["return"])) { ?>
+                                                <p>Return <a href="#<?php echo $itemData["return"] ?>"><?php echo $itemData["return"] ?></a></p>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+
+                                    <?php } else { ?>
+
+                                    <div class="item">
+                                        <h4 class="item-title">
+                                            <?php if (array_key_exists("type", $itemData)) { ?>
+                                                <a href="#<?php echo checkValue($itemData["type"]); ?>" class="type"><?php checkValue($itemData["type"]); ?></a>
+                                            <?php } ?>
+                                            <?php echo $itemData["name"] ?>
+                                            <?php if (array_key_exists("value", $itemData)) { ?>
+                                                <span class="value"><?php checkValue($itemData["value"]); ?></span>
+                                            <?php } ?>
+                                        </h4>
+                                        <p><?php if (gettype($itemData["brief"]) != "array") {
+                                                echo $itemData["brief"];
+                                            } else {
+                                                echo "Pas de brief";
+                                            } ?></p>
+                                    </div>
+
+                                <?php } ?>
+                            <?php } ?>
+                        </section>
+                <?php }
+                } ?>
+            </section>
+            <?php } ?>
+    </main>
+
+    <button class="toggle-theme">
+        Light
+    </button>
+
+    <nav class="navigation">
+        <ul>
+        </ul>
+    </nav>
+
+    <script>
+        const dropdowns = document.querySelectorAll(".dropdown");
+
+        dropdowns.forEach(dropdown => {
+            let dropdownContent = dropdown.querySelector(".dropdown-content");
+            let dropdownTrigger = dropdown.querySelector(".dropdown-trigger");
+            dropdownTrigger.addEventListener("click", (e) => {
+                e.preventDefault()
+                dropdown.classList.toggle("hidden")
+            })
+        })
+
+        const toggleTheme = document.querySelector(".toggle-theme");
+        const root = document.querySelector(":root")
+        const rootColors = getComputedStyle(root)
+        toggleTheme.addEventListener("click", (e) => {
+            e.preventDefault()
+            if (rootColors.getPropertyValue("--color-theme") == "dark") {
+                root.style.setProperty("--color-theme", "light")
+                root.style.setProperty("--color-background", "#ececec")
+                root.style.setProperty("--color-text", "#1f1f1f")
+                root.style.setProperty("--color-secondary", "#c4c4c4")
+                root.style.setProperty("--color-link", "#664BFF")
+                toggleTheme.innerText = "Dark"
+            } else {
+                root.style.setProperty("--color-theme", "dark")
+                root.style.setProperty("--color-background", "#1f1f1f")
+                root.style.setProperty("--color-text", "#ececec")
+                root.style.setProperty("--color-secondary", "#414853")
+                root.style.setProperty("--color-link", "#9499ff")
+                toggleTheme.innerText = "Light"
+            }
+        })
+
+        // generate links of navigation bar
+        const filesLink = document.querySelector(".files");
+        const navigationLinksList = document.querySelector(".navigation ul");
+
+        navigationLinksList.innerHTML = filesLink.innerHTML;
+
+
+        // files navigation
+        const navigation = document.querySelector(".navigation");
+        const navLinks = document.querySelectorAll(".navigation a");
+        const sections = document.querySelectorAll("section.file-section")
+
+        window.onscroll = () => {
+            if (window.scrollY > window.screen.height) {
+                navigation.classList.add("show")
+            } else {
+                navigation.classList.remove("show")
+            }
+
+            sections.forEach(section => {
+                let top = window.scrollY
+                let offset = section.offsetTop - 150
+                let height = section.offsetHeight
+                let id = section.getAttribute("id")
+
+                if (top >= offset && top < offset + height) {
+                    navLinks.forEach(link => {
+                        if (link.getAttribute("href") == "#" + id) {
+                            link.classList.add("active")
+                        } else {
+                            link.classList.remove("active")
+                        }
+                    })
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

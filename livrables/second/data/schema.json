@@ -1,0 +1,58 @@
+[
+    {
+        "name": "",
+        "path": "",
+        "auteur": "",
+        "version": "",
+        "date": "",
+        "contents": {
+            "defines": [
+                {
+                    "name": "",
+                    "value": "",
+                    "brief": ""
+                }
+            ],
+            "globals": [
+                {
+                    "type": "",
+                    "name": "",
+                    "brief": ""
+                }
+            ],
+            "types": [
+                {
+                    "type": "",
+                    "name": "",
+                    "brief": ""
+                }
+            ],
+            "structures": [
+                {
+                    "name": "",
+                    "params": [
+                        {
+                            "type": "",
+                            "name": "",
+                            "brief": ""
+                        }
+                    ]
+                }
+            ],
+            "functions": [
+                {
+                    "name": "",
+                    "prototype": "",
+                    "params": [
+                        {
+                            "type": "",
+                            "name": "",
+                            "brief": ""
+                        }
+                    ],
+                    "return": ""
+                }
+            ]
+        }
+    }
+]
