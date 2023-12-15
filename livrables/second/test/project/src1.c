@@ -14,7 +14,7 @@
 #include <string.h>
 
 #define MAJORITE 18 /** $def Age de la majorité.*/
-#define TAILLE 20/** $def Taille max pour le nom et le prenom.*/
+#define TAILLE 20 /** $def Taille max pour le nom et le prenom.*/
 #define CONSTANTE 20
 
 
