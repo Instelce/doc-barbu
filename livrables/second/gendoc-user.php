@@ -4,12 +4,16 @@ $docsMD = file("../first/DOC_UTILISATEUR.md");
 
 $docsFinal = fopen($fichier, 'w');
 
-$baseHTMLContent = file_get_contents("./data/baseHTML.txt");
+$baseHTMLContent = file_get_contents("./data/baseHTML_gendoc_utilisateur.txt");
+
+$lignePrece = "";
 
 if ($docsFinal) 
 {
     fwrite($docsFinal, $baseHTMLContent . "\n");
+    $listeNum = false;
     $liste = false;
+    $tableau = false;
 
     foreach ($docsMD as $ligneCourante) 
     {   
@@ -45,15 +49,28 @@ else
 
 fclose($docsFinal);
 
+function tableau($docsFinal, $ligneCourante, $lignePrece)
+{
+    global $tableau;
+
+    if($tableau == false)
+    {
+        fwrite($docsFinal, "\n" . "<table>" . "\n");
+        $tableau = true;
+    }
+    if(preg_match('//', $lignePrece))
+    {
+
+    }
+}
+
 function commande($docsFinal, $ligneCourante, $lignePrece)
 {
-
     if(!empty($ligneCourante))
     {
         fwrite($docsFinal, "\t" . "<p id=\"commande\"><em>$ligneCourante</em></p>" . "\n");
     }
 }
-
 
 
 function liste($docsFinal, $ligneCourante, $lignePrece)
@@ -63,7 +80,13 @@ function liste($docsFinal, $ligneCourante, $lignePrece)
     $titreListe = "";
     $lienListe = "";
 
+    global $liste;
 
+    if($liste == false)
+    {
+        fwrite($docsFinal, "\n" . "<ul>" . "\n");
+        $liste = true;
+    }
     if (preg_match($pattern, $lignePrece, $matches)) 
     {
         $titreListe = $matches[1];
@@ -127,7 +150,7 @@ function titre($docsFinal, $ligneCourante, $lignePrece)
     {
         $contenuLigne = substr($lignePrece, 5);
     
-        fwrite($docsFinal, "\t" . "<h4>$contenuLigne</h4>" . "\n" . PHP_EOL);
+        fwrite($docsFinal, "\t" . "<h4>$contenuLigne</h4>" . "\n" . PHP_EOL);<ul>
     }
 }
 
@@ -139,12 +162,12 @@ function listeNum($docsFinal, $ligneCourante, $lignePrece)
     $titreListeNum = "";
     $lienListeNum = "";
 
-    global $liste;
+    global $listeNum;
     
-    if($liste == false)
+    if($listeNum == false)
     {
-        fwrite($docsFinal, "\n" . "<ul>" . "\n");
-        $liste = true;
+        fwrite($docsFinal, "\n" . "<ol>" . "\n");
+        $listeNum = true;
     }
 
     if (preg_match($pattern, $lignePrece, $matches)) 
@@ -203,5 +226,20 @@ function texte($docsFinal, $ligneCourante, $lignePrece)
     fwrite($docsFinal, "</p>" . "\n");
 }
 
+function dejaDans()
+{
+    if($liste == true)
+    {
+        
+    }
+    if($listeNum == true)
+    {
+
+    }
+    if($tableau == true)
+    {
+
+    }
+}
 
 ?>
