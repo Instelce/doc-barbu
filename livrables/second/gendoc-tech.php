@@ -332,8 +332,11 @@ function checkValue($data)
 </head>
 
 <body>
-    <header>
-        <h1 class="main-title">Projet <span><?php echo $config_data["produit"]?></span></h1>
+    <header class="main-header">
+        <h1 class="title">
+            Projet
+            <span><?php echo $config_data["produit"]?></span>
+        </h1>
 
         <h3>
             Client
