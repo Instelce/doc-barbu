@@ -89,7 +89,6 @@ $files = [];
 // récupération du texte de config
 $config_content = file_get_contents("config");
 
-// $files = ["../first/src1.c", "../first/src2.c", "../first/src3.c"];
 $data = [];
 $config_data = [];
 
@@ -100,17 +99,39 @@ foreach($config_pattern as $patternName => $p) {
 
 if (count($argv) > 1) {
 
-    // gérer les update de la version
+    // gérer les updates de la version dans le fichier config
     $version = $config_data["version"];
 
-    // Cas major
+    // Cas Major
     if (in_array("--major", $argv)) {
-        $major_nb = intval(explode('.', $version)[0]);
-        print_r($major_nb);
-        
+        $v_m = explode('.', $version)[0];
+        $v_m ++;
+
+        $config_data['version'] = "{$v_m}.0.0";
+        file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
+    }
+    // Cas Minor
+    if (in_array("--build", $argv)) {
+        $v_m = explode('.', $version)[0];
+        $v_mi = explode('.', $version)[1];
+        $v_b = explode('.', $version)[2];
+        $v_b ++;
+
+        $config_data['version'] = "{$v_m}.{$v_mi}.{$v_b}";
+        file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
+    }
+    // Cas Build
+    if (in_array("--minor", $argv)) {
+        $v_m = explode('.', $version)[0];
+        $v_mi = explode('.', $version)[1];
+        $v_mi ++;
+
+        $config_data['version'] = "{$v_m}.{$v_mi}.0";
+        file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
     }
 
 
+    // Autres options du programme
     $command = $argv[1];
     $commandValue = $argv[2];
 
@@ -134,7 +155,6 @@ if (count($argv) > 1) {
                 $path = explode(DIRECTORY_SEPARATOR, $commandValue);
                 array_pop($path);
                 $path = join(DIRECTORY_SEPARATOR, $path);
-                // echo "\n" . $path . "\n";
 
                 array_push($files, $commandValue);
 
@@ -143,7 +163,6 @@ if (count($argv) > 1) {
                 preg_match_all($includePattern, file_get_contents($commandValue), $includeMatches);
 
                 foreach ($includeMatches[0] as $include) {
-                    // echo str_replace("\"", "", explode(" ", $include)[1]) . "\n";
                     $headerFileName = str_replace("\"", "", explode(" ", $include)[1]);
                     $cFileName = str_replace("h", "c", $headerFileName);
 
@@ -157,8 +176,6 @@ if (count($argv) > 1) {
         } else {
             exit("Le fichier n'existe pas !");
         }
-
-        // echo "Génération de la documentation...\n";
     }
 } else {
     exit("Aucune commande trouvée.");
@@ -185,7 +202,6 @@ foreach ($files as $path) {
 
 // boucle tous les fichiers
 foreach ($files as $i => $filePath) {
-    // echo "* " . $data[$i]["name"] . "...\n";
     $fileContent = file_get_contents($filePath);
     $fileLines = explode("\n", $fileContent);
 
@@ -217,9 +233,6 @@ foreach ($files as $i => $filePath) {
 
         // parcours par matches
         if ($inLine[0]) {
-            // echo "\nIN LINE --------------------------------\n";
-            // print_r($inLine);
-            // print_r($dataPatterns[$inLine[1]]);
 
             preg_match_all($dataPatterns[$inLine[1]]["foundLine"], $fileContent, $sectionMatches);
 
@@ -236,9 +249,6 @@ foreach ($files as $i => $filePath) {
                 }
             }
         } else if ($inComment[0]) {
-            // echo "\nIN COMMENT --------------------------------\n";
-            // print_r($inComment);
-            // print_r($dataPatterns[$inComment[1]]);
 
             foreach ($commentMatches[0] as $commentMatch) {
                 $isInComment = preg_match($dataPatterns[$inComment[1]]["foundComment"], $commentMatch);
@@ -276,6 +286,7 @@ foreach ($files as $i => $filePath) {
     }
 }
 
+// mettre les données dans un fichier json (au cas où)
 // fopen("./test-output/tech.json", "w");
 // file_put_contents("./test-output/tech.json", json_encode($data, JSON_PRETTY_PRINT));
 
@@ -315,7 +326,7 @@ function checkValue($data)
         if (count($data) > 0) {
             echo $data;
         } else {
-            echo "Donnée non fournit";
+            echo "Donnée non fournie";
         }
     } else {
         echo $data;
@@ -324,6 +335,7 @@ function checkValue($data)
 
 
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
