@@ -1,4 +1,10 @@
 <?php
+$config_pattern = [
+    "client" => '/CLIENT=+(.*)/',
+    "produit" => '/PRODUIT=+(.*)/',
+    "version" => '/VERSION=+(.*)/',
+];
+
 $dataPatterns = [
     "auteur" => '/\$author\s+(.*)/',
     "version" => '/\$version\s+(.*)/',
@@ -71,12 +77,40 @@ $sections = [
 // --main <main_program_file>   Génère la documentation du fichier principal et des fichiers importés
 // --onefile <file_name>        Génère la documentation d'un fichier
 // --help                       Donne la documentation des commandes
+// --major                      \
+// --minor                       --> Commandes pour incrémenter la version selon l'ordre : (major.minor.build)
+// --build                      /
 
 
 $commands = ["--dir", "--main", "--onefile", "--config"];
 $files = [];
 
+
+// récupération du texte de config
+$config_content = file_get_contents("config");
+
+// $files = ["../first/src1.c", "../first/src2.c", "../first/src3.c"];
+$data = [];
+$config_data = [];
+
+// données de config
+foreach($config_pattern as $patternName => $p) {
+    $config_data[$patternName] = getRegexGroup($p, $config_content);
+}
+
 if (count($argv) > 1) {
+
+    // gérer les update de la version
+    $version = $config_data["version"];
+
+    // Cas major
+    if (in_array("--major", $argv)) {
+        $major_nb = intval(explode('.', $version)[0]);
+        print_r($major_nb);
+        
+    }
+
+
     $command = $argv[1];
     $commandValue = $argv[2];
 
@@ -129,21 +163,6 @@ if (count($argv) > 1) {
 } else {
     exit("Aucune commande trouvée.");
 }
-
-// récupération du texte de config
-$config_content = file_get_contents("config");
-
-
-// $files = ["../first/src1.c", "../first/src2.c", "../first/src3.c"];
-$data = [];
-$config_data = [];
-
-// données de config
-foreach($config_pattern as $patternName => $p) {
-    $config_data[$patternName] = getRegexGroup($p, $config_content);
-}
-
-print_r($config_data);
 
 // initialisation des données des fichiers
 foreach ($files as $path) {
@@ -303,13 +322,6 @@ function checkValue($data)
     }
 }
 
-// foreach ($data as $file) {
-//     foreach ($file["sections"] as $sectionName => $sectionData) {
-//         foreach ($sectionData as $itemData) {
-//             // print_r($itemData);
-//         }
-//     }
-// }
 
 ?>
 <!DOCTYPE html>
