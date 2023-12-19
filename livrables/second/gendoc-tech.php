@@ -322,7 +322,7 @@ function checkValue($data)
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
     <style>
-        <?php echo file_get_contents("./theme-1.css") ?>
+        <?php echo file_get_contents("./themes/1.css") ?>
     </style>
 
     <meta charset="UTF-8">
@@ -506,28 +506,24 @@ function checkValue($data)
         const rootColors = getComputedStyle(root)
         toggleTheme.addEventListener("click", (e) => {
             e.preventDefault()
-            if (rootColors.getPropertyValue("--color-theme") == "dark") {
-                root.style.setProperty("--color-theme", "light")
-                root.style.setProperty("--color-background", "#ececec")
-                root.style.setProperty("--color-text", "#1f1f1f")
-                root.style.setProperty("--color-secondary", "#c4c4c4")
-                root.style.setProperty("--color-link", "#664BFF")
-                toggleTheme.innerText = "Dark"
-            } else {
-                root.style.setProperty("--color-theme", "dark")
-                root.style.setProperty("--color-background", "#1f1f1f")
-                root.style.setProperty("--color-text", "#ececec")
-                root.style.setProperty("--color-secondary", "#414853")
-                root.style.setProperty("--color-link", "#9499ff")
-                toggleTheme.innerText = "Light"
-            }
+            $theme = rootColors.getPropertyValue("--color-theme")
+            console.log($theme);
+            root.style.setProperty("--color-theme", $theme == "light" ? "dark" : "light");
+
+            root.style.setProperty("--color-background", `var(--color-background-${$theme})`)
+            root.style.setProperty("--color-text", `var(--color-text-${$theme})`)
+            root.style.setProperty("--color-secondary", `var(--color-secondary-${$theme})`)
+            root.style.setProperty("--color-link", `var(--color-link-${$theme})`)
+            toggleTheme.innerHTML = $theme == "light" ? "Dark" : "Light"
         })
 
         // generate links of navigation bar
-        const filesLink = document.querySelector(".files");
-        const navigationLinksList = document.querySelector(".navigation ul");
+        if (document.querySelector(".files")) {
+            const filesLink = document.querySelector(".files");
+            const navigationLinksList = document.querySelector(".navigation ul");
 
-        navigationLinksList.innerHTML = filesLink.innerHTML;
+            navigationLinksList.innerHTML = filesLink.innerHTML;
+        }
 
 
         // files navigation
