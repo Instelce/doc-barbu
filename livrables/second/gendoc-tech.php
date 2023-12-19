@@ -66,28 +66,29 @@ $sections = [
 ];
 
 // plusieurs commandes
+// --config                     Génère le fichier de configuration à renseigner
 // --dir <dirname>              Cherche tous les fichiers présents dans le dossier et génère leur documentation.
 // --main <main_program_file>   Génère la documentation du fichier principal et des fichiers importés
 // --onefile <file_name>        Génère la documentation d'un fichier
 // --help                       Donne la documentation des commandes
 
-$commands = ["--dir", "--main", "--onefile"];
+
+$commands = ["--dir", "--main", "--onefile", "--config"];
 $files = [];
 
 if (count($argv) > 1) {
     $command = $argv[1];
     $commandValue = $argv[2];
 
-    if (!in_array($command, $commands)) {
+    if ($command == "--config") {
+        file_put_contents("config", "CLIENT=XXX\nPRODUIT=XXX\nVERSION=X.X.X");
+    } else if (!in_array($command, $commands)) {
         exit("Cette commande n'existe pas.");
     } else if ($commandValue == '') {
         exit("Veuillez saisir la valeur de la commande.");
     } else {
         if ($command == "--dir") {
             $files = glob(getcwd() . DIRECTORY_SEPARATOR . $commandValue . DIRECTORY_SEPARATOR . "*.c");
-
-            // echo getcwd() . "\n";
-            // print_r($files);
         }
 
         if (file_exists($commandValue)) {
@@ -129,10 +130,22 @@ if (count($argv) > 1) {
     exit("Aucune commande trouvée.");
 }
 
+// récupération du texte de config
+$config_content = file_get_contents("config");
+
+
 // $files = ["../first/src1.c", "../first/src2.c", "../first/src3.c"];
 $data = [];
+$config_data = [];
 
-// initialisation des données
+// données de config
+foreach($config_pattern as $patternName => $p) {
+    $config_data[$patternName] = getRegexGroup($p, $config_content);
+}
+
+print_r($config_data);
+
+// initialisation des données des fichiers
 foreach ($files as $path) {
     $lastIndex = count(explode(DIRECTORY_SEPARATOR, $path)) - 1;
     array_push($data, [
@@ -151,7 +164,7 @@ foreach ($files as $path) {
     ]);
 }
 
-// boucle les fichiers
+// boucle tous les fichiers
 foreach ($files as $i => $filePath) {
     // echo "* " . $data[$i]["name"] . "...\n";
     $fileContent = file_get_contents($filePath);
@@ -183,7 +196,7 @@ foreach ($files as $i => $filePath) {
             }
         }
 
-        // parcour par matches
+        // parcours par matches
         if ($inLine[0]) {
             // echo "\nIN LINE --------------------------------\n";
             // print_r($inLine);
@@ -244,8 +257,8 @@ foreach ($files as $i => $filePath) {
     }
 }
 
-fopen("./test-output/tech.json", "w");
-file_put_contents("./test-output/tech.json", json_encode($data, JSON_PRETTY_PRINT));
+// fopen("./test-output/tech.json", "w");
+// file_put_contents("./test-output/tech.json", json_encode($data, JSON_PRETTY_PRINT));
 
 function convertToSingular($subject)
 {
@@ -315,21 +328,21 @@ function checkValue($data)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?php echo "AAA" ?> Documentation</title>
+    <title><?php echo $config_data["produit"]?> - Documentation</title>
 </head>
 
 <body>
     <header>
-        <h1 class="main-title">Projet <span>[PROJECT]</span></h1>
+        <h1 class="main-title">Projet <span><?php echo $config_data["produit"]?></span></h1>
 
         <h3>
             Client
-            <span>[CLIENT]</span>
+            <span><?php echo $config_data["client"]?></span>
         </h3>
 
         <h3>
             Version
-            <span>[VERSION]</span>
+            <span><?php echo $config_data["version"]?></span>
         </h3>
 
         <h3>
@@ -461,7 +474,6 @@ function checkValue($data)
                                 <?php } ?>
                             <?php } ?>
                         </section>
-
                 <?php }
                 } ?>
             </section>
