@@ -3,42 +3,52 @@ $fichier = "./DOC_UTILISATEUR.html";
 $docsMD = file("../first/DOC_UTILISATEUR.md");
 
 $docsFinal = fopen($fichier, 'w');
-
 $baseHTMLContent = file_get_contents("./data/baseHTML_gendoc_utilisateur.txt");
-
 $lignePrece = "";
 
 if ($docsFinal) 
 {
-    fwrite($docsFinal, $baseHTMLContent . "\n");
-    $listeNum = false;
+    fwrite($docsFinal, $baseHTMLContent . "\n"); // Ecris le CSS du html au début du fichier.
+    $listeNum = false; //Ce sont des flags pour savoir si on se trouve dans une liste numérique ou non ou dans un tableau.
     $liste = false;
     $tableau = false;
 
-    foreach ($docsMD as $ligneCourante) 
+    foreach ($docsMD as $ligneCourante) //Parcourir chaque ligne du fichier markdown
     {   
-        $ligneCourante = rtrim($ligneCourante);
+        $ligneCourante = rtrim($ligneCourante); //Enlever les \n et \t mit tout seul à par le foreach.
 
-        titre($docsFinal, $ligneCourante, $lignePrece);
+        //Ensuite chaque ligne est traitre pour savoir si c'est du simple texte, un titre, etc... en écrivant dans le fichier final les bonnes lignes en HTML.
+        if(preg_match('/^#{1,4}\s/', $lignePrece))
+        {
+            testSiFlagOpen($docsFinal);
+            titre($docsFinal, $lignePrece);
+        }
         if(preg_match('/^[0-9]+\./', $lignePrece))
         {
-            listeNum($docsFinal, $ligneCourante, $lignePrece);
+            listeNum($docsFinal, $lignePrece);
         }
         if(preg_match('/^\-\s/', $lignePrece))
         {
-            liste($docsFinal, $ligneCourante, $lignePrece);
+            liste($docsFinal, $lignePrece);
         }
-        if (preg_match('/^[A-Za-zàéèÀÉÈ]/', substr($lignePrece, 0, 4))) 
+        if (preg_match('/^[A-Za-zàéèÀÉÈ]/', substr($lignePrece, 0, 4)))
         {
-            texte($docsFinal, $ligneCourante, $lignePrece);
+            testSiFlagOpen($docsFinal);
+            texte($docsFinal, $lignePrece);
         }
         if(preg_match('/^```/', $lignePrece))
         {
-            commande($docsFinal, $ligneCourante, $lignePrece);
+            testSiFlagOpen($docsFinal);
+            commande($docsFinal, $ligneCourante);
+        }
+        if(preg_match('/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/', $lignePrece))
+        {
+            tableau($docsFinal, $lignePrece);
         }
 
         $lignePrece = $ligneCourante;
     }
+    testSiFlagOpen($docsFinal);
 
     fwrite($docsFinal, "\t" . "</body>" . "\n" . "</html>");
 } 
@@ -49,31 +59,82 @@ else
 
 fclose($docsFinal);
 
-function tableau($docsFinal, $ligneCourante, $lignePrece)
+//Convertit les tableau markdown en tableau HTML.
+function tableau($docsFinal, $lignePrece)
 {
     global $tableau;
-
-    if($tableau == false)
+    
+    $pattern = '/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/';
+    
+    if ($tableau == false) 
     {
         fwrite($docsFinal, "\n" . "<table>" . "\n");
         $tableau = true;
     }
-    if(preg_match('//', $lignePrece))
+    
+    if (preg_match($pattern, $lignePrece, $matches)) 
     {
-
+        $variable1 = trim($matches[1]);
+        $variable2 = trim($matches[2]);
+            
+        fwrite($docsFinal, "\t<tr>\n");
+        fwrite($docsFinal, "\t\t<td>$variable1</td>\n");
+        fwrite($docsFinal, "\t\t<td>$variable2</td>\n");
+        fwrite($docsFinal, "\t</tr>\n");
     }
 }
 
-function commande($docsFinal, $ligneCourante, $lignePrece)
+//Test si on est dans une liste, une liste numériqu et un tableau et si c'est le cas fermer la balise.
+function testSiFlagOpen($docsFinal)
 {
-    if(!empty($ligneCourante))
+    global $listeNum;
+    global $liste;
+    global $tableau;
+
+    if($listeNum == true)
     {
-        fwrite($docsFinal, "\t" . "<p id=\"commande\"><em>$ligneCourante</em></p>" . "\n");
+        fwrite($docsFinal, "</ol>" . "\n");
+        $listeNum = false;
+    }
+    if($liste == true)
+    {
+        fwrite($docsFinal, "</ul>" . "\n");
+        $liste = false;
+    }
+    if($tableau == true)
+    {
+        fwrite($docsFinal, "</table>" . "\n");
+        $tableau = false;
     }
 }
 
+//Ecris dans le fichier la ligne si cela est encadrer entre 3 back ticks.
+function commande($docsFinal, $ligneCourante)
+{
+    $pattern = '/<([^>]+)>/';
+    $id = "commande";
 
-function liste($docsFinal, $ligneCourante, $lignePrece)
+    if (preg_match($pattern, $ligneCourante, $chevrons)) 
+    {
+        $textBetweenChevrons = $chevrons[1];
+    }
+    else
+    {
+        $textBetweenChevrons = "";
+    }
+    $textWithoutChevrons = strip_tags($ligneCourante);
+
+    if (!empty($textWithoutChevrons) && !empty($textBetweenChevrons)) {
+        fwrite($docsFinal, "\t" . "<p id=\"$id\"><em>$textWithoutChevrons &#60;$textBetweenChevrons&#62;</em></p>" . "\n");
+    }
+    else if(!empty($textWithoutChevrons) && empty($textBetweenChevrons))
+    {
+        fwrite($docsFinal, "\t" . "<p id=\"$id\"><em>$textWithoutChevrons</em></p>" . "\n");
+    }
+}
+
+//Ecris dans le fichier les lignes qui sont des simples liste et prend en compte les lien intra document.
+function liste($docsFinal, $lignePrece)
 {   
     $pattern = '/\[(.*?)\]\((.*?)\)/';
     
@@ -117,9 +178,8 @@ function liste($docsFinal, $ligneCourante, $lignePrece)
 }
 
 
-
 //Fonction qui remplce tous les titres pas des titres en HTML correspondant à leur "niveau"
-function titre($docsFinal, $ligneCourante, $lignePrece)
+function titre($docsFinal, $lignePrece)
 {
     //Place les titres de niv 1 par un h1
     if (substr($lignePrece, 0, 1) === "#" && substr($lignePrece, 1, 1) !== "#") 
@@ -150,12 +210,12 @@ function titre($docsFinal, $ligneCourante, $lignePrece)
     {
         $contenuLigne = substr($lignePrece, 5);
     
-        fwrite($docsFinal, "\t" . "<h4>$contenuLigne</h4>" . "\n" . PHP_EOL);<ul>
+        fwrite($docsFinal, "\t" . "<h4>$contenuLigne</h4>" . "\n" . PHP_EOL);
     }
 }
 
-//Permet de tester si cela est un tableau et convertit en HTML si c'est le cas
-function listeNum($docsFinal, $ligneCourante, $lignePrece)
+//Ecris dans le fichier la ligne en format liste "numérique".
+function listeNum($docsFinal, $lignePrece)
 {
     $pattern = '/\[(.*?)\]\((.*?)\)/';
         
@@ -179,8 +239,8 @@ function listeNum($docsFinal, $ligneCourante, $lignePrece)
     fwrite($docsFinal, "\t\t" . "<li><a href=\"$lienListeNum\">$titreListeNum</a></li>" . "\n" . PHP_EOL);
 }
 
-
-function texte($docsFinal, $ligneCourante, $lignePrece)
+//Ecris dans le fichier final chaque ligne de texte et prend en compte si cela est un texte en gras, etc...
+function texte($docsFinal, $lignePrece)
 {
     /* Toute les match différents sont stockés dans une cellule différent du tableau mots */
     preg_match_all('/\*\*(.*?)\*\*|\*(.*?)\*|\~\~(.*?)\~\~|\`(.*?)\`|<mark>(.*?)<\/mark>|<u>(.*?)<\/u>|[\p{L}\p{N}\s\'".;,?:\/!]+/u', $lignePrece, $mots, PREG_SET_ORDER);
@@ -225,21 +285,4 @@ function texte($docsFinal, $ligneCourante, $lignePrece)
 
     fwrite($docsFinal, "</p>" . "\n");
 }
-
-function dejaDans()
-{
-    if($liste == true)
-    {
-        
-    }
-    if($listeNum == true)
-    {
-
-    }
-    if($tableau == true)
-    {
-
-    }
-}
-
 ?>
