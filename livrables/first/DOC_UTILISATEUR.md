@@ -49,6 +49,7 @@ Les conteneurs Docker offrent une <mark>portabilité exceptionnelle</mark>, perm
 
 ## Résumé
 
+|--|
 | Fonctionnalité        | Description                                                  |
 |-----------------------|--------------------------------------------------------------|
 | Conteneurisation      | Encapsule les applications et leurs dépendances              |

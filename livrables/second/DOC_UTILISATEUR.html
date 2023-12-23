@@ -1,0 +1,251 @@
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <style>
+            :root {
+                --color-background: #FFFFFF;
+                --color-text: #000000;
+            }
+            
+            body {
+                width: 100vw;
+                height: auto;
+                margin: 0;
+                overflow-x: hidden;
+                
+                background: var(--color-background);
+                font-family: "Poppins", sans-serif;
+                color: var(--color-text);
+                font-size: 16px;
+            }
+            
+            body{
+                height: 70%;
+                width: 70%;
+                text-align: start;
+                padding: 5em 5em;
+                margin: 0em 10em;
+                border-radius: 35px;
+                background: #e0e0e0;
+                box-shadow:  31px 31px 62px #5a5a5a,
+                -10px -10px 62px #5a5a5a;
+            }
+
+            h1{
+                text-align: center;
+            }
+            
+            h2{
+                padding-left: 5px;
+                border-left: solid #9499ff 3px;
+                border-bottom: solid #9499ff 3px;
+            }
+            
+            h3 {
+                color: #000;
+                margin-bottom: 10px;
+                text-decoration: underline;
+            }
+            
+            h4 {
+                color: #000;
+                margin-bottom: 10px;
+                text-decoration: underline;
+            }
+            
+            #avantages > div{
+                margin-left: 50px;
+            }
+            
+            td, th{
+                border: 1px solid black;
+                padding: 5px 5px;
+            }
+            
+            thead{
+                font-size: larger;
+            }
+            
+            footer > ul > li{
+                list-style-type: none;
+            }
+            
+            a:link {
+                text-decoration: none;
+            }
+            
+            a:visited {
+                text-decoration: none;
+                color: blue;
+            }
+            
+            a:hover {
+                text-decoration: underline;
+            }
+            
+            a:active {
+                text-decoration: underline;
+            }
+            
+            #commande{
+                font-family: 'Courier New', monospace;
+                background-color: #b1b1b1;
+                color: #000;
+                padding: 10px;
+                margin: 10px 0;
+                border-radius: 5px;
+                white-space: pre-wrap;
+                line-height: 1.4;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            }
+            
+            article p, header p{
+                margin: 10px 20px;
+            }
+        </style>
+    </head>
+
+    <body>
+	<h1>Docker : Une révolution dans la virtualisation des applications</h1>
+
+	<h2>Sommaire</h2>
+
+
+<ol>
+		<li><a href="#introduction">Introduction</a></li>
+
+		<li><a href="#quest-ce-que-docker">Qu'est-ce que Docker</a></li>
+
+		<li><a href="#résumé">Résumé</a></li>
+
+		<li><a href="#quelques-commandes">Quelques commandes</a></li>
+
+		<li><a href="#pour-en-savoir-plus">Pour en savoir plus</a></li>
+
+		<li><a href="#conclusion">Conclusion</a></li>
+
+</ol>
+	<h2>Introduction</h2>
+
+	<p>Docker, une 	<strong>technologie de virtualisation</strong> des applications, a révolutionné la manière dont les développeurs déploient, gèrent et exécutent des applications. Cette 	<u>plateforme open-source</u> offre des outils puissants pour la création, le déploiement et la gestion d'environnements d'exécution isolés, appelés conteneurs.</p>
+	<h2>Qu'est-ce que Docker ?</h2>
+
+	<h3>Historique</h3>
+
+	<p>Docker a été initialement développé par 	<em>Docker, Inc.</em> en 	<del>2013</del> 2031 et est rapidement devenu un 	<strong>outil essentiel</strong> pour les développeurs, les équipes DevOps et les entreprises soucieuses de la portabilité et de la scalabilité de leurs applications.</p>
+	<h3>Fonctionnement</h3>
+
+	<p>À la base de Docker se trouve le concept de conteneurisation. Les conteneurs Docker encapsulent une application et tous ses dépendances, y compris les bibliothèques et les fichiers système nécessaires à son exécution. Cette 	<em>approche légère</em> et modulaire permet aux applications d'être exécutées de manière cohérente sur n'importe quel environnement compatible avec Docker.</p>
+	<h3>Ses avantages</h3>
+
+	<h4>Portabilité</h4>
+
+	<p>Les conteneurs Docker offrent une 	<mark>portabilité exceptionnelle</mark>, permettant aux applications de fonctionner de manière consistante sur différents...</p>
+	<h4>Écosystème Docker</h4>
+
+
+<ul>
+		<li><a href="https://github.com/docker/compose">Docker Compose</a></li>
+
+		<li>Docker Swarm</li>
+
+		<li><a href="https://hub.docker.com/">Docker Hub</a></li>
+
+</ul>
+	<h4>Sécurité</h4>
+
+
+<ul>
+		<li>Isolation des conteneurs</li>
+
+		<li>Gestion des images</li>
+
+</ul>
+	<h2>Résumé</h2>
+
+
+<table>
+	<tr>
+		<td>Fonctionnalité</td>
+		<td>Description</td>
+	</tr>
+	<tr>
+		<td>-----------------------</td>
+		<td>--------------------------------------------------------------</td>
+	</tr>
+	<tr>
+		<td>Conteneurisation</td>
+		<td>Encapsule les applications et leurs dépendances</td>
+	</tr>
+	<tr>
+		<td>Portabilité</td>
+		<td>Permet l'exécution cohérente sur différents environnements</td>
+	</tr>
+	<tr>
+		<td>Isolation</td>
+		<td>Assure une séparation efficace entre les différentes apps</td>
+	</tr>
+	<tr>
+		<td>Évolutivité</td>
+		<td>Facilite le déploiement rapide de multiples instances</td>
+	</tr>
+	<tr>
+		<td>Docker Compose</td>
+		<td>Outil pour gérer des apps multi-conteneurs</td>
+	</tr>
+	<tr>
+		<td>**Docker Swarm**</td>
+		<td>**Orchestration pour gérer des clusters de machines Docker**</td>
+	</tr>
+	<tr>
+		<td>Sécurité</td>
+		<td>Isolation des conteneurs, gestion précise des droits d'accès</td>
+	</tr>
+	<tr>
+		<td>Évolution continue</td>
+		<td>Mises à jour régulières, intégration avec d'autres outils</td>
+	</tr>
+	<tr>
+		<td>Ressources multiples</td>
+		<td>Documentation, forums et tutoriels disponibles</td>
+	</tr>
+</table>
+	<h2>Quelques commandes</h2>
+
+	<p>Récupérer une image.</p>
+	<p id="commande"><em>    docker image pull  &#60;nom_image&#62;</em></p>
+	<p>Lancer un container dune image.</p>
+	<p id="commande"><em>    docker container run  &#60;nom_image&#62;</em></p>
+	<p>Lister les conteneurs actif. Ajouter l'option 	<span style="font-family: monospace;">-a</span> pour voir tous les conteneurs.</p>
+	<p id="commande"><em>    docker container ps</em></p>
+	<p>Supprimer un container.</p>
+	<p id="commande"><em>    docker container rm  &#60;ID_conteneur&#62;</em></p>
+	<h2>Pour en savoir plus</h2>
+
+
+<ul>
+		<li><a href="https://www.docker.com/">site de Docker</a></li>
+
+		<li><a href="https://docs.docker.com/">documentation</a></li>
+
+		<li><a href="https://github.com/docker">github de docker</a></li>
+
+</ul>
+	<h2>Conclusion</h2>
+
+	<p>Docker c'est :</p>
+
+<ul>
+	<div>
+		<input type="checkbox" id="coool" name="coool" checked/>
+    <label for="scales">coool</label>
+	</div>
+
+	<div>
+		<input type="checkbox" id="nuuul" name="nuuul"/>
+    <label for="scales">nuuul</label>
+	</div>
+
+</ul>
+	</body>
+</html>
