@@ -1,4 +1,10 @@
 <?php
+$config_pattern = [
+    "client" => '/CLIENT=+(.*)/',
+    "produit" => '/PRODUIT=+(.*)/',
+    "version" => '/VERSION=+(.*)/',
+];
+
 $dataPatterns = [
     "auteur" => '/\$author\s+(.*)/',
     "version" => '/\$version\s+(.*)/',
@@ -71,12 +77,61 @@ $sections = [
 // --main <main_program_file>   Génère la documentation du fichier principal et des fichiers importés
 // --onefile <file_name>        Génère la documentation d'un fichier
 // --help                       Donne la documentation des commandes
+// --major                      \
+// --minor                       --> Commandes pour incrémenter la version selon l'ordre : (major.minor.build)
+// --build                      /
 
 
 $commands = ["--dir", "--main", "--onefile", "--config"];
 $files = [];
 
+
+// récupération du texte de config
+$config_content = file_get_contents("config");
+
+$data = [];
+$config_data = [];
+
+// données de config
+foreach($config_pattern as $patternName => $p) {
+    $config_data[$patternName] = getRegexGroup($p, $config_content);
+}
+
 if (count($argv) > 1) {
+
+    // gérer les updates de la version dans le fichier config
+    $version = $config_data["version"];
+
+    // Cas Major
+    if (in_array("--major", $argv)) {
+        $v_m = explode('.', $version)[0];
+        $v_m ++;
+
+        $config_data['version'] = "{$v_m}.0.0";
+        file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
+    }
+    // Cas Minor
+    if (in_array("--build", $argv)) {
+        $v_m = explode('.', $version)[0];
+        $v_mi = explode('.', $version)[1];
+        $v_b = explode('.', $version)[2];
+        $v_b ++;
+
+        $config_data['version'] = "{$v_m}.{$v_mi}.{$v_b}";
+        file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
+    }
+    // Cas Build
+    if (in_array("--minor", $argv)) {
+        $v_m = explode('.', $version)[0];
+        $v_mi = explode('.', $version)[1];
+        $v_mi ++;
+
+        $config_data['version'] = "{$v_m}.{$v_mi}.0";
+        file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
+    }
+
+
+    // Autres options du programme
     $command = $argv[1];
     $commandValue = $argv[2];
 
@@ -100,7 +155,6 @@ if (count($argv) > 1) {
                 $path = explode(DIRECTORY_SEPARATOR, $commandValue);
                 array_pop($path);
                 $path = join(DIRECTORY_SEPARATOR, $path);
-                // echo "\n" . $path . "\n";
 
                 array_push($files, $commandValue);
 
@@ -109,7 +163,6 @@ if (count($argv) > 1) {
                 preg_match_all($includePattern, file_get_contents($commandValue), $includeMatches);
 
                 foreach ($includeMatches[0] as $include) {
-                    // echo str_replace("\"", "", explode(" ", $include)[1]) . "\n";
                     $headerFileName = str_replace("\"", "", explode(" ", $include)[1]);
                     $cFileName = str_replace("h", "c", $headerFileName);
 
@@ -123,27 +176,10 @@ if (count($argv) > 1) {
         } else {
             exit("Le fichier n'existe pas !");
         }
-
-        // echo "Génération de la documentation...\n";
     }
 } else {
     exit("Aucune commande trouvée.");
 }
-
-// récupération du texte de config
-$config_content = file_get_contents("config");
-
-
-// $files = ["../first/src1.c", "../first/src2.c", "../first/src3.c"];
-$data = [];
-$config_data = [];
-
-// données de config
-foreach($config_pattern as $patternName => $p) {
-    $config_data[$patternName] = getRegexGroup($p, $config_content);
-}
-
-print_r($config_data);
 
 // initialisation des données des fichiers
 foreach ($files as $path) {
@@ -166,7 +202,6 @@ foreach ($files as $path) {
 
 // boucle tous les fichiers
 foreach ($files as $i => $filePath) {
-    // echo "* " . $data[$i]["name"] . "...\n";
     $fileContent = file_get_contents($filePath);
     $fileLines = explode("\n", $fileContent);
 
@@ -198,9 +233,6 @@ foreach ($files as $i => $filePath) {
 
         // parcours par matches
         if ($inLine[0]) {
-            // echo "\nIN LINE --------------------------------\n";
-            // print_r($inLine);
-            // print_r($dataPatterns[$inLine[1]]);
 
             preg_match_all($dataPatterns[$inLine[1]]["foundLine"], $fileContent, $sectionMatches);
 
@@ -217,9 +249,6 @@ foreach ($files as $i => $filePath) {
                 }
             }
         } else if ($inComment[0]) {
-            // echo "\nIN COMMENT --------------------------------\n";
-            // print_r($inComment);
-            // print_r($dataPatterns[$inComment[1]]);
 
             foreach ($commentMatches[0] as $commentMatch) {
                 $isInComment = preg_match($dataPatterns[$inComment[1]]["foundComment"], $commentMatch);
@@ -257,6 +286,7 @@ foreach ($files as $i => $filePath) {
     }
 }
 
+// mettre les données dans un fichier json (au cas où)
 // fopen("./test-output/tech.json", "w");
 // file_put_contents("./test-output/tech.json", json_encode($data, JSON_PRETTY_PRINT));
 
@@ -296,22 +326,16 @@ function checkValue($data)
         if (count($data) > 0) {
             echo $data;
         } else {
-            echo "Donnée non fournit";
+            echo "Donnée non fournie";
         }
     } else {
         echo $data;
     }
 }
 
-// foreach ($data as $file) {
-//     foreach ($file["sections"] as $sectionName => $sectionData) {
-//         foreach ($sectionData as $itemData) {
-//             // print_r($itemData);
-//         }
-//     }
-// }
 
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -322,7 +346,7 @@ function checkValue($data)
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
     <style>
-        <?php echo file_get_contents("./theme-1.css") ?>
+        <?php echo file_get_contents("./themes/1.css") ?>
     </style>
 
     <meta charset="UTF-8">
@@ -332,8 +356,11 @@ function checkValue($data)
 </head>
 
 <body>
-    <header>
-        <h1 class="main-title">Projet <span><?php echo $config_data["produit"]?></span></h1>
+    <header class="main-header">
+        <h1 class="title">
+            Projet
+            <span><?php echo $config_data["produit"]?></span>
+        </h1>
 
         <h3>
             Client
@@ -506,28 +533,24 @@ function checkValue($data)
         const rootColors = getComputedStyle(root)
         toggleTheme.addEventListener("click", (e) => {
             e.preventDefault()
-            if (rootColors.getPropertyValue("--color-theme") == "dark") {
-                root.style.setProperty("--color-theme", "light")
-                root.style.setProperty("--color-background", "#ececec")
-                root.style.setProperty("--color-text", "#1f1f1f")
-                root.style.setProperty("--color-secondary", "#c4c4c4")
-                root.style.setProperty("--color-link", "#664BFF")
-                toggleTheme.innerText = "Dark"
-            } else {
-                root.style.setProperty("--color-theme", "dark")
-                root.style.setProperty("--color-background", "#1f1f1f")
-                root.style.setProperty("--color-text", "#ececec")
-                root.style.setProperty("--color-secondary", "#414853")
-                root.style.setProperty("--color-link", "#9499ff")
-                toggleTheme.innerText = "Light"
-            }
+            $theme = rootColors.getPropertyValue("--color-theme")
+            console.log($theme);
+            root.style.setProperty("--color-theme", $theme == "light" ? "dark" : "light");
+
+            root.style.setProperty("--color-background", `var(--color-background-${$theme})`)
+            root.style.setProperty("--color-text", `var(--color-text-${$theme})`)
+            root.style.setProperty("--color-secondary", `var(--color-secondary-${$theme})`)
+            root.style.setProperty("--color-link", `var(--color-link-${$theme})`)
+            toggleTheme.innerHTML = $theme == "light" ? "Dark" : "Light"
         })
 
         // generate links of navigation bar
-        const filesLink = document.querySelector(".files");
-        const navigationLinksList = document.querySelector(".navigation ul");
+        if (document.querySelector(".files")) {
+            const filesLink = document.querySelector(".files");
+            const navigationLinksList = document.querySelector(".navigation ul");
 
-        navigationLinksList.innerHTML = filesLink.innerHTML;
+            navigationLinksList.innerHTML = filesLink.innerHTML;
+        }
 
 
         // files navigation
