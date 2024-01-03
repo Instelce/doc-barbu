@@ -130,6 +130,15 @@ if (count($argv) > 1) {
         file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
     }
 
+    // Gérer les thèmes demandés
+
+        // thème blanc/noir (par défaut)
+    $css_path = "./themes/1.css";
+
+        // thème playa
+    if (in_array("--playa", $argv)) {
+        $css_path = "./themes/playa.css";
+    }
 
     // Autres options du programme
     $command = $argv[1];
@@ -346,7 +355,7 @@ function checkValue($data)
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
     <style>
-        <?php echo file_get_contents("./themes/1.css") ?>
+        <?php echo file_get_contents($css_path) ?>
     </style>
 
     <meta charset="UTF-8">
@@ -356,6 +365,11 @@ function checkValue($data)
 </head>
 
 <body>
+
+    <svg class="feuille-theme-jungle" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
+        <path d="M384 312.7c-55.1 136.7-187.1 54-187.1 54-40.5 81.8-107.4 134.4-184.6 134.7-16.1 0-16.6-24.4 0-24.4 64.4-.3 120.5-42.7 157.2-110.1-41.1 15.9-118.6 27.9-161.6-82.2 109-44.9 159.1 11.2 178.3 45.5 9.9-24.4 17-50.9 21.6-79.7 0 0-139.7 21.9-149.5-98.1 119.1-47.9 152.6 76.7 152.6 76.7 1.6-16.7 3.3-52.6 3.3-53.4 0 0-106.3-73.7-38.1-165.2 124.6 43 61.4 162.4 61.4 162.4 .5 1.6 .5 23.8 0 33.4 0 0 45.2-89 136.4-57.5-4.2 134-141.9 106.4-141.9 106.4-4.4 27.4-11.2 53.4-20 77.5 0 0 83-91.8 172-20z"/>
+    </svg>
+
     <header class="main-header">
         <h1 class="title">
             Projet
@@ -528,6 +542,9 @@ function checkValue($data)
             })
         })
 
+        // Bouton d'activation du thème
+
+            // thème light
         const toggleTheme = document.querySelector(".toggle-theme");
         const root = document.querySelector(":root")
         const rootColors = getComputedStyle(root)
@@ -541,7 +558,7 @@ function checkValue($data)
             root.style.setProperty("--color-text", `var(--color-text-${$theme})`)
             root.style.setProperty("--color-secondary", `var(--color-secondary-${$theme})`)
             root.style.setProperty("--color-link", `var(--color-link-${$theme})`)
-            toggleTheme.innerHTML = $theme == "light" ? "Dark" : "Light"
+            toggleTheme.innerHTML = $theme == "Light" ? "Dark" : "Light"
         })
 
         // generate links of navigation bar
