@@ -96,8 +96,22 @@ h6 {
     font-weight: 400;
 }
 
-.feuille-theme-jungle {
+.feuille-logo-jungle {
+    display: block !important;
+    position: fixed;
+    top: 10px;
     fill: var(--color-primary);
+}
+
+.feuille-logo-jungle:nth-child(1) {
+    left: 10px;
+    transform: scale(10);
+}
+
+.feuille-logo-jungle:nth-child(2) {
+    right: 5px;
+    transform-origin: center;
+    transform: scale(-10, 10) rotate(30deg);
 }
 
 .main-header {
@@ -375,11 +389,12 @@ section>table tr {
 .navigation a:hover {
     opacity: .8;
     background: var(--color-primary);
+    color: var(--color-secondary);
 }
 
 .navigation a.active {
     background: var(--color-primary);
-    color: var(--color-link);
+    color: var(--color-secondary);
 }
 
 .navigation.show {

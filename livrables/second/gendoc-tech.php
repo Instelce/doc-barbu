@@ -76,10 +76,11 @@ $sections = [
 // --dir <dirname>              Cherche tous les fichiers présents dans le dossier et génère leur documentation.
 // --main <main_program_file>   Génère la documentation du fichier principal et des fichiers importés
 // --onefile <file_name>        Génère la documentation d'un fichier
-// --help                       Donne la documentation des commandes
 // --major                      \
 // --minor                       --> Commandes pour incrémenter la version selon l'ordre : (major.minor.build)
 // --build                      /
+// --jungle                     générer le thème jungle
+// --help                       Donne la documentation des commandes
 
 
 $commands = ["--dir", "--main", "--onefile", "--config"];
@@ -135,9 +136,9 @@ if (count($argv) > 1) {
         // thème blanc/noir (par défaut)
     $css_path = "./themes/1.css";
 
-        // thème playa
-    if (in_array("--playa", $argv)) {
-        $css_path = "./themes/playa.css";
+        // thème jungle
+    if (in_array("--jungle", $argv)) {
+        $css_path = "./themes/jungle.css";
     }
 
     // Autres options du programme
@@ -356,6 +357,10 @@ function checkValue($data)
 
     <style>
         <?php echo file_get_contents($css_path) ?>
+        /* cacher les feuilles si pas de thème jungle */
+        .feuille-logo-jungle {
+            display: none;
+        }
     </style>
 
     <meta charset="UTF-8">
@@ -366,7 +371,11 @@ function checkValue($data)
 
 <body>
 
-    <svg class="feuille-theme-jungle" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
+    <svg class="feuille-logo-jungle" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
+        <path d="M384 312.7c-55.1 136.7-187.1 54-187.1 54-40.5 81.8-107.4 134.4-184.6 134.7-16.1 0-16.6-24.4 0-24.4 64.4-.3 120.5-42.7 157.2-110.1-41.1 15.9-118.6 27.9-161.6-82.2 109-44.9 159.1 11.2 178.3 45.5 9.9-24.4 17-50.9 21.6-79.7 0 0-139.7 21.9-149.5-98.1 119.1-47.9 152.6 76.7 152.6 76.7 1.6-16.7 3.3-52.6 3.3-53.4 0 0-106.3-73.7-38.1-165.2 124.6 43 61.4 162.4 61.4 162.4 .5 1.6 .5 23.8 0 33.4 0 0 45.2-89 136.4-57.5-4.2 134-141.9 106.4-141.9 106.4-4.4 27.4-11.2 53.4-20 77.5 0 0 83-91.8 172-20z"/>
+    </svg>
+
+    <svg class="feuille-logo-jungle" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
         <path d="M384 312.7c-55.1 136.7-187.1 54-187.1 54-40.5 81.8-107.4 134.4-184.6 134.7-16.1 0-16.6-24.4 0-24.4 64.4-.3 120.5-42.7 157.2-110.1-41.1 15.9-118.6 27.9-161.6-82.2 109-44.9 159.1 11.2 178.3 45.5 9.9-24.4 17-50.9 21.6-79.7 0 0-139.7 21.9-149.5-98.1 119.1-47.9 152.6 76.7 152.6 76.7 1.6-16.7 3.3-52.6 3.3-53.4 0 0-106.3-73.7-38.1-165.2 124.6 43 61.4 162.4 61.4 162.4 .5 1.6 .5 23.8 0 33.4 0 0 45.2-89 136.4-57.5-4.2 134-141.9 106.4-141.9 106.4-4.4 27.4-11.2 53.4-20 77.5 0 0 83-91.8 172-20z"/>
     </svg>
 
@@ -543,8 +552,6 @@ function checkValue($data)
         })
 
         // Bouton d'activation du thème
-
-            // thème light
         const toggleTheme = document.querySelector(".toggle-theme");
         const root = document.querySelector(":root")
         const rootColors = getComputedStyle(root)
@@ -558,7 +565,9 @@ function checkValue($data)
             root.style.setProperty("--color-text", `var(--color-text-${$theme})`)
             root.style.setProperty("--color-secondary", `var(--color-secondary-${$theme})`)
             root.style.setProperty("--color-link", `var(--color-link-${$theme})`)
-            toggleTheme.innerHTML = $theme == "Light" ? "Dark" : "Light"
+
+            // texte du bouton
+            toggleTheme.innerHTML = $theme == "light" ? "Dark" : "Light"
         })
 
         // generate links of navigation bar
@@ -569,14 +578,14 @@ function checkValue($data)
             navigationLinksList.innerHTML = filesLink.innerHTML;
         }
 
-
         // files navigation
         const navigation = document.querySelector(".navigation");
+        const nb_li = navigation.getElementsByTagName("li").length;
         const navLinks = document.querySelectorAll(".navigation a");
         const sections = document.querySelectorAll("section.file-section")
 
         window.onscroll = () => {
-            if (window.scrollY > window.screen.height) {
+            if (window.scrollY > window.screen.height && nb_li > 0) {
                 navigation.classList.add("show")
             } else {
                 navigation.classList.remove("show")
