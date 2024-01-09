@@ -8,7 +8,7 @@ $lignePrece = "";
 
 if ($docsFinal) 
 {
-    fwrite($docsFinal, $baseHTMLContent . "\n"); // Ecris le CSS du html au début du fichier.
+    fwrite($docsFinal, $baseHTMLContent . "\n"); // Ecrit le CSS du html au début du fichier.
     $listeNum = false; //Ce sont des flags pour savoir si on se trouve dans une liste numérique ou non ou dans un tableau.
     $liste = false;
     $tableau = false;
