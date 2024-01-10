@@ -83,108 +83,141 @@ $sections = [
 // --help                       Donne la documentation des commandes
 
 
-$commands = ["--dir", "--main", "--onefile", "--config"];
+$commandsWithValue = ["--dir", "-c", "--config", "--main", "--onefile", "-t", "--theme"];
+$singleCommands = ["--gen-config", "--major", "--minor", "--build", "-h", "--help"];
 $files = [];
+$scriptPath = realpath(dirname(__FILE__));
+$css_path = $scriptPath . "/themes/default.css";
+$userCurrentDir = getcwd();
 
+// exit($css_path);
 
 // récupération du texte de config
-$config_content = file_get_contents("config");
+$config_content = file_get_contents($userCurrentDir . DIRECTORY_SEPARATOR . "config");
 
 $data = [];
 $config_data = [];
 
 // données de config
-foreach($config_pattern as $patternName => $p) {
+foreach ($config_pattern as $patternName => $p) {
     $config_data[$patternName] = getRegexGroup($p, $config_content);
 }
 
-if (count($argv) > 1) {
+$commands = [
+    "withValue" => [],
+    "single" => []
+];
+
+foreach ($argv as $i => $command) {
+    if (in_array($command, $commandsWithValue)) {
+        $next = $argv[$i + 1];
+        if (!in_array($next, $commandsWithValue) && !in_array($next, $singleCommands) && $i + 1 < $argc) {
+            array_push($commands["withValue"], [
+                "command" => $command,
+                "value" => $argv[$i + 1]
+            ]);
+        } else {
+            exit("La commande ". $next. " ne peut être utilisée comme valeur PUISQUE C'EST UNE COMMANDE");
+        }
+    } else if (in_array($command, $singleCommands)) {
+        array_push($commands["single"], $command);
+    }
+}
+
+if ($argc > 1) {
 
     // gérer les updates de la version dans le fichier config
     $version = $config_data["version"];
 
-    // Cas Major
-    if (in_array("--major", $argv)) {
-        $v_m = explode('.', $version)[0];
-        $v_m ++;
-
-        $config_data['version'] = "{$v_m}.0.0";
-        file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
-    }
-    // Cas Minor
-    if (in_array("--build", $argv)) {
-        $v_m = explode('.', $version)[0];
-        $v_mi = explode('.', $version)[1];
-        $v_b = explode('.', $version)[2];
-        $v_b ++;
-
-        $config_data['version'] = "{$v_m}.{$v_mi}.{$v_b}";
-        file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
-    }
-    // Cas Build
-    if (in_array("--minor", $argv)) {
-        $v_m = explode('.', $version)[0];
-        $v_mi = explode('.', $version)[1];
-        $v_mi ++;
-
-        $config_data['version'] = "{$v_m}.{$v_mi}.0";
-        file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
-    }
-
-    // Gérer les thèmes demandés
-
-        // thème blanc/noir (par défaut)
-    $css_path = "./themes/1.css";
-
-        // thème jungle
-    if (in_array("--jungle", $argv)) {
-        $css_path = "./themes/jungle.css";
-    }
-
-    // Autres options du programme
-    $command = $argv[1];
-    $commandValue = $argv[2];
-
-    if ($command == "--config") {
-        file_put_contents("config", "CLIENT=XXX\nPRODUIT=XXX\nVERSION=X.X.X");
-    } else if (!in_array($command, $commands)) {
-        exit("Cette commande n'existe pas.");
-    } else if ($commandValue == '') {
-        exit("Veuillez saisir la valeur de la commande.");
-    } else {
-        if ($command == "--dir") {
-            $files = glob(getcwd() . DIRECTORY_SEPARATOR . $commandValue . DIRECTORY_SEPARATOR . "*.c");
+    // single commands
+    foreach ($commands["single"] as $command) {
+        // génération du fichier de configuration
+        if ($command == "--gen-config") {
+            file_put_contents("config", "CLIENT=XXX\nPRODUIT=XXX\nVERSION=X.X.X");
         }
+        // Cas Major
+        if ($command == "--major") {
+            $v_m = explode('.', $version)[0];
+            $v_m++;
 
-        if (file_exists($commandValue)) {
-            if ($command == "--onefile") {
-                array_push($files, $commandValue);
-            }
+            $config_data['version'] = "{$v_m}.0.0";
+            file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
+        }
+        // Cas Minor
+        if ($command == "--build") {
+            $v_m = explode('.', $version)[0];
+            $v_mi = explode('.', $version)[1];
+            $v_b = explode('.', $version)[2];
+            $v_b++;
 
-            if ($command == "--main") {
-                $path = explode(DIRECTORY_SEPARATOR, $commandValue);
-                array_pop($path);
-                $path = join(DIRECTORY_SEPARATOR, $path);
+            $config_data['version'] = "{$v_m}.{$v_mi}.{$v_b}";
+            file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
+        }
+        // Cas Build
+        if ($command == "--minor") {
+            $v_m = explode('.', $version)[0];
+            $v_mi = explode('.', $version)[1];
+            $v_mi++;
 
-                array_push($files, $commandValue);
+            $config_data['version'] = "{$v_m}.{$v_mi}.0";
+            file_put_contents('config', "CLIENT={$config_data['client']}\nPRODUIT={$config_data['produit']}\nVERSION={$config_data['version']}");
+        }
+    }
 
-                // récupère les includes
-                $includePattern = '/#include\s+"([^"]*)"/m';
-                preg_match_all($includePattern, file_get_contents($commandValue), $includeMatches);
-
-                foreach ($includeMatches[0] as $include) {
-                    $headerFileName = str_replace("\"", "", explode(" ", $include)[1]);
-                    $cFileName = str_replace("h", "c", $headerFileName);
-
-                    array_push($files, $path . DIRECTORY_SEPARATOR . $headerFileName);
-
-                    if (file_exists($path . DIRECTORY_SEPARATOR . $cFileName)) {
-                        array_push($files, $path . DIRECTORY_SEPARATOR . $cFileName);
-                    }
+    // command with value
+    foreach ($commands["withValue"] as $command) {
+        if ($command["value"] == null) {
+            exit("Veuillez saisir la valeur de la commande '" . $command["command"] . "'");
+        } else {
+            if ($command["command"] == "--config" || $command["command"] == "-c") {
+                $config_content = file_get_contents($scriptPath . DIRECTORY_SEPARATOR . $command["value"]);
+                foreach ($config_pattern as $patternName => $p) {
+                    $config_data[$patternName] = getRegexGroup($p, $config_content);
                 }
             }
-        } else {
-            exit("Le fichier n'existe pas !");
+            // Gérer les thèmes demandés
+            if ($command["command"] == "--theme" || $command["command"] == "-t") {
+                $css_path = $scriptPath . "/themes/{$command['value']}.css";
+            }
+
+            // récupération des fichiers
+            if ($command == "--dir") {
+                $files = glob(getcwd() . DIRECTORY_SEPARATOR . $command["value"] . DIRECTORY_SEPARATOR . "*.c");
+            }
+
+            if ($command["command"] == "--onefile" || $command["command"] == "--main") {
+                $filePath = getcwd() . DIRECTORY_SEPARATOR . str_replace("./", "", $command["value"]);
+                if (file_exists($filePath)) {
+                    if ($command["command"] == "--onefile") {
+                        array_push($files, $filePath);
+                    }
+
+                    if ($command["command"] == "--main") {
+                        $path = explode(DIRECTORY_SEPARATOR, $filePath);
+                        array_pop($path);
+                        $path = join(DIRECTORY_SEPARATOR, $path);
+
+                        array_push($files, $filePath);
+
+                        // récupère les includes
+                        $includePattern = '/#include\s+"([^"]*)"/m';
+                        preg_match_all($includePattern, file_get_contents($filePath), $includeMatches);
+
+                        foreach ($includeMatches[0] as $include) {
+                            $headerFileName = str_replace("\"", "", explode(" ", $include)[1]);
+                            $cFileName = str_replace("h", "c", $headerFileName);
+
+                            array_push($files, $path . DIRECTORY_SEPARATOR . $headerFileName);
+
+                            if (file_exists($path . DIRECTORY_SEPARATOR . $cFileName)) {
+                                array_push($files, $path . DIRECTORY_SEPARATOR . $cFileName);
+                            }
+                        }
+                    }
+                } else {
+                    exit("Le fichier '{$filePath}' n'existe pas !");
+                }
+            }
         }
     }
 } else {
@@ -342,8 +375,6 @@ function checkValue($data)
         echo $data;
     }
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -357,6 +388,7 @@ function checkValue($data)
 
     <style>
         <?php echo file_get_contents($css_path) ?>
+
         /* cacher les feuilles si pas de thème jungle */
         .feuille-logo-jungle {
             display: none;
@@ -366,33 +398,33 @@ function checkValue($data)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?php echo $config_data["produit"]?> - Documentation</title>
+    <title><?php echo $config_data["produit"] ?> - Documentation</title>
 </head>
 
 <body>
 
     <svg class="feuille-logo-jungle" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
-        <path d="M384 312.7c-55.1 136.7-187.1 54-187.1 54-40.5 81.8-107.4 134.4-184.6 134.7-16.1 0-16.6-24.4 0-24.4 64.4-.3 120.5-42.7 157.2-110.1-41.1 15.9-118.6 27.9-161.6-82.2 109-44.9 159.1 11.2 178.3 45.5 9.9-24.4 17-50.9 21.6-79.7 0 0-139.7 21.9-149.5-98.1 119.1-47.9 152.6 76.7 152.6 76.7 1.6-16.7 3.3-52.6 3.3-53.4 0 0-106.3-73.7-38.1-165.2 124.6 43 61.4 162.4 61.4 162.4 .5 1.6 .5 23.8 0 33.4 0 0 45.2-89 136.4-57.5-4.2 134-141.9 106.4-141.9 106.4-4.4 27.4-11.2 53.4-20 77.5 0 0 83-91.8 172-20z"/>
+        <path d="M384 312.7c-55.1 136.7-187.1 54-187.1 54-40.5 81.8-107.4 134.4-184.6 134.7-16.1 0-16.6-24.4 0-24.4 64.4-.3 120.5-42.7 157.2-110.1-41.1 15.9-118.6 27.9-161.6-82.2 109-44.9 159.1 11.2 178.3 45.5 9.9-24.4 17-50.9 21.6-79.7 0 0-139.7 21.9-149.5-98.1 119.1-47.9 152.6 76.7 152.6 76.7 1.6-16.7 3.3-52.6 3.3-53.4 0 0-106.3-73.7-38.1-165.2 124.6 43 61.4 162.4 61.4 162.4 .5 1.6 .5 23.8 0 33.4 0 0 45.2-89 136.4-57.5-4.2 134-141.9 106.4-141.9 106.4-4.4 27.4-11.2 53.4-20 77.5 0 0 83-91.8 172-20z" />
     </svg>
 
     <svg class="feuille-logo-jungle" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
-        <path d="M384 312.7c-55.1 136.7-187.1 54-187.1 54-40.5 81.8-107.4 134.4-184.6 134.7-16.1 0-16.6-24.4 0-24.4 64.4-.3 120.5-42.7 157.2-110.1-41.1 15.9-118.6 27.9-161.6-82.2 109-44.9 159.1 11.2 178.3 45.5 9.9-24.4 17-50.9 21.6-79.7 0 0-139.7 21.9-149.5-98.1 119.1-47.9 152.6 76.7 152.6 76.7 1.6-16.7 3.3-52.6 3.3-53.4 0 0-106.3-73.7-38.1-165.2 124.6 43 61.4 162.4 61.4 162.4 .5 1.6 .5 23.8 0 33.4 0 0 45.2-89 136.4-57.5-4.2 134-141.9 106.4-141.9 106.4-4.4 27.4-11.2 53.4-20 77.5 0 0 83-91.8 172-20z"/>
+        <path d="M384 312.7c-55.1 136.7-187.1 54-187.1 54-40.5 81.8-107.4 134.4-184.6 134.7-16.1 0-16.6-24.4 0-24.4 64.4-.3 120.5-42.7 157.2-110.1-41.1 15.9-118.6 27.9-161.6-82.2 109-44.9 159.1 11.2 178.3 45.5 9.9-24.4 17-50.9 21.6-79.7 0 0-139.7 21.9-149.5-98.1 119.1-47.9 152.6 76.7 152.6 76.7 1.6-16.7 3.3-52.6 3.3-53.4 0 0-106.3-73.7-38.1-165.2 124.6 43 61.4 162.4 61.4 162.4 .5 1.6 .5 23.8 0 33.4 0 0 45.2-89 136.4-57.5-4.2 134-141.9 106.4-141.9 106.4-4.4 27.4-11.2 53.4-20 77.5 0 0 83-91.8 172-20z" />
     </svg>
 
     <header class="main-header">
         <h1 class="title">
             Projet
-            <span><?php echo $config_data["produit"]?></span>
+            <span><?php echo $config_data["produit"] ?></span>
         </h1>
 
         <h3>
             Client
-            <span><?php echo $config_data["client"]?></span>
+            <span><?php echo $config_data["client"] ?></span>
         </h3>
 
         <h3>
             Version
-            <span><?php echo $config_data["version"]?></span>
+            <span><?php echo $config_data["version"] ?></span>
         </h3>
 
         <h3>
@@ -502,7 +534,7 @@ function checkValue($data)
                                         </div>
                                     </div>
 
-                                    <?php } else { ?>
+                                <?php } else { ?>
 
                                     <div class="item">
                                         <h4 class="item-title">
@@ -527,7 +559,7 @@ function checkValue($data)
                 <?php }
                 } ?>
             </section>
-            <?php } ?>
+        <?php } ?>
     </main>
 
     <button class="toggle-theme">

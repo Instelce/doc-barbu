@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Nom du volume Docker
 NOM_DU_VOLUME="sae103"
 
@@ -22,8 +20,12 @@ docker volume create $NOM_DU_VOLUME
 echo "création de volume"
 
 # Lancer le conteneur en montant le volume
-docker image pull latest $IMAGE_DOCKER_INFINI
-docker image pull latest $IMAGE_DOCKER_PDF
+docker image pull bigpapoo/$IMAGE_DOCKER_INFINI
+docker image pull bigpapoo/$IMAGE_DOCKER_PDF
+
+# docker image pull latest $IMAGE_DOCKER_INFINI
+# docker image pull latest $IMAGE_DOCKER_PDF
+
 docker run --rm -v $NOM_DU_VOLUME:$CHEMIN_LOCAL $IMAGE_DOCKER_INFINI -tid --name $CONTENEUR_INFINI
 echo "lancement des conteneurs"
 
