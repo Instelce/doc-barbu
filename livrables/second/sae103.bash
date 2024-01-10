@@ -22,7 +22,6 @@ echo "création de volume"
 docker image pull $IMAGE_DOCKER_CLOCK
 docker image pull $IMAGE_DOCKER_PDF
 docker run -v $NOM_DU_VOLUME:$CHEMIN_LOCAL $IMAGE_DOCKER_CLOCK -tid --name $CONTENEUR_INFINI
-docker run -v $NOM_DU_VOLUME:$CHEMIN_LOCAL $IMAGE_DOCKER_PDF --name $CONTENEUR_PDF
 echo "lancement des conteneurs"
 
 # Copie des fichiers c vers dans le volume avec le conteneur sae103-forever comme cible
@@ -30,10 +29,9 @@ docker cp *c $CONTENEUR_INFINI:$CHEMIN_LOCAL
 echo "copie des fichiers c faite"
 
 # Execution des traitements dans le conteneur sae103-forever puis génération des fichiers pdf grâce à html2pdf
-docker exec $CONTENEUR_INFINI sh -c "php gendoc-tech.php --dir *.c > DOC_TECHNIQUE.html && php gendoc-user.php"
-docker exec $CONTENEUR_PDF sh html2pdf DOC_TECHNIQUE.html DOC_TECHNIQUE.pdf
-docker exec $CONTENEUR_PDF sh html2pdf DOC_UTILISATEUR.html DOC_UTILISATEUR.pdf
-docker stop $CONTENEUR_PDF
+docker exec $CONTENEUR_INFINI sh -c "php gendoc-tech.php $@ > DOC_TECHNIQUE.html && php gendoc-user.php"
+docker run -v $NOM_DU_VOLUME:$CHEMIN_LOCAL $IMAGE_DOCKER_PDF html2pdf DOC_TECHNIQUE.html DOC_TECHNIQUE.pdf
+docker run -v $NOM_DU_VOLUME:$CHEMIN_LOCAL $IMAGE_DOCKER_PDF html2pdf DOC_UTILISATEUR.html DOC_UTILISATEUR.pdf
 echo "création des fichiers html et pdf"
 
 # Création du dossier où seront déplacées les documentations format PDF puis de l'archive en format tar.gz
