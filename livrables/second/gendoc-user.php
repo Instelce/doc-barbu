@@ -65,6 +65,7 @@ function tableau($docsFinal, $lignePrece)
     global $tableau;
     
     $pattern = '/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/';
+    $pattern_tirets = '/^-+$/';
     
     if ($tableau == false) 
     {
@@ -76,11 +77,14 @@ function tableau($docsFinal, $lignePrece)
     {
         $variable1 = trim($matches[1]);
         $variable2 = trim($matches[2]);
-            
-        fwrite($docsFinal, "\t<tr>\n");
-        fwrite($docsFinal, "\t\t<td>$variable1</td>\n");
-        fwrite($docsFinal, "\t\t<td>$variable2</td>\n");
-        fwrite($docsFinal, "\t</tr>\n");
+        
+        if(preg_match($pattern_tirets, $lignePrece, $matches2))
+        {
+            fwrite($docsFinal, "\t<tr>\n");
+            fwrite($docsFinal, "\t\t<th>$variable1</th>\n");
+            fwrite($docsFinal, "\t\t<th>$variable2</th>\n");
+            fwrite($docsFinal, "\t</tr>\n");
+        }
     }
 }
 
