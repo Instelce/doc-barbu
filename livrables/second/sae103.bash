@@ -1,3 +1,5 @@
+# Nom du volume Docker
+NOM_DU_VOLUME="sae103"
 # Chemin local sur l'hôte
 CHEMIN_LOCAL="/work"
 
@@ -8,11 +10,20 @@ NOM_DOSSIER="dossier_sae103"
 docker volume create sae103
 echo "création de volume"
 
+# Lancer le conteneur en montant le volume
+docker image pull bigpapoo/$IMAGE_DOCKER_INFINI
+docker image pull bigpapoo/$IMAGE_DOCKER_PDF
+
+# docker image pull latest $IMAGE_DOCKER_INFINI
+# docker image pull latest $IMAGE_DOCKER_PDF
+
+docker run --rm -v $NOM_DU_VOLUME:$CHEMIN_LOCAL $IMAGE_DOCKER_INFINI -tid --name $CONTENEUR_INFINI
 # Installation des images et ratachement au conteneur infini
 docker image pull clock
 docker image pull sae103-html2pdf
 docker image pull sae103-php
 docker container run --rm -v sae103:$CHEMIN_LOCAL clock -tid --name sae103-forever
+>>>>>>> c59a3c5bca1a3067047811222f4c396ec05b1c5b
 echo "lancement des conteneurs"
 
 # Copie de tout les script nécessaire dans le volume

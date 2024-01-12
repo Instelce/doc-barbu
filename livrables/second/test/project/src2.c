@@ -1,6 +1,6 @@
 /**
  * $file src1.c
- * $auteur Jean Neymar
+ * $author Jean Neymar
  * $version 1.0.0
  * $date 23/11/23
  * $brief Code qui demande un nom, un prénom, un âge et une adresse à un utilisateur.
