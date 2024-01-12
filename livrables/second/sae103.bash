@@ -4,19 +4,26 @@ CHEMIN_LOCAL="/work"
 # Nom du dossier final
 NOM_DOSSIER="dossier_sae103"
 
+USER_DIR=$(pwd)
+
 # Créer le volume
 docker volume create sae103
 echo "création de volume"
 
 # Installation des images et ratachement au conteneur infini
-docker image pull clock
-docker image pull sae103-html2pdf
-docker image pull sae103-php
-docker container run --rm -v sae103:$CHEMIN_LOCAL clock -tid --name sae103-forever
+# docker image pull clock
+# docker image pull sae103-html2pdf
+# docker image pull sae103-php
+docker container run --rm -v sae103:$CHEMIN_LOCAL clock -ti --name sae103-forever
 echo "lancement des conteneurs"
 
+# Ajout des dossiers
+docker container exec -d sae103-forever:$CHEMIN_LOCAL mkdir themes userdir
+
 # Copie de tout les script nécessaire dans le volume
-docker cp config *.php *.c *.md sae103-forever:$CHEMIN_LOCAL
+docker cp *.php sae103-forever:$CHEMIN_LOCAL
+docker cp themes/*.css sae103-forever:$CHEMIN_LOCAL/themes/
+docker cp ${USER_DIR}/config ${USER_DIR}/*.c ${USER_DIR}/*.md sae103-forever:$CHEMIN_LOCAL/userdir/
 echo "copie des fichiers vers le conteneur"
 
 # Génération des fichiers HTML avec l'image sae103-php

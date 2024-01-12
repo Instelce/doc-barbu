@@ -88,7 +88,7 @@ $singleCommands = ["--gen-config", "--major", "--minor", "--build", "-h", "--hel
 $files = [];
 $scriptPath = realpath(dirname(__FILE__));
 $css_path = $scriptPath . "/themes/default.css";
-$userCurrentDir = getcwd();
+$userCurrentDir = '/userdir';
 
 // exit($css_path);
 
