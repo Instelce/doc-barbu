@@ -43,7 +43,7 @@ if ($docsFinal)
         }
         if(preg_match('/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/', $lignePrece))
         {
-            tableau($docsFinal, $lignePrece);
+            tableau($docsFinal, $lignePrece, $ligneCourante);
         }
 
         $lignePrece = $ligneCourante;
@@ -60,29 +60,68 @@ else
 fclose($docsFinal);
 
 //Convertit les tableau markdown en tableau HTML.
-function tableau($docsFinal, $lignePrece)
+function tableau($docsFinal, $lignePrece, $ligneCourante)
 {
     global $tableau;
-    
+
     $pattern = '/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/';
-    
-    if ($tableau == false) 
-    {
-        fwrite($docsFinal, "\n" . "<table>" . "\n");
-        $tableau = true;
-    }
-    
+    $pattern_tirets = '/^-+$/';
+
+
     if (preg_match($pattern, $lignePrece, $matches)) 
     {
-        $variable1 = trim($matches[1]);
-        $variable2 = trim($matches[2]);
-            
-        fwrite($docsFinal, "\t<tr>\n");
-        fwrite($docsFinal, "\t\t<td>$variable1</td>\n");
-        fwrite($docsFinal, "\t\t<td>$variable2</td>\n");
-        fwrite($docsFinal, "\t</tr>\n");
+        global $tableau;
+
+        $pattern = '/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/';
+        $pattern_tirets = '/^-+$/';
+    
+        if ($tableau == false) 
+        {
+            fwrite($docsFinal, "\n" . "<table>" . "\n");
+            $tableau = true;
+        }
+
+        if(preg_match($pattern, $ligneCourante, $matches_Courant))
+        {
+            $matches_Courant1 = trim($matches_Courant[1]);
+            $matches_Courant2 = trim($matches_Courant[2]);
+        }
+        else
+        {
+            $matches_Courant1 = "";
+            $matches_Courant2 = "";
+        }
+
+        if (preg_match($pattern, $lignePrece, $matches)) 
+        {
+            $variable1 = trim($matches[1]);
+            $variable2 = trim($matches[2]);
+        }
+
+        if (preg_match($pattern_tirets, $matches_Courant1, $matches2) && preg_match($pattern_tirets, $matches_Courant2, $matches2)) 
+        {    
+            fwrite($docsFinal, "\t<tr>\n");
+            fwrite($docsFinal, "\t\t<th>$variable1</th>\n");
+            fwrite($docsFinal, "\t\t<th>$variable2</th>\n");
+            fwrite($docsFinal, "\t</tr>\n");
+        } 
+        elseif (preg_match($pattern_tirets, $variable1, $matches2) && preg_match($pattern_tirets, $variable2, $matches2))
+        {
+            fwrite($docsFinal, "\t<tr>\n");
+            fwrite($docsFinal, "\t\t<th>$variable1</th>\n");
+            fwrite($docsFinal, "\t\t<th>$variable2</th>\n");
+            fwrite($docsFinal, "\t</tr>\n");
+        }
+        else 
+        {
+            fwrite($docsFinal, "\t<tr>\n");
+            fwrite($docsFinal, "\t\t<td>$variable1</td>\n");
+            fwrite($docsFinal, "\t\t<td>$variable2</td>\n");
+            fwrite($docsFinal, "\t</tr>\n");
+        }
     }
 }
+
 
 //Test si on est dans une liste, une liste numériqu et un tableau et si c'est le cas fermer la balise.
 function testSiFlagOpen($docsFinal)
