@@ -1,0 +1,108 @@
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <style>
+            :root {
+                --color-background: #FFFFFF;
+                --color-text: #000000;
+            }
+            
+            body {
+                width: 100vw;
+                height: auto;
+                margin: 0;
+                overflow-x: hidden;
+                
+                background: var(--color-background);
+                font-family: "Poppins", sans-serif;
+                color: var(--color-text);
+                font-size: 16px;
+            }
+            
+            body{
+                height: 70%;
+                width: 70%;
+                text-align: start;
+                padding: 5em 5em;
+                margin: 0em 10em;
+                border-radius: 35px;
+                background: #e0e0e0;
+                box-shadow:  31px 31px 62px #5a5a5a,
+                -10px -10px 62px #5a5a5a;
+            }
+
+            h1{
+                text-align: center;
+            }
+            
+            h2{
+                padding-left: 5px;
+                border-left: solid #9499ff 3px;
+                border-bottom: solid #9499ff 3px;
+            }
+            
+            h3 {
+                color: #000;
+                margin-bottom: 10px;
+                text-decoration: underline;
+            }
+            
+            h4 {
+                color: #000;
+                margin-bottom: 10px;
+                text-decoration: underline;
+            }
+            
+            #avantages > div{
+                margin-left: 50px;
+            }
+            
+            td, th{
+                border: 1px solid black;
+                padding: 5px 5px;
+            }
+            
+            thead{
+                font-size: larger;
+            }
+            
+            footer > ul > li{
+                list-style-type: none;
+            }
+            
+            a:link {
+                text-decoration: none;
+            }
+            
+            a:visited {
+                text-decoration: none;
+                color: blue;
+            }
+            
+            a:hover {
+                text-decoration: underline;
+            }
+            
+            a:active {
+                text-decoration: underline;
+            }
+            
+            #commande{
+                font-family: 'Courier New', monospace;
+                background-color: #b1b1b1;
+                color: #000;
+                padding: 10px;
+                margin: 10px 0;
+                border-radius: 5px;
+                white-space: pre-wrap;
+                line-height: 1.4;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            }
+            
+            article p, header p{
+                margin: 10px 20px;
+            }
+        </style>
+    </head>
+
+    <body>

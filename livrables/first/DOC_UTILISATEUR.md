@@ -40,7 +40,11 @@ Les conteneurs Docker offrent une <mark>portabilité exceptionnelle</mark>, perm
 
 - [Docker Compose](https://github.com/docker/compose)
 - Docker Swarm
+<<<<<<< HEAD
 - [Docker Hub]((https://hub.docker.com/))
+=======
+- [Docker Hub](https://hub.docker.com/)
+>>>>>>> 689f9737f6dee75c313e9f87b66746e28603431c
 
 #### Sécurité
 
@@ -49,6 +53,7 @@ Les conteneurs Docker offrent une <mark>portabilité exceptionnelle</mark>, perm
 
 ## Résumé
 
+|--|
 | Fonctionnalité        | Description                                                  |
 |-----------------------|--------------------------------------------------------------|
 | Conteneurisation      | Encapsule les applications et leurs dépendances              |
@@ -65,25 +70,41 @@ Les conteneurs Docker offrent une <mark>portabilité exceptionnelle</mark>, perm
 
 Récupérer une image.
 
+<<<<<<< HEAD
 ```shell
+=======
+```
+>>>>>>> 689f9737f6dee75c313e9f87b66746e28603431c
     docker image pull <nom_image>
 ```
 
 Lancer un container d’une image.
 
+<<<<<<< HEAD
 ```shell
+=======
+```
+>>>>>>> 689f9737f6dee75c313e9f87b66746e28603431c
     docker container run <nom_image>
 ```
 
 Lister les conteneurs actif. Ajouter l'option `-a` pour voir tous les conteneurs.
 
+<<<<<<< HEAD
 ```shell
+=======
+```
+>>>>>>> 689f9737f6dee75c313e9f87b66746e28603431c
     docker container ps
 ```
 
 Supprimer un container.
 
+<<<<<<< HEAD
 ```shell
+=======
+```
+>>>>>>> 689f9737f6dee75c313e9f87b66746e28603431c
     docker container rm <ID_conteneur>
 ```
 
@@ -99,3 +120,7 @@ Docker c'est :
 
 - [x] coool
 - [ ] nuuul
+<<<<<<< HEAD
+=======
+
+>>>>>>> 689f9737f6dee75c313e9f87b66746e28603431c

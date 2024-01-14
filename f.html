@@ -1,0 +1,756 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+    box-sizing: border-box;
+    transition: color 80ms, background 80ms;
+}
+
+:root {
+    --color-theme: light;
+
+    --color-secondary: var(--color-secondary-dark);
+    --color-primary: var(--color-primary-dark);
+    --color-background: var(--color-background-dark);
+    --color-text: var(--color-text-dark);
+    --color-link: var(--color-link-dark);
+
+    --color-secondary-dark: #3f3f46;
+    --color-secondary-light: #c4c4c4;
+
+    --color-primary-dark: #3b82f6;
+    --color-primary-light: #3b82f6;
+    
+    --color-background-dark: #18181b;
+    --color-background-light: #ececec;
+    
+    --color-text-dark: #fff;
+    --color-text-light: #1f1f1f;
+    
+    --color-link-dark: #3b82f6;
+    --color-link-light: #664BFF;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: var(--color-secondary);
+}
+::-webkit-scrollbar-thumb:hover {
+    opacity: .8;
+}
+
+body {
+    width: 100vw;
+    height: auto;
+    margin: 0;
+    overflow-x: hidden;
+
+    background: var(--color-background);
+    font-family: "Poppins", sans-serif;
+    color: var(--color-text);
+    font-size: 16px;
+}
+
+a {
+    color: var(--color-link);
+    text-decoration: transparent;
+    transition: opacity .2s ease;
+}
+
+a:hover {
+    opacity: .8;
+}
+
+p {
+    margin: 0;
+}
+
+button {
+    background: none;
+    border: 0;
+    color: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+h1,
+h3,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    font-weight: 400;
+}
+
+.main-header {
+    height: 100vh;
+    padding: 0 40vh;
+    margin-bottom: 4rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.main-header::after {
+    content: "";
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: #3d3d3d;
+    display: inline-block;
+}
+
+.main-header span {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+.main-header .main-title {
+    font-size: 2vw;
+    margin-bottom: 2rem;
+    font-weight: 400;
+}
+
+.main-header .main-title span {
+    font-size: 5vw;
+    display: block;
+    font-weight: 700;
+    line-height: 100%;
+}
+
+.main-header h1 {
+    letter-spacing: -1px;
+}
+
+.main-header h3 {
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.main-header h3 {
+    margin-top: 4rem;
+}
+
+section h2,
+section h3 {
+    width: 100%;
+    padding: .5rem 1rem;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    background: var(--color-secondary);
+    border-left: var(--color-primary) solid 3px;
+    font-weight: 500;
+    font-size: 2rem;
+}
+
+section h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: var(--color-background);
+}
+
+section {
+    padding: 3rem 0;
+}
+
+.file-section {
+    padding: 6rem 0;
+}
+
+section>table {
+    padding: 0 calc(1rem + 2px);
+    margin: 1rem 0;
+}
+
+section>table tr {
+    text-align: left;
+}
+
+
+.container {
+    width: 100vw;
+    padding: 0 20vw;
+}
+
+.block {
+    padding: 0 calc(1rem + 2px);
+}
+
+.dropdown {
+    margin-bottom: 1rem;
+}
+
+.dropdown-trigger {
+    width: 100%;
+    display: block;
+    padding: .6rem 1rem;
+    text-align: left;
+    font-size: 1.2rem;
+    border-left: 2px solid var(--color-secondary);
+    transition: background .2s;
+    font-weight: 500;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dropdown-trigger:hover {
+    background: var(--color-secondary);
+    color: var(--color-link);
+}
+
+.dropdown-trigger:hover::after {
+    opacity: 1;
+}
+
+.dropdown-trigger::after {
+    content: "-";
+    font-size: 1.4rem;
+    font-weight: 700;
+    opacity: 0;
+}
+
+.dropdown-content {
+    width: 100%;
+    padding: .6rem 1rem;
+    border: 2px solid var(--color-secondary);
+    border-top: 0;
+}
+
+.dropdown .dropdown-trigger {
+    border: 2px solid var(--color-secondary);
+}
+
+.dropdown.hidden .dropdown-trigger::after {
+    content: "+";
+    font-size: 1.4rem;
+    font-weight: 400;
+}
+
+.dropdown.hidden .dropdown-content {
+    display: none;
+}
+
+.toggle-theme {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background: var(--color-secondary);
+    padding: 1rem 2rem;
+    border-radius: 5px;
+}
+
+.toggle-theme:hover {
+    opacity: .8;
+}
+
+.item {
+    margin-bottom: 1rem;
+}
+
+.item>p {
+    margin-bottom: 1rem;
+}
+
+.item-title {
+    width: 100%;
+    padding: .5rem 1rem;
+    margin: 0;
+    font-weight: 500;
+    font-size: 1.2rem;
+    /* border-left: var(--color-secondary) solid 2px; */
+    border: 2px solid var(--color-secondary);
+    position: relative;
+
+    display: flex;
+    gap: 1rem;
+}
+
+.item-title span.type {}
+
+.item-title span.value {
+    height: 140%;
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: .5rem 1.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--color-background);
+    border: 2px solid var(--color-secondary);
+}
+
+.item p {
+    padding: .6rem 1rem;
+}
+
+.sub-item {
+    margin: .5rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.sub-item th,
+.sub-item td {
+    gap: 1rem;
+    text-align: left;
+    padding-right: 1rem;
+}
+
+.navigation {
+    position: fixed;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+
+    border-radius: 5px;
+    border: 2px solid var(--color-secondary);
+    overflow: hidden;
+
+    pointer-events: none;
+    opacity: 0;
+}
+
+.navigation ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navigation li {
+    border-bottom: 2px solid var(--color-secondary);
+}
+
+.navigation a {
+    text-align: right;
+    padding: .5rem 2rem;
+    display: block;
+    color: var(--color-text);
+}
+
+.navigation li:last-child {
+    border-bottom: 0;
+}
+
+.navigation a:hover {
+    opacity: .8;
+    background: var(--color-secondary);
+}
+
+.navigation a.active {
+    background: var(--color-secondary);
+    color: var(--color-link);
+}
+
+.navigation.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@media print {
+    @page {
+        margin: 0;
+    }
+    body > header {
+        padding: 0;
+    }
+    body > header h1 {
+        font-size: 5rem;
+    }
+    .container {
+        padding: 0 10vw;
+    }
+    .file-section {
+        page-break-before: always;
+        page-break-after: always;
+    }
+    .file-section section {
+        page-break-after: always;
+    }
+    .navigation,
+    .toggle-theme {
+        display: none;
+    }
+}
+        /* cacher les feuilles si pas de thème jungle */
+        .feuille-logo-jungle {
+            display: none;
+        }
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Le balais à chiottes - Documentation</title>
+</head>
+
+<body>
+
+    <svg class="feuille-logo-jungle" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
+        <path d="M384 312.7c-55.1 136.7-187.1 54-187.1 54-40.5 81.8-107.4 134.4-184.6 134.7-16.1 0-16.6-24.4 0-24.4 64.4-.3 120.5-42.7 157.2-110.1-41.1 15.9-118.6 27.9-161.6-82.2 109-44.9 159.1 11.2 178.3 45.5 9.9-24.4 17-50.9 21.6-79.7 0 0-139.7 21.9-149.5-98.1 119.1-47.9 152.6 76.7 152.6 76.7 1.6-16.7 3.3-52.6 3.3-53.4 0 0-106.3-73.7-38.1-165.2 124.6 43 61.4 162.4 61.4 162.4 .5 1.6 .5 23.8 0 33.4 0 0 45.2-89 136.4-57.5-4.2 134-141.9 106.4-141.9 106.4-4.4 27.4-11.2 53.4-20 77.5 0 0 83-91.8 172-20z" />
+    </svg>
+
+    <svg class="feuille-logo-jungle" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
+        <path d="M384 312.7c-55.1 136.7-187.1 54-187.1 54-40.5 81.8-107.4 134.4-184.6 134.7-16.1 0-16.6-24.4 0-24.4 64.4-.3 120.5-42.7 157.2-110.1-41.1 15.9-118.6 27.9-161.6-82.2 109-44.9 159.1 11.2 178.3 45.5 9.9-24.4 17-50.9 21.6-79.7 0 0-139.7 21.9-149.5-98.1 119.1-47.9 152.6 76.7 152.6 76.7 1.6-16.7 3.3-52.6 3.3-53.4 0 0-106.3-73.7-38.1-165.2 124.6 43 61.4 162.4 61.4 162.4 .5 1.6 .5 23.8 0 33.4 0 0 45.2-89 136.4-57.5-4.2 134-141.9 106.4-141.9 106.4-4.4 27.4-11.2 53.4-20 77.5 0 0 83-91.8 172-20z" />
+    </svg>
+
+    <header class="main-header">
+        <h1 class="title">
+            Projet
+            <span>Le balais à chiottes</span>
+        </h1>
+
+        <h3>
+            Client
+            <span>Jean N'ey m'ar</span>
+        </h3>
+
+        <h3>
+            Version
+            <span>23.1.0</span>
+        </h3>
+
+        <h3>
+            01/10/2024        </h3>
+    </header>
+
+    <main class="container">
+        <section id="description">
+            <h3>Description</h3>
+
+            <p class="block">
+                Super decription du fichier config            </p>
+        </section>
+
+        
+                    <section id="src2.c" class="file-section">
+                <h2>src2.c</h2>
+
+                <h3>Chapitres</h3>
+
+                <nav>
+                    <ol type="1">
+                        <li><a href="#src2.c/en-tete">En-tête</a></li>
+
+                        
+                                <li><a href='#src2.c/defines'>Defines</a></li>
+
+                        
+                                <li><a href='#src2.c/globals'>Globals</a></li>
+
+                        
+                                <li><a href='#src2.c/types'>Types</a></li>
+
+                        
+                                <li><a href='#src2.c/structures'>Structures</a></li>
+
+                        
+                                <li><a href='#src2.c/fonctions'>Fonctions</a></li>
+
+                        
+                    </ol>
+                </nav>
+
+                <section id="src2.c/en-tete">
+                    <h3>1. En-tête</h3>
+
+                    <table>
+                        <tr>
+                            <th>Auteur</th>
+                            <td>Jean Neymar</td>
+                        </tr>
+                        <tr>
+                            <th>Version</th>
+                            <td>1.0.0</td>
+                        </tr>
+                    </table>
+
+                    <p class="block">
+                        Code qui demande un nom, un prénom, un âge et une adresse à un utilisateur.                    </p>
+                </section>
+
+                
+                        <section id="src2.c/defines">
+                            <h3>2. Defines</h3>
+
+                            
+                                    <div class="item">
+                                        <h4 class="item-title">
+                                                                                        MAJORITE                                                                                            <span class="value">18</span>
+                                                                                    </h4>
+                                        <p>Age de la majorité.</p>
+                                    </div>
+
+                                                            
+                                    <div class="item">
+                                        <h4 class="item-title">
+                                                                                        TAILLE                                                                                            <span class="value">20</span>
+                                                                                    </h4>
+                                        <p>Taille max pour le nom et le prenom.</p>
+                                    </div>
+
+                                                                                    </section>
+                
+                        <section id="src2.c/globals">
+                            <h3>3. Globals</h3>
+
+                            
+                                    <div class="item">
+                                        <h4 class="item-title">
+                                                                                            <a href="#str_utili" class="type">str_utili</a>
+                                                                                        s_utilisateur1                                                                                    </h4>
+                                        <p>utilisateur de test (n°1)</p>
+                                    </div>
+
+                                                            
+                                    <div class="item">
+                                        <h4 class="item-title">
+                                                                                            <a href="#str_equipe" class="type">str_equipe</a>
+                                                                                        s_equipe1                                                                                    </h4>
+                                        <p>equipe dans laquelle va appartenir l'utilisateur</p>
+                                    </div>
+
+                                                                                    </section>
+                
+                        <section id="src2.c/types">
+                            <h3>4. Types</h3>
+
+                            
+                                    <div class="item">
+                                        <h4 class="item-title">
+                                                                                            <a href="#char[]" class="type">char[]</a>
+                                                                                        t_nom                                                                                    </h4>
+                                        <p>lorem ipsum</p>
+                                    </div>
+
+                                                                                    </section>
+                
+                        <section id="src2.c/structures">
+                            <h3>5. Structures</h3>
+
+                            
+                                    <div class="dropdown" id='str_utili'>
+                                        <button class="item-title dropdown-trigger">str_utili</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Structure d'un utilisateur.                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#char[]">char[]</a></td>
+                                                        <th>nom</th>
+                                                        <td>Nom de l'utilisateur.</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#char[]">char[]</a></td>
+                                                        <th>prenom</th>
+                                                        <td>Prénom de l'utilisateur.</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#char[]">char[]</a></td>
+                                                        <th>adresse</th>
+                                                        <td>Adresse de l'utilisateur.</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#int">int</a></td>
+                                                        <th>age</th>
+                                                        <td>Age de l'utilisateur.</td>
+                                                    </tr>
+                                                                                            </table>
+
+                                                                                    </div>
+                                    </div>
+
+                                                            
+                                    <div class="dropdown" id='str_equipe'>
+                                        <button class="item-title dropdown-trigger">str_equipe</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Nom du nouveau type structure.                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#char[]">char[]</a></td>
+                                                        <th>nom</th>
+                                                        <td>Nom de l'équipe.</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#int">int</a></td>
+                                                        <th>nombreUtili</th>
+                                                        <td>Nombre d'utilisateur dans l'équipe.</td>
+                                                    </tr>
+                                                                                            </table>
+
+                                                                                    </div>
+                                    </div>
+
+                                                                                    </section>
+                
+                        <section id="src2.c/fonctions">
+                            <h3>6. Fonctions</h3>
+
+                            
+                                    <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">afficherUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1)</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Affiche les caractéristiques de l'utilisateur 1.                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#str_utili">str_utili</a></td>
+                                                        <th>s_utilisateur1</th>
+                                                        <td>Structure représentant l'utilisateur 1.</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#str_equipe">str_equipe</a></td>
+                                                        <th>s_equipe1</th>
+                                                        <td>Structure représentant l'équipe 1.</td>
+                                                    </tr>
+                                                                                            </table>
+
+                                                                                    </div>
+                                    </div>
+
+                                                            
+                                    <div class="dropdown" id=''>
+                                        <button class="item-title dropdown-trigger">saisirUtilisateur(str_utili s_utilisateur1, str_equipe s_equipe1)</button>
+                                        <div class="dropdown-content">
+                                            <p>
+                                                Saisie les caractéristiques de l'utilisateur 1.                                            </p>
+
+                                            <table class="sub-item">
+                                                                                                    <tr>
+                                                        <td><a href="#str_utili">str_utili</a></td>
+                                                        <th>s_utilisateur1</th>
+                                                        <td>Structure représentant l'utilisateur 1.</td>
+                                                    </tr>
+                                                                                                    <tr>
+                                                        <td><a href="#str_equipe">str_equipe</a></td>
+                                                        <th>s_equipe1</th>
+                                                        <td>Structure représentant l'équipe 1.</td>
+                                                    </tr>
+                                                                                            </table>
+
+                                                                                            <p>Return <a href="#int">int</a></p>
+                                                                                    </div>
+                                    </div>
+
+                                                                                    </section>
+                            </section>
+            </main>
+
+    <button class="toggle-theme">
+        Light
+    </button>
+
+    <nav class="navigation">
+        <ul>
+        </ul>
+    </nav>
+
+    <script>
+        const dropdowns = document.querySelectorAll(".dropdown");
+
+        dropdowns.forEach(dropdown => {
+            let dropdownContent = dropdown.querySelector(".dropdown-content");
+            let dropdownTrigger = dropdown.querySelector(".dropdown-trigger");
+            dropdownTrigger.addEventListener("click", (e) => {
+                e.preventDefault()
+                dropdown.classList.toggle("hidden")
+            })
+        })
+
+        // Bouton d'activation du thème
+        const toggleTheme = document.querySelector(".toggle-theme");
+        const root = document.querySelector(":root")
+        const rootColors = getComputedStyle(root)
+        toggleTheme.addEventListener("click", (e) => {
+            e.preventDefault()
+            $theme = rootColors.getPropertyValue("--color-theme")
+            console.log($theme);
+            root.style.setProperty("--color-theme", $theme == "light" ? "dark" : "light");
+
+            root.style.setProperty("--color-background", `var(--color-background-${$theme})`)
+            root.style.setProperty("--color-text", `var(--color-text-${$theme})`)
+            root.style.setProperty("--color-secondary", `var(--color-secondary-${$theme})`)
+            root.style.setProperty("--color-link", `var(--color-link-${$theme})`)
+
+            // texte du bouton
+            toggleTheme.innerHTML = $theme == "light" ? "Dark" : "Light"
+        })
+
+        // generate links of navigation bar
+        if (document.querySelector(".files")) {
+            const filesLink = document.querySelector(".files");
+            const navigationLinksList = document.querySelector(".navigation ul");
+
+            navigationLinksList.innerHTML = filesLink.innerHTML;
+        }
+
+        // files navigation
+        const navigation = document.querySelector(".navigation");
+        const nb_li = navigation.getElementsByTagName("li").length;
+        const navLinks = document.querySelectorAll(".navigation a");
+        const sections = document.querySelectorAll("section.file-section")
+
+        window.onscroll = () => {
+            if (window.scrollY > window.screen.height && nb_li > 0) {
+                navigation.classList.add("show")
+            } else {
+                navigation.classList.remove("show")
+            }
+
+            sections.forEach(section => {
+                let top = window.scrollY
+                let offset = section.offsetTop - 150
+                let height = section.offsetHeight
+                let id = section.getAttribute("id")
+
+                if (top >= offset && top < offset + height) {
+                    navLinks.forEach(link => {
+                        if (link.getAttribute("href") == "#" + id) {
+                            link.classList.add("active")
+                        } else {
+                            link.classList.remove("active")
+                        }
+                    })
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>
