@@ -1,0 +1,249 @@
+#!/bin/bash
+
+#   ____   ___   ____   ____    _    ____  ____  _   _ 
+#  |  _ \ / _ \ / ___| | __ )  / \  |  _ \| __ )| | | |
+#  | | | | | | | |     |  _ \ / _ \ | |_) |  _ \| | | |
+#  | |_| | |_| | |___  | |_) / ___ \|  _ <| |_) | |_| |
+#  |____/ \___/ \____| |____/_/   \_\_| \_\____/ \___/ 
+
+# Yan, Loris, Richard, Célestin
+
+# ----------------------------------------------------------------
+# Fonctions
+# ----------------------------------------------------------------
+createDirectory() {
+    volume_name=$1
+    dir_name=$2
+
+    docker container run --rm -v $volume_name:/work bigpapoo/sae103-php sh -c "mkdir $dir_name"
+}
+
+runCommand() {
+    volume_name=$1
+    image_name=$2
+    command=$3
+
+    docker container run --rm -v $volume_name:/work $image_name sh -c "$command"
+}
+
+copyFile() {
+    source_file=$1
+    target_file=$2
+
+    docker cp -q $source_file $target_file
+}
+
+showProgress() {
+    while ps | grep $1 &> /dev/null;
+    do
+        print -n "."
+        sleep 0.05
+    done
+    print -en "Fini !\n"
+    sleep 0.1
+}
+
+
+# Grace à ChatGPT ----
+hasParameter() {
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            -q)
+                return 0  # Parameter found
+                ;;
+            *)
+                shift  # Move to the next argument
+                ;;
+        esac
+    done
+
+    return 1  # Parameter not found
+}
+# --------------------
+
+scriptParams="$@"
+print() {
+    if hasParameter "$scriptParams"; then
+        echo -n
+    else
+        echo "$@"
+    fi
+}
+
+# ----------------------------------------------------------------
+# Variables
+# ----------------------------------------------------------------
+
+# Nom du volume Docker
+NOM_DU_VOLUME="sae103"
+
+# Images Docker à utiliser
+IMAGE_INFINI="bigpapoo/clock"
+IMAGE_PHP="bigpapoo/sae103-php"
+IMAGE_PDF="bigpapoo/sae103-html2pdf"
+
+# Nom du dossier final
+NOM_DOSSIER_RENDU="dossier_sae103"
+
+# Nom du conteneur Docker
+NOM_CONTENEUR_INFINI="sae103-forever"
+NOM_CONTENEUR_PDF="sae103-pdf"
+
+USER_PROJECT_DIR=$(pwd)
+COMMAND_DIR="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+# Quelque mots avec des couleurs
+CNT="[\e[1;36mNOTE\e[0m]"
+CST="[\e[1;35mSECTION\e[0m]"
+COK="[\e[1;32mOK\e[0m]"
+CER="[\e[1;31mERROR\e[0m]"
+CAT="[\e[1;37mATTENTION\e[0m]"
+CWR="[\e[1;35mWARNING\e[0m]"
+CAC="[\e[1;33mACTION\e[0m]"
+
+# ----------------------------------------------------------------
+# Commandes
+# ----------------------------------------------------------------
+
+if [ "$1" = "--gen-config" ]; then
+    echo -en "CLIENT=XXX\nPRODUIT=XXX\nVERSION=X.X.X" > config
+    exit 0
+fi
+
+if [ "$1" = "--list-theme" ]; then
+    for theme in $COMMAND_DIR/themes/*.css 
+    do
+        print "--" $(echo $theme | cut -d'.' -f1 | rev | cut -d'/' -f1 | rev)
+    done
+    exit 0
+fi
+
+# ----------------------------------------------------------------
+# Programme principal
+# ----------------------------------------------------------------
+
+# Récupération des images
+print -e "$CST Récupération des images"
+
+for image in $IMAGE_INFINI $IMAGE_PDF $IMAGE_PHP; do
+    if docker image inspect $image >/dev/null 2>&1; then
+        print -e "$CNT $image est à jour."
+    else
+        print -en "$CNT Pull $image "
+        i=$(docker image pull -q --no-cache $image) &
+        showProgress $!
+    fi
+done
+
+# Créer le volume
+print -e "\n$CST Création du volume"
+v=$(docker volume create $NOM_DU_VOLUME) &
+
+# Lancement du conteneur infini
+print -en "\n$CST Liason du volume à un conteneur"
+c=$(docker container run --rm -v $NOM_DU_VOLUME:/work -tid --name $NOM_CONTENEUR_INFINI $IMAGE_INFINI) &
+showProgress $!
+
+# Création des dossiers
+createDirectory $NOM_DU_VOLUME userdir
+createDirectory $NOM_DU_VOLUME themes
+createDirectory $NOM_DU_VOLUME $NOM_DOSSIER_RENDU
+
+# Copie des fichiers de l'utilisateur
+print -e "\n$CST Copie des fichiers"
+
+for fileType in *.c *.md; do
+    for file in $fileType; do
+        print -e "$CNT Envoie de $file."
+        copyFile $USER_PROJECT_DIR/$file $NOM_CONTENEUR_INFINI:/work/userdir
+    done
+done
+
+print -e "$CNT Envoie de la config."
+copyFile $USER_PROJECT_DIR/config $NOM_CONTENEUR_INFINI:/work/userdir
+
+# Copie des scripts de génération et des fichiers 'dépendances'
+print -e "$CNT Copie des fichiers necessaire pour la génération."
+
+for file in *.php
+do 
+    copyFile $COMMAND_DIR/$file $NOM_CONTENEUR_INFINI:/work
+done
+
+for filePath in $COMMAND_DIR/themes/*.css
+do
+    # echo $filePath
+    copyFile $filePath $NOM_CONTENEUR_INFINI:/work/themes
+done
+
+VERSION=$(cat config | grep "VERSION" | cut -d= -f2)
+
+print -e "\n$CST Convertion en HTML"
+
+# Convertion de la doc technique 
+print -en "$CNT Documentation technique"
+if [ "$#" -gt 0 ]; then
+    # print "php gendoc-tech.php $@ > output/tech.html"
+    params="$@"
+    runCommand $NOM_DU_VOLUME $IMAGE_PHP "php gendoc-tech.php $params > $NOM_DOSSIER_RENDU/tech.html" &
+    showProgress $!
+
+    copyFile $NOM_CONTENEUR_INFINI:/work/config $USER_PROJECT_DIR/config
+
+    # Récupération de la nouvelle version
+    NEW_VERSION=$(cat config | grep "VERSION" | cut -d'=' -f2)
+    if [ $NEW_VERSION != $VERSION ]; then
+        VERSION=$NEW_VERSION
+        print -e "$CNT Nouvelle version pris en compte"
+    fi
+
+    # Renome le fichier avec la nouvelle version
+    runCommand $NOM_DU_VOLUME $IMAGE_PHP "mv $NOM_DOSSIER_RENDU/tech.html $NOM_DOSSIER_RENDU/doc-tech-${VERSION}.html"
+else
+    runCommand $NOM_DU_VOLUME $IMAGE_PHP "php gendoc-tech.php > $NOM_DOSSIER_RENDU/doc-tech-${VERSION}.html" &
+    showProgress $!
+fi
+
+# Convertion de la doc utilisateur
+print -en "$CNT Documentation utilisateur"
+runCommand $NOM_DU_VOLUME $IMAGE_PHP "php gendoc-user.php > $NOM_DOSSIER_RENDU/doc-user-${VERSION}.html" &
+showProgress $!
+
+# Convertion des documentations en PDF
+print -e "\n$CST Convertion PDF"
+print -en "$CNT Documentation technique"
+p=$(docker container run -v $NOM_DU_VOLUME:/work $IMAGE_PDF "html2pdf $NOM_DOSSIER_RENDU/doc-tech-${VERSION}.html $NOM_DOSSIER_RENDU/doc-tech-${VERSION}.pdf") &
+showProgress $!
+
+print -en "$CNT Documentation utilisateur"
+p=$(docker container run -v $NOM_DU_VOLUME:/work $IMAGE_PDF "html2pdf $NOM_DOSSIER_RENDU/doc-user-${VERSION}.html $NOM_DOSSIER_RENDU/doc-user-${VERSION}.pdf") &
+showProgress $!
+
+# runCommand $NOM_DU_VOLUME $IMAGE_PHP "ls *.pdf"
+
+# print
+# runCommand $NOM_DU_VOLUME $IMAGE_PHP "ls"
+# print $'\nthemes/ \n'
+# runCommand $NOM_DU_VOLUME $IMAGE_PHP "ls themes/"
+# print $'\nuserdir/ \n'
+# runCommand $NOM_DU_VOLUME $IMAGE_PHP "ls userdir/"
+# print
+
+# Creation de l'archive
+print -e "\n$CST Création de l'archive"
+runCommand $NOM_DU_VOLUME $IMAGE_PHP "mv userdir/*c $NOM_DOSSIER_RENDU"
+z=$(runCommand $NOM_DU_VOLUME $IMAGE_PHP "tar czvf $NOM_DOSSIER_RENDU.tar.gz $NOM_DOSSIER_RENDU")
+
+# print -e '\n dossier_sae103/ \n'
+# runCommand $NOM_DU_VOLUME $IMAGE_PHP "ls $NOM_DOSSIER_RENDU/"
+# print
+
+# Récupération de l'archive
+print -e "\n$CST Copie du fichier tgz vers le repertoire courant"
+copyFile $NOM_CONTENEUR_INFINI:/work/$NOM_DOSSIER_RENDU.tar.gz $USER_PROJECT_DIR
+
+# Suppression du conteneur infini et du volume
+print -e "\n$CST Supression des images, des conteneurs et du volume"
+v=$(docker kill $NOM_CONTENEUR_INFINI)
+v=$(docker container prune -f)
+v=$(docker volume rm $NOM_DU_VOLUME)

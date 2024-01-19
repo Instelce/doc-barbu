@@ -1,7 +1,8 @@
-⚠️ Migrer sur gitlab
-
 # doc-barbu
-Un générateur de documentation !
 
-Projet de la SAE 1.03 : Installation d’un poste de développement
+Un générateur de documentation !
 (c'est un fake doxygen... mais mieux)
+
+## Comment l'utiliser
+
+Allez voir la [documentation](https://github.com/Instelce/doc-barbu/blob/main/DOCUMENTATION.md)
