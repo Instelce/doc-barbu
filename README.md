@@ -5,4 +5,4 @@ Un générateur de documentation !
 
 ## Comment l'utiliser
 
-Allez voir la [documentation](https://github.com/Instelce/doc-barbu/blob/main/DOCUMENTATION.md)
+Allez voir la [documentation](https://github.com/Instelce/doc-barbu/blob/main/DOCUMENTATION.md).

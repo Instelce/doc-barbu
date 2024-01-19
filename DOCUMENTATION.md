@@ -41,28 +41,23 @@ Dans un de vos projet.
 
 1. Documenter vos fichier avec la [syntaxe](#syntaxe) de documentation.
 
-2. Générez un fichier config et remplissez le avec vos information.
+2. Créer un fichier `DOCUMENTATION.md`, et écrivez y votre documentation.
+
+3. Générez un fichier config et remplissez le avec vos information.
 
 ```bash
 doc-barbu --gen-config
 ```
 
-3. Générer votre documentation.
+4. Générer votre documentation.
 
 ```bash
 doc-barbu
 ```
 
-4. D'autre [commandes](#commandes) existe, notamment pour changer la version.
+5. D'autre [commandes](#commandes) existe, notamment pour changer la version.
 
 ## Syntaxe
-
-- Tous les mots clé
-- Fichiers
-- Defines
-- Variables
-- Fonctions
-- Structure
 
 ### Tous les mots clé
 
